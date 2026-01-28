@@ -1,0 +1,465 @@
+[
+  {
+    "id": "1calacatta-roma",
+    "name": "CALACATTA ROMA",
+    "order": 1,
+    "folderName": "1CALACATTA ROMA",
+    "thumbnailImage": "/products/1CALACATTA ROMA/CALACATTA ROMA.jpg",
+    "detailImages": [
+      "/products/1CALACATTA ROMA/CALACATTA ROMA RENDER.jpg",
+      "/products/1CALACATTA ROMA/CALACATTA ROMA.jpg"
+    ],
+    "renderImages": [
+      "/products/1CALACATTA ROMA/CALACATTA ROMA RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/1CALACATTA ROMA/CALACATTA ROMA.jpg"
+    ],
+    "description": "Inspirado en el mármol Calacatta, presenta un fondo blanco luminoso con vetas grises suaves y delicados acentos dorados que aportan calidez. Su diseño equilibra elegancia clásica con un movimiento natural y sofisticado. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco veteado con grises suaves y detalles dorados Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Natural",
+    "category": "12mm"
+  },
+  {
+    "id": "2limestone",
+    "name": "Limestone",
+    "order": 2,
+    "folderName": "2Limestone",
+    "thumbnailImage": "/products/2Limestone/Limestone.jpg",
+    "detailImages": [
+      "/products/2Limestone/Limestone render.png",
+      "/products/2Limestone/Limestone.jpg"
+    ],
+    "renderImages": [
+      "/products/2Limestone/Limestone render.png"
+    ],
+    "nonRenderImages": [
+      "/products/2Limestone/Limestone.jpg"
+    ],
+    "description": "Inspirado en la piedra caliza natural, presenta un fondo beige suave con sutiles variaciones tonales que aportan una sensación cálida, uniforme y orgánica. Su estética transmite naturalidad y calma. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige uniforme con leves matices naturales Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "3atys-grey",
+    "name": "ATYs GREY",
+    "order": 3,
+    "folderName": "3ATYs GREY",
+    "thumbnailImage": "/products/3ATYs GREY/Atys grey.jpg",
+    "detailImages": [
+      "/products/3ATYs GREY/ATYs GREY Render.png",
+      "/products/3ATYs GREY/Atys grey.jpg"
+    ],
+    "renderImages": [
+      "/products/3ATYs GREY/ATYs GREY Render.png"
+    ],
+    "nonRenderImages": [
+      "/products/3ATYs GREY/Atys grey.jpg"
+    ],
+    "description": "Inspirado en las piedras sedimentarias de tono gris claro, combina una superficie homogénea con microtexturas sutiles que aportan profundidad y un carácter suave y contemporáneo. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Gris claro uniforme con microtexturas naturales Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "4spanish-grey",
+    "name": "SPANISH GREY",
+    "order": 4,
+    "folderName": "4SPANISH GREY",
+    "thumbnailImage": "/products/4SPANISH GREY/SPANISH GREY.jpg",
+    "detailImages": [
+      "/products/4SPANISH GREY/SPANISH GREY RENDER.jpg",
+      "/products/4SPANISH GREY/SPANISH GREY.jpg"
+    ],
+    "renderImages": [
+      "/products/4SPANISH GREY/SPANISH GREY RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/4SPANISH GREY/SPANISH GREY.jpg"
+    ],
+    "description": "Inspirado en piedras grises de estilo contemporáneo, presenta un fondo gris medio oscuro con vetas blancas finas y dispersas que aportan un movimiento sutil y natural. Su textura equilibrada transmite sobriedad, profundidad y una estética moderna. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Gris medio oscuro con vetas blancas suaves Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate 5-Brazilianite Inspirado en cuarcitas claras de brillo mineral, presenta un fondo beige grisáceo con un entramado suave y cristalino que genera profundidad y un movimiento delicado. Su textura transmite naturalidad, luz y un aspecto elegante y sereno. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige grisáceo con textura cristalina suave Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "5brazilianite",
+    "name": "Brazilianite",
+    "order": 5,
+    "folderName": "5Brazilianite",
+    "thumbnailImage": "/products/5Brazilianite/BRAZILIANITE.jpg",
+    "detailImages": [
+      "/products/5Brazilianite/BRAZILIANITE RENDER.jpg",
+      "/products/5Brazilianite/BRAZILIANITE.jpg"
+    ],
+    "renderImages": [
+      "/products/5Brazilianite/BRAZILIANITE RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/5Brazilianite/BRAZILIANITE.jpg"
+    ],
+    "description": "",
+    "category": null
+  },
+  {
+    "id": "6beige-stone",
+    "name": "Beige Stone",
+    "order": 6,
+    "folderName": "6Beige Stone",
+    "thumbnailImage": "/products/6Beige Stone/BEIGE STONE.jpg",
+    "detailImages": [
+      "/products/6Beige Stone/BEIGE STONE RENDER.jpg",
+      "/products/6Beige Stone/BEIGE STONE.jpg"
+    ],
+    "renderImages": [
+      "/products/6Beige Stone/BEIGE STONE RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/6Beige Stone/BEIGE STONE.jpg"
+    ],
+    "description": "Inspirado en el travertino natural, presenta un fondo beige claro con vetas lineales suaves y variaciones verticales típicas de la piedra sedimentaria. Su textura transmite calidez, naturalidad y un carácter orgánico muy equilibrado. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige claro con vetas lineales naturales Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "7autumn-maple",
+    "name": "AUTUMN MAPLE",
+    "order": 7,
+    "folderName": "7AUTUMN MAPLE",
+    "thumbnailImage": "/products/7AUTUMN MAPLE/AUTUMN MAPLE 2.jpg",
+    "detailImages": [
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE 2.jpg",
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
+    ],
+    "renderImages": [],
+    "nonRenderImages": [
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE 2.jpg",
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
+    ],
+    "description": "Inspirado en mármoles mediterráneos cálidos, combina un fondo beige suave con vetas amplias en tonos dorados, miel y ámbar. Sus trazos orgánicos y contrastados evocan una estética natural, otoñal y vibrante. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige cálido con vetas doradas y ámbar Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Natural",
+    "category": "12mm"
+  },
+  {
+    "id": "8pandora",
+    "name": "PANDORA",
+    "order": 8,
+    "folderName": "8PANDORA",
+    "thumbnailImage": "/products/8PANDORA/PANDORA.jpg",
+    "detailImages": [
+      "/products/8PANDORA/PANDORA RENDER.jpg",
+      "/products/8PANDORA/PANDORA.jpg"
+    ],
+    "renderImages": [
+      "/products/8PANDORA/PANDORA RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/8PANDORA/PANDORA.jpg"
+    ],
+    "description": "Inspirado en mármoles exóticos de gran dramatismo visual, combina un fondo blanco con grandes formaciones minerales en tonos grises, óxidos y dorados. Su composición irregular y de alto contraste genera un efecto artístico y altamente distintivo. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco con formaciones grises, óxido y doradas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido",
+    "category": "12mm"
+  },
+  {
+    "id": "9armani-deep-grey",
+    "name": "ARMANI DEEP GREY",
+    "order": 9,
+    "folderName": "9ARMANI DEEP GREY",
+    "thumbnailImage": "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY.jpg",
+    "detailImages": [
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER.jpg",
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY.jpg"
+    ],
+    "renderImages": [
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY.jpg"
+    ],
+    "description": "Con una estética urbana y contemporánea, presenta un fondo gris profundo atravesado por vetas blancas finas y diagonales que aportan un movimiento sutil. Su textura homogénea transmite sobriedad, elegancia y un carácter moderno. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Gris profundo con vetas blancas finas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "10carmen",
+    "name": "CARMEN",
+    "order": 10,
+    "folderName": "10CARMEN",
+    "thumbnailImage": "/products/10CARMEN/CARMEN.jpg",
+    "detailImages": [
+      "/products/10CARMEN/CARMEN RENDER.jpg",
+      "/products/10CARMEN/CARMEN.jpg"
+    ],
+    "renderImages": [
+      "/products/10CARMEN/CARMEN RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/10CARMEN/CARMEN.jpg"
+    ],
+    "description": "Inspirado en las piedras calizas europeas, presenta un fondo gris claro cálido con variaciones suaves y texturas orgánicas que recuerdan a formaciones minerales naturales. Su aspecto homogéneo y delicado transmite serenidad y equilibrio. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Gris claro cálido con texturas minerales suaves Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Natural",
+    "category": "12mm"
+  },
+  {
+    "id": "11bvlgari-black",
+    "name": "BVLGARI BLACK",
+    "order": 11,
+    "folderName": "11BVLGARI BLACK",
+    "thumbnailImage": "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
+    "detailImages": [
+      "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
+      "/products/11BVLGARI BLACK/BVLGARI BLACK RENDER.jpg",
+      "/products/11BVLGARI BLACK/BVLGARI BLACK.jpg"
+    ],
+    "renderImages": [
+      "/products/11BVLGARI BLACK/BVLGARI BLACK RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
+      "/products/11BVLGARI BLACK/BVLGARI BLACK.jpg"
+    ],
+    "description": "Inspirado en mármoles italianos de alto contraste, combina un fondo blanco puro con vetas negras intensas y definidas que recorren toda la superficie. Su diseño de veta pasante aporta dramatismo, profundidad y una estética sofisticada y contemporánea. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco con vetas negras marcadas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Satin (Veta Pasante).",
+    "category": "20mm"
+  },
+  {
+    "id": "12fendi-white",
+    "name": "FENDI WHITE",
+    "order": 12,
+    "folderName": "12FENDI WHITE",
+    "thumbnailImage": "/products/12FENDI WHITE/FENDI WHITE.jpg",
+    "detailImages": [
+      "/products/12FENDI WHITE/FENDI WHITE RENDER.jpg",
+      "/products/12FENDI WHITE/FENDI WHITE.jpg"
+    ],
+    "renderImages": [
+      "/products/12FENDI WHITE/FENDI WHITE RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/12FENDI WHITE/FENDI WHITE.jpg"
+    ],
+    "description": "Inspirado en mármoles exóticos de movimiento fluido, presenta un fondo blanco cálido con vetas amplias en tonos grises suaves y acentos oscuros que generan profundidad. Sus detalles sutiles en tonos marfil y ligeros matices verdosos aportan un carácter único y refinado. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco cálido con vetas grises, oscuras y matices suaves Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido 13-New Tal Majal De apariencia similar a cuarcitas claras y refinadas, presenta un fondo blanco cálido con un entramado suave de nubes minerales y vetas finas en tonos beige y gris muy sutiles. Su textura aporta profundidad y un movimiento delicado, manteniendo una estética luminosa y serena. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco cálido con vetas suaves beige y grises Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido",
+    "category": "12mm"
+  },
+  {
+    "id": "13new-taj-majal",
+    "name": "NEW TAJ MAJAL",
+    "order": 13,
+    "folderName": "13NEW TAJ MAJAL",
+    "thumbnailImage": "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL.jpg",
+    "detailImages": [
+      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL render.png",
+      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL.jpg"
+    ],
+    "renderImages": [
+      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL render.png"
+    ],
+    "nonRenderImages": [
+      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL.jpg"
+    ],
+    "description": "",
+    "category": null
+  },
+  {
+    "id": "14chanel",
+    "name": "CHANEL",
+    "order": 14,
+    "folderName": "14CHANEL",
+    "thumbnailImage": "/products/14CHANEL/CHANEL.jpg",
+    "detailImages": [
+      "/products/14CHANEL/CHANEL RENDER 2.png",
+      "/products/14CHANEL/CHANEL.jpg"
+    ],
+    "renderImages": [
+      "/products/14CHANEL/CHANEL RENDER 2.png"
+    ],
+    "nonRenderImages": [
+      "/products/14CHANEL/CHANEL.jpg"
+    ],
+    "description": "Una piedra de estética sofisticada y gran impacto visual, con fondo blanco luminoso y vetas grises suaves que se mezclan con formaciones minerales en tonos piedra y arena. Su movimiento orgánico y sus contrastes delicados le dan profundidad, carácter y una presencia elegante. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco con vetas grises y formaciones minerales en tonos cálidos Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido",
+    "category": "12mm"
+  },
+  {
+    "id": "15portland",
+    "name": "Portland",
+    "order": 15,
+    "folderName": "15Portland",
+    "thumbnailImage": "/products/15Portland/Portland.jpg",
+    "detailImages": [
+      "/products/15Portland/PORTLAND RENDER.png",
+      "/products/15Portland/Portland.jpg"
+    ],
+    "renderImages": [
+      "/products/15Portland/PORTLAND RENDER.png"
+    ],
+    "nonRenderImages": [
+      "/products/15Portland/Portland.jpg"
+    ],
+    "description": "Una piedra de tono beige claro y textura homogénea, con un suave granulado mineral que aporta profundidad sin generar contrastes marcados. Su apariencia cálida y natural transmite equilibrio, serenidad y una estética atemporal. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige claro uniforme con microtextura mineral Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Natural",
+    "category": "12mm"
+  },
+  {
+    "id": "16royal-grey",
+    "name": "ROYAL GREY",
+    "order": 16,
+    "folderName": "16ROYAL GREY",
+    "thumbnailImage": "/products/16ROYAL GREY/ROYAL GREY.jpg",
+    "detailImages": [
+      "/products/16ROYAL GREY/ROYAL GREY RENDER.jpg",
+      "/products/16ROYAL GREY/ROYAL GREY.jpg"
+    ],
+    "renderImages": [
+      "/products/16ROYAL GREY/ROYAL GREY RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/16ROYAL GREY/ROYAL GREY.jpg"
+    ],
+    "description": "Una piedra de carácter sobrio y contemporáneo, con un fondo gris medio de aspecto mineral y vetas blancas finas que atraviesan la superficie en diagonales suaves. Su textura equilibrada aporta profundidad y un movimiento sutil, manteniendo una estética elegante y uniforme. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Gris medio con vetas blancas finas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "17yellow-travertine",
+    "name": "Yellow Travertine",
+    "order": 17,
+    "folderName": "17Yellow Travertine",
+    "thumbnailImage": "/products/17Yellow Travertine/Yellow Travertine.jpg",
+    "detailImages": [
+      "/products/17Yellow Travertine/Yellow Travertine RENDER.jpg",
+      "/products/17Yellow Travertine/Yellow Travertine.jpg"
+    ],
+    "renderImages": [
+      "/products/17Yellow Travertine/Yellow Travertine RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/17Yellow Travertine/Yellow Travertine.jpg"
+    ],
+    "description": "Una piedra cálida y natural, con un fondo crema amarillento y vetas lineales verticales que reproducen el movimiento característico del travertino. Su textura suave y orgánica aporta profundidad sutil y una presencia serena y atemporal. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Crema amarillento con vetas lineales naturales Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "12mm"
+  },
+  {
+    "id": "18white-travertine",
+    "name": "WHITE TRAVERTINE",
+    "order": 18,
+    "folderName": "18WHITE TRAVERTINE",
+    "thumbnailImage": "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg",
+    "detailImages": [
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER 2.jpg",
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png",
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg"
+    ],
+    "renderImages": [
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER 2.jpg",
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png"
+    ],
+    "nonRenderImages": [
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg"
+    ],
+    "description": "Una piedra de estética limpia y natural, con fondo blanco grisáceo y vetas lineales verticales que aportan profundidad y continuidad. Su textura mineral suave reproduce el movimiento característico del travertino, logrando un diseño sereno y atemporal. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco grisáceo con vetas lineales sutiles Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Natural",
+    "category": "12mm"
+  },
+  {
+    "id": "19nero-portoro",
+    "name": "Nero Portoro",
+    "order": 19,
+    "folderName": "19Nero Portoro",
+    "thumbnailImage": "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
+    "detailImages": [
+      "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
+      "/products/19Nero Portoro/Nero Portoro Render.jpg",
+      "/products/19Nero Portoro/Nero Portoro.jpg"
+    ],
+    "renderImages": [
+      "/products/19Nero Portoro/Nero Portoro Render.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
+      "/products/19Nero Portoro/Nero Portoro.jpg"
+    ],
+    "description": "Inspirado en el exclusivo mármol italiano Portoro, presenta un fondo negro intenso atravesado por vetas doradas y ámbar que se extienden de forma continua por toda la superficie. Su diseño de alto contraste y veta pasante aporta una estética lujosa, dramática y distintiva. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Negro profundo con vetas doradas y ámbar pasantes Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate (Veta Pasante)",
+    "category": "20mm"
+  },
+  {
+    "id": "20laurent",
+    "name": "Laurent",
+    "order": 20,
+    "folderName": "20Laurent",
+    "thumbnailImage": "/products/20Laurent/Laurent full body.jpg",
+    "detailImages": [
+      "/products/20Laurent/Laurent Render 2.jpg",
+      "/products/20Laurent/Laurent full body.jpg",
+      "/products/20Laurent/Laurent.jpg"
+    ],
+    "renderImages": [
+      "/products/20Laurent/Laurent Render 2.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/20Laurent/Laurent full body.jpg",
+      "/products/20Laurent/Laurent.jpg"
+    ],
+    "description": "Inspirado en el mármol belga Port Laurent, presenta un fondo negro intenso atravesado por vetas doradas finas y ramificadas que recorren toda la superficie. Su diseño de alto contraste y veta pasante aporta una estética lujosa, dramática y contemporánea. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Negro profundo con vetas doradas finas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate (Veta Pasante)",
+    "category": "20mm"
+  },
+  {
+    "id": "21pure-white",
+    "name": "PURE WHITE",
+    "order": 21,
+    "folderName": "21PURE WHITE",
+    "thumbnailImage": "/products/21PURE WHITE/PURE WHITE.png",
+    "detailImages": [
+      "/products/21PURE WHITE/PURE WHITE render.png",
+      "/products/21PURE WHITE/PURE WHITE.png"
+    ],
+    "renderImages": [
+      "/products/21PURE WHITE/PURE WHITE render.png"
+    ],
+    "nonRenderImages": [
+      "/products/21PURE WHITE/PURE WHITE.png"
+    ],
+    "description": "Diseño inspirado en superficies minimalistas y ultralimpias, presenta un blanco puro y uniforme sin vetas ni variaciones. Su estética absoluta y neutra aporta una sensación de amplitud, luminosidad y modernidad total. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco puro uniforme Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido y Satin",
+    "category": "20mm"
+  },
+  {
+    "id": "22louiskin",
+    "name": "LOUISKIN",
+    "order": 22,
+    "folderName": "22LOUISKIN",
+    "thumbnailImage": "/products/22LOUISKIN/LOUISKIN.jpg",
+    "detailImages": [
+      "/products/22LOUISKIN/LOUISKIN RENDER.jpg",
+      "/products/22LOUISKIN/LOUISKIN.jpg"
+    ],
+    "renderImages": [
+      "/products/22LOUISKIN/LOUISKIN RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/22LOUISKIN/LOUISKIN.jpg"
+    ],
+    "description": "Inspirado en los mármoles italianos de veta larga, presenta un fondo blanco puro atravesado por vetas grises suaves y acentos dorados delicados. Un diseño luminoso, elegante y atemporal. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco veteado con tonos grises y detalles dorados Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido / Satinado (Veta Pasante)",
+    "category": "20mm"
+  },
+  {
+    "id": "23pure-black",
+    "name": "PURE BLACK",
+    "order": 23,
+    "folderName": "23PURE BLACK",
+    "thumbnailImage": "/products/23PURE BLACK/PURE BLACK.png",
+    "detailImages": [
+      "/products/23PURE BLACK/PURE BLACK.png",
+      "/products/23PURE BLACK/Pure Black Render.png"
+    ],
+    "renderImages": [
+      "/products/23PURE BLACK/Pure Black Render.png"
+    ],
+    "nonRenderImages": [
+      "/products/23PURE BLACK/PURE BLACK.png"
+    ],
+    "description": "Diseño minimalista y absoluto, presenta un negro profundo y completamente uniforme, sin vetas ni variaciones. Su estética sólida y elegante genera un impacto visual moderno, sobrio y sofisticado. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Negro puro uniforme Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate",
+    "category": "20mm"
+  },
+  {
+    "id": "24nata",
+    "name": "NATA",
+    "order": 24,
+    "folderName": "24NATA",
+    "thumbnailImage": "/products/24NATA/NATA.jpg",
+    "detailImages": [
+      "/products/24NATA/NATA RENDER.jpg",
+      "/products/24NATA/NATA.jpg"
+    ],
+    "renderImages": [
+      "/products/24NATA/NATA RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/24NATA/NATA.jpg"
+    ],
+    "description": "Una piedra de presencia única y artística, donde el blanco se combina con grandes corrientes minerales en tonos azul verdoso y acentos cálidos que le aportan profundidad. Sus vetas amplias y orgánicas generan un movimiento expresivo, con un carácter sofisticado y distintivo. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco con vetas azul verdosas y detalles cálidos Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido",
+    "category": "12mm"
+  }
+]

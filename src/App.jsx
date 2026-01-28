@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import ProductGallery from './components/pages/ProductGallery';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -43,20 +44,32 @@ const useRevealOnScroll = () => {
   }, []);
 };
 
-const Header = () => (
-  <header className="site-header">
-    <div className="header-inner">
-      <div className="brand">Novastone</div>
-      <nav className="nav-links">
-        <a href="#productos">Productos</a>
-        <a href="#colecciones">Colecciones</a>
-        <a href="#aplicaciones">Aplicaciones</a>
-        <a href="#inspiracion">Inspiracion</a>
-        <a href="#contacto" className="nav-cta">Contactar</a>
-      </nav>
-    </div>
-  </header>
-);
+const Header = () => {
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    window.location.hash = '';
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <header className="site-header">
+      <div className="header-inner">
+        <div className="brand">
+          <a href="#" onClick={handleHomeClick}>
+            Novastone
+          </a>
+        </div>
+        <nav className="nav-links">
+          <a href="#productos">Productos</a>
+          <a href="#colecciones">Colecciones</a>
+          <a href="#aplicaciones">Aplicaciones</a>
+          <a href="#inspiracion">Inspiracion</a>
+          <a href="#contacto" className="nav-cta">Contactar</a>
+        </nav>
+      </div>
+    </header>
+  );
+};
 
 const HeroSection = () => {
   const [active, setActive] = useState(0);
@@ -180,8 +193,10 @@ const ProductModal = ({ product, onClose }) => {
   );
 };
 
-const StonesSection = ({ products }) => {
-  const [active, setActive] = useState(null);
+const StonesSection = () => {
+  const handleCategoryClick = (category) => {
+    window.location.hash = `#productos?filter=${category}`;
+  };
 
   return (
     <section className="stones" id="productos">
@@ -189,27 +204,32 @@ const StonesSection = ({ products }) => {
         <p className="section-label">Piedras</p>
         <h2>Explora la galeria de superficies Novastone.</h2>
       </div>
-      <div className="stones-grid" data-reveal>
-        {products.map((product) => (
-          <button
-            key={product.id}
-            className="stone-card"
-            type="button"
-            onClick={() => setActive(product)}
-          >
-            <div className="stone-image">
-              <img src={product.images?.[0]} alt={product.name} />
+      <div className="category-tiles" data-reveal>
+        <button
+          className="category-tile"
+          type="button"
+          onClick={() => handleCategoryClick('12mm')}
+        >
+          <div className="category-tile-image">
+            <div className="category-tile-overlay">
+              <h3>12mm</h3>
+              <p>Explorar productos</p>
             </div>
-            <div className="stone-meta">
-              <h3>{product.name}</h3>
-              <p>{product.series}</p>
+          </div>
+        </button>
+        <button
+          className="category-tile"
+          type="button"
+          onClick={() => handleCategoryClick('20mm')}
+        >
+          <div className="category-tile-image">
+            <div className="category-tile-overlay">
+              <h3>20mm</h3>
+              <p>Explorar productos</p>
             </div>
-          </button>
-        ))}
+          </div>
+        </button>
       </div>
-      {active && (
-        <ProductModal product={active} onClose={() => setActive(null)} />
-      )}
     </section>
   );
 };
@@ -372,12 +392,33 @@ const AdminPanel = ({ products, setProducts }) => {
 function App() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
+  const [currentRoute, setCurrentRoute] = useState('home');
+  
   const isAdminRoute = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return (
       window.location.pathname.startsWith('/admin') ||
       window.location.hash === '#admin'
     );
+  }, []);
+
+  // Handle hash-based routing
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#productos')) {
+        setCurrentRoute('productos');
+      } else {
+        setCurrentRoute('home');
+      }
+    };
+
+    // Check initial hash
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   useRevealOnScroll();
@@ -420,6 +461,21 @@ function App() {
     );
   }
 
+  // Render product gallery page
+  if (currentRoute === 'productos') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <ProductGallery />
+        </main>
+        <Footer />
+        <Analytics />
+      </div>
+    );
+  }
+
+  // Render homepage
   return (
     <div className="App">
       <Header />
@@ -432,7 +488,7 @@ function App() {
             {error}
           </section>
         ) : (
-          <StonesSection products={products} />
+          <StonesSection />
         )}
         <InspirationSection />
       </main>

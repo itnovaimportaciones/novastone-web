@@ -44,8 +44,8 @@ const Header = () => {
       });
     } else {
       gsap.to('.nav-backdrop', {
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        backdropFilter: 'blur(5px)',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        backdropFilter: 'blur(0px)',
         duration: 0.3,
       });
     }
@@ -61,14 +61,14 @@ const Header = () => {
   }, [isMobileMenuOpen]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 nav-backdrop bg-black/40 backdrop-blur-md transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-50 nav-backdrop bg-transparent transition-all duration-300">
       <nav className="container-max section-padding">
-        <div className="flex items-center justify-between py-4">
-          <div className="text-2xl font-bold text-white">
+        <div className="flex items-center justify-between md:justify-center py-4 gap-6">
+          <div className="text-2xl font-bold text-white md:mr-6">
             TECNOFIT
           </div>
           
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex flex-1 justify-center space-x-8">
             {navItems.map((item) => (
               <a
                 key={item.label}
