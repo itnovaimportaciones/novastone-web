@@ -421,6 +421,12 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Toggle body background for productos route (avoid sand borders around black page)
+  useEffect(() => {
+    document.body.classList.toggle('productos-route', currentRoute === 'productos');
+    return () => document.body.classList.remove('productos-route');
+  }, [currentRoute]);
+
   useRevealOnScroll();
 
   useEffect(() => {

@@ -104,12 +104,14 @@ const ProductGallery = () => {
               ) : (
                 <div className="product-gallery-placeholder">Sin imagen</div>
               )}
-            </div>
-            <div className="product-gallery-meta">
-              <h3>{product.name}</h3>
-              {product.category && (
-                <span className="product-category-badge">{product.category}</span>
-              )}
+              <div className="product-gallery-hover">
+                <div className="product-gallery-hover-inner">
+                  <h3>{product.name}</h3>
+                  {product.category && (
+                    <span className="product-category-badge">{product.category}</span>
+                  )}
+                </div>
+              </div>
             </div>
           </button>
         ))}
