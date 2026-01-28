@@ -22,7 +22,7 @@ const loadProducts = async () => {
   return data.products || [];
 };
 
-const useRevealOnScroll = () => {
+const useRevealOnScroll = (deps = []) => {
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll('[data-reveal]'));
     if (elements.length === 0) return undefined;
@@ -41,7 +41,7 @@ const useRevealOnScroll = () => {
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, deps);
 };
 
 const Header = () => {
@@ -427,7 +427,7 @@ function App() {
     return () => document.body.classList.remove('productos-route');
   }, [currentRoute]);
 
-  useRevealOnScroll();
+  useRevealOnScroll([currentRoute]);
 
   useEffect(() => {
     const header = document.querySelector('.site-header');
