@@ -118,14 +118,12 @@
     "name": "AUTUMN MAPLE",
     "order": 7,
     "folderName": "7AUTUMN MAPLE",
-    "thumbnailImage": "/products/7AUTUMN MAPLE/AUTUMN MAPLE 2.jpg",
+    "thumbnailImage": "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg",
     "detailImages": [
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE 2.jpg",
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
     ],
     "renderImages": [],
     "nonRenderImages": [
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE 2.jpg",
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
     ],
     "description": "Inspirado en mármoles mediterráneos cálidos, combina un fondo beige suave con vetas amplias en tonos dorados, miel y ámbar. Sus trazos orgánicos y contrastados evocan una estética natural, otoñal y vibrante. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige cálido con vetas doradas y ámbar Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Natural",
@@ -193,17 +191,16 @@
     "name": "BVLGARI BLACK",
     "order": 11,
     "folderName": "11BVLGARI BLACK",
-    "thumbnailImage": "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
+    "thumbnailImage": "/products/11BVLGARI BLACK/BVLGARI BLACK.jpg",
     "detailImages": [
-      "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
       "/products/11BVLGARI BLACK/BVLGARI BLACK RENDER.jpg",
+      "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
       "/products/11BVLGARI BLACK/BVLGARI BLACK.jpg"
     ],
     "renderImages": [
       "/products/11BVLGARI BLACK/BVLGARI BLACK RENDER.jpg"
     ],
     "nonRenderImages": [
-      "/products/11BVLGARI BLACK/BVLGARI BLACK FULL BODY.jpg",
       "/products/11BVLGARI BLACK/BVLGARI BLACK.jpg"
     ],
     "description": "Inspirado en mármoles italianos de alto contraste, combina un fondo blanco puro con vetas negras intensas y definidas que recorren toda la superficie. Su diseño de veta pasante aporta dramatismo, profundidad y una estética sofisticada y contemporánea. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco con vetas negras marcadas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Satin (Veta Pasante).",
@@ -330,12 +327,10 @@
     "folderName": "18WHITE TRAVERTINE",
     "thumbnailImage": "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg",
     "detailImages": [
-      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER 2.jpg",
       "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png",
       "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg"
     ],
     "renderImages": [
-      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER 2.jpg",
       "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png"
     ],
     "nonRenderImages": [
@@ -349,17 +344,16 @@
     "name": "Nero Portoro",
     "order": 19,
     "folderName": "19Nero Portoro",
-    "thumbnailImage": "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
+    "thumbnailImage": "/products/19Nero Portoro/Nero Portoro.jpg",
     "detailImages": [
-      "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
       "/products/19Nero Portoro/Nero Portoro Render.jpg",
+      "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
       "/products/19Nero Portoro/Nero Portoro.jpg"
     ],
     "renderImages": [
       "/products/19Nero Portoro/Nero Portoro Render.jpg"
     ],
     "nonRenderImages": [
-      "/products/19Nero Portoro/Nero Portoro Full Body.jpg",
       "/products/19Nero Portoro/Nero Portoro.jpg"
     ],
     "description": "Inspirado en el exclusivo mármol italiano Portoro, presenta un fondo negro intenso atravesado por vetas doradas y ámbar que se extienden de forma continua por toda la superficie. Su diseño de alto contraste y veta pasante aporta una estética lujosa, dramática y distintiva. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Negro profundo con vetas doradas y ámbar pasantes Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate (Veta Pasante)",
@@ -370,7 +364,7 @@
     "name": "Laurent",
     "order": 20,
     "folderName": "20Laurent",
-    "thumbnailImage": "/products/20Laurent/Laurent full body.jpg",
+    "thumbnailImage": "/products/20Laurent/Laurent.jpg",
     "detailImages": [
       "/products/20Laurent/Laurent Render 2.jpg",
       "/products/20Laurent/Laurent full body.jpg",
@@ -380,7 +374,6 @@
       "/products/20Laurent/Laurent Render 2.jpg"
     ],
     "nonRenderImages": [
-      "/products/20Laurent/Laurent full body.jpg",
       "/products/20Laurent/Laurent.jpg"
     ],
     "description": "Inspirado en el mármol belga Port Laurent, presenta un fondo negro intenso atravesado por vetas doradas finas y ramificadas que recorren toda la superficie. Su diseño de alto contraste y veta pasante aporta una estética lujosa, dramática y contemporánea. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Negro profundo con vetas doradas finas Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate (Veta Pasante)",
@@ -431,8 +424,8 @@
     "folderName": "23PURE BLACK",
     "thumbnailImage": "/products/23PURE BLACK/PURE BLACK.png",
     "detailImages": [
-      "/products/23PURE BLACK/PURE BLACK.png",
-      "/products/23PURE BLACK/Pure Black Render.png"
+      "/products/23PURE BLACK/Pure Black Render.png",
+      "/products/23PURE BLACK/PURE BLACK.png"
     ],
     "renderImages": [
       "/products/23PURE BLACK/Pure Black Render.png"

@@ -1,16 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
+import CollectionsPage from './components/pages/CollectionsPage';
 import ProductGallery from './components/pages/ProductGallery';
+import InspirationCarousel from './components/pages/InspirationCarousel';
 import './App.css';
 
 const HERO_SLIDES = [
-  '/hero/hero-1.jpg',
-  '/hero/hero-2.jpg',
-  '/hero/hero-3.jpg'
+  '/hero/home_1.png',
+  '/hero/Home_2.png',
+  '/hero/Home_3.png',
+  '/hero/Home_4.png'
 ];
 
 const DEFAULT_PRODUCTS_URL = '/products.json';
 const LOCAL_PRODUCTS_KEY = 'novastone-products';
+const CONTACT_PHONE = '+54 9 11 2480-0421';
+const CONTACT_EMAIL = 'nova.grupoarg@gmail.com';
+const CONTACT_ADDRESS =
+  'Direccion - El Hornero, Bajada Km 55,5 colectora panamericana, Monseñor D´andrea Y, B1629 Pilar, Provincia de Buenos Aires';
+const WHATSAPP_MESSAGE = 'Hola, quiero conocer mas sobre Novastone.';
 
 const loadProducts = async () => {
   const res = await fetch(DEFAULT_PRODUCTS_URL, { cache: 'no-store' });
@@ -50,19 +58,32 @@ const Header = () => {
     window.location.hash = '';
     window.scrollTo(0, 0);
   };
+  const handleNavClick = (hash) => (e) => {
+    e.preventDefault();
+    window.location.hash = hash;
+    window.scrollTo(0, 0);
+  };
 
   return (
     <header className="site-header">
       <div className="header-inner">
         <div className="brand">
           <a href="#" onClick={handleHomeClick}>
-            Novastone
+            <img
+              className="brand-logo"
+              src="/LOGO%20SVG%20NOVASTONE.svg"
+              alt="Novastone"
+            />
           </a>
         </div>
         <nav className="nav-links">
-          <a href="#productos">Productos</a>
-          <a href="#colecciones">Colecciones</a>
-          <a href="#aplicaciones">Aplicaciones</a>
+          <a href="#novastone">Novastone</a>
+          <a href="#productos" onClick={handleNavClick('#productos')}>
+            Productos
+          </a>
+          <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
+            Colecciones
+          </a>
           <a href="#inspiracion">Inspiracion</a>
           <a href="#contacto" className="nav-cta">Contactar</a>
         </nav>
@@ -117,7 +138,7 @@ const HeroSection = () => {
 };
 
 const IntroSection = () => (
-  <section className="intro" id="colecciones">
+  <section className="intro" id="colecciones-home">
     <div className="intro-inner" data-reveal>
       <p>
         Colecciones seleccionadas para el mercado argentino, con tonos neutros,
@@ -128,7 +149,7 @@ const IntroSection = () => (
 );
 
 const SinteredSection = () => (
-  <section className="sintered" id="aplicaciones">
+  <section className="sintered" id="novastone">
     <div className="sintered-grid" data-reveal>
       <div>
         <p className="section-label">Piedra sinterizada</p>
@@ -146,10 +167,40 @@ const SinteredSection = () => (
         </p>
       </div>
     </div>
+    <div className="sintered-highlights" data-reveal>
+      <article>
+        <h3>Full Body</h3>
+        <p>
+          Diseno con vetas pasantes que se aprecian en todo el espesor del
+          cuerpo de la placa.
+        </p>
+      </article>
+      <article>
+        <h3>Espejada</h3>
+        <p>
+          La piedra sinterizada espejada es una variante con acabado pulido de
+          alto brillo que refleja la luz y logra un efecto elegante.
+        </p>
+      </article>
+      <article>
+        <h3>Acabado replica natural</h3>
+        <p>
+          Superficie que reproduce con fidelidad las vetas y texturas de la
+          piedra natural, con un acabado visual y tactil unico.
+        </p>
+      </article>
+      <article>
+        <h3>Acabado replica organica</h3>
+        <p>
+          Duplica el efecto del esmaltado con relieve, aportando mayor
+          profundidad, brillo y realismo en cada diseno.
+        </p>
+      </article>
+    </div>
   </section>
 );
 
-const ProductModal = ({ product, onClose }) => {
+const ProductModal = ({ product, products = [], onClose, onSelect }) => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -162,6 +213,19 @@ const ProductModal = ({ product, onClose }) => {
   if (!product) return null;
 
   const images = product.images || [];
+  const similarProducts = useMemo(() => {
+    const otherProducts = products.filter((item) => item.id !== product.id);
+    for (let i = otherProducts.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [otherProducts[i], otherProducts[j]] = [otherProducts[j], otherProducts[i]];
+    }
+    return otherProducts.slice(0, 4);
+  }, [products, product.id]);
+
+  useEffect(() => {
+    setIndex(0);
+  }, [product.id]);
+
   const handlePrev = () =>
     setIndex((prev) => (prev - 1 + images.length) % images.length);
   const handleNext = () => setIndex((prev) => (prev + 1) % images.length);
@@ -172,22 +236,46 @@ const ProductModal = ({ product, onClose }) => {
         <button className="modal-close" onClick={onClose} type="button">
           Cerrar
         </button>
-        <div className="modal-gallery">
-          <button type="button" onClick={handlePrev} className="modal-nav">
-            Prev
-          </button>
-          <div className="modal-image">
-            <img src={images[index]} alt={product.name} />
+        <div className="modal-section">
+          <p className="modal-section-title">Novastone en Espacios</p>
+          <div className="modal-gallery">
+            <button type="button" onClick={handlePrev} className="modal-nav">
+              Prev
+            </button>
+            <div className="modal-image">
+              <img src={images[index]} alt={product.name} />
+            </div>
+            <button type="button" onClick={handleNext} className="modal-nav">
+              Next
+            </button>
           </div>
-          <button type="button" onClick={handleNext} className="modal-nav">
-            Next
-          </button>
         </div>
         <div className="modal-meta">
           <h3>{product.name}</h3>
           <p>{product.series}</p>
           <span>{product.finish}</span>
         </div>
+        {similarProducts.length > 0 && (
+          <div className="modal-section">
+            <p className="modal-section-title">Productos similares</p>
+            <div className="modal-similar-grid">
+              {similarProducts.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="modal-similar-card"
+                  onClick={() => onSelect?.(item)}
+                >
+                  <img src={item.images?.[0]} alt={item.name} />
+                  <div>
+                    <span>{item.name}</span>
+                    <small>{item.series}</small>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -208,11 +296,14 @@ const StonesSection = () => {
         <button
           className="category-tile"
           type="button"
-          onClick={() => handleCategoryClick('12mm')}
+          onClick={() => handleCategoryClick('20mm')}
         >
-          <div className="category-tile-image">
+          <div 
+            className="category-tile-image"
+            style={{ backgroundImage: 'url(/category/20mm%20cat.png)' }}
+          >
             <div className="category-tile-overlay">
-              <h3>12mm</h3>
+              <h3>20mm</h3>
               <p>Explorar productos</p>
             </div>
           </div>
@@ -220,11 +311,14 @@ const StonesSection = () => {
         <button
           className="category-tile"
           type="button"
-          onClick={() => handleCategoryClick('20mm')}
+          onClick={() => handleCategoryClick('12mm')}
         >
-          <div className="category-tile-image">
+          <div 
+            className="category-tile-image"
+            style={{ backgroundImage: 'url(/category/12mm%20cat.JPG)' }}
+          >
             <div className="category-tile-overlay">
-              <h3>20mm</h3>
+              <h3>12mm</h3>
               <p>Explorar productos</p>
             </div>
           </div>
@@ -265,8 +359,29 @@ const Footer = () => (
         <h2>Visita nuestro showroom o solicita una cotizacion.</h2>
       </div>
       <div className="footer-actions">
-        <a href="mailto:info@novastone.com">info@novastone.com</a>
-        <span>Buenos Aires, Argentina</span>
+        <a href={`mailto:${CONTACT_EMAIL}`} className="contact-link">
+          <span className="contact-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M4 6h16v12H4z" />
+              <path d="M4 6l8 6 8-6" />
+            </svg>
+          </span>
+          {CONTACT_EMAIL}
+        </a>
+        <a
+          href={`https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span className="contact-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="currentColor">
+              <path d="M19.11 17.18c-.33-.17-1.96-.97-2.27-1.08-.31-.11-.54-.17-.77.17-.23.33-.88 1.08-1.08 1.3-.2.23-.4.26-.73.08-.33-.17-1.4-.52-2.66-1.65-.98-.88-1.64-1.97-1.83-2.3-.19-.33-.02-.5.15-.67.15-.15.33-.4.5-.6.17-.2.23-.33.35-.56.11-.23.06-.44-.03-.6-.09-.17-.77-1.86-1.06-2.55-.28-.67-.57-.58-.77-.59h-.66c-.23 0-.6.09-.92.44-.31.35-1.2 1.17-1.2 2.86s1.23 3.32 1.4 3.55c.17.23 2.43 3.72 5.89 5.21.82.35 1.46.56 1.96.72.82.26 1.57.22 2.17.13.66-.1 1.96-.8 2.24-1.57.28-.77.28-1.43.2-1.57-.09-.14-.31-.23-.64-.4zM16 3C8.83 3 3 8.83 3 16c0 2.3.6 4.55 1.74 6.54L3 29l6.63-1.7A12.94 12.94 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5a10.46 10.46 0 0 1-5.33-1.46l-.38-.22-3.93 1.01 1.05-3.83-.25-.39A10.48 10.48 0 1 1 26.5 16 10.5 10.5 0 0 1 16 26.5z" />
+            </svg>
+          </span>
+          {CONTACT_PHONE}
+        </a>
+        <span>{CONTACT_ADDRESS}</span>
         <button type="button">Solicitar cotizacion</button>
       </div>
     </div>
@@ -408,6 +523,10 @@ function App() {
       const hash = window.location.hash;
       if (hash.startsWith('#productos')) {
         setCurrentRoute('productos');
+      } else if (hash.startsWith('#colecciones')) {
+        setCurrentRoute('colecciones');
+      } else if (hash.startsWith('#inspiracion')) {
+        setCurrentRoute('inspiracion');
       } else {
         setCurrentRoute('home');
       }
@@ -481,6 +600,33 @@ function App() {
     );
   }
 
+  // Render inspiration carousel page
+  if (currentRoute === 'inspiracion') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <InspirationCarousel />
+        </main>
+        <Footer />
+        <Analytics />
+      </div>
+    );
+  }
+
+  if (currentRoute === 'colecciones') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <CollectionsPage />
+        </main>
+        <Footer />
+        <Analytics />
+      </div>
+    );
+  }
+
   // Render homepage
   return (
     <div className="App">
@@ -496,9 +642,19 @@ function App() {
         ) : (
           <StonesSection />
         )}
-        <InspirationSection />
       </main>
       <Footer />
+      <a
+        className="whatsapp-fab"
+        href={`https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Abrir WhatsApp"
+      >
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M19.11 17.18c-.33-.17-1.96-.97-2.27-1.08-.31-.11-.54-.17-.77.17-.23.33-.88 1.08-1.08 1.3-.2.23-.4.26-.73.08-.33-.17-1.4-.52-2.66-1.65-.98-.88-1.64-1.97-1.83-2.3-.19-.33-.02-.5.15-.67.15-.15.33-.4.5-.6.17-.2.23-.33.35-.56.11-.23.06-.44-.03-.6-.09-.17-.77-1.86-1.06-2.55-.28-.67-.57-.58-.77-.59h-.66c-.23 0-.6.09-.92.44-.31.35-1.2 1.17-1.2 2.86s1.23 3.32 1.4 3.55c.17.23 2.43 3.72 5.89 5.21.82.35 1.46.56 1.96.72.82.26 1.57.22 2.17.13.66-.1 1.96-.8 2.24-1.57.28-.77.28-1.43.2-1.57-.09-.14-.31-.23-.64-.4zM16 3C8.83 3 3 8.83 3 16c0 2.3.6 4.55 1.74 6.54L3 29l6.63-1.7A12.94 12.94 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5a10.46 10.46 0 0 1-5.33-1.46l-.38-.22-3.93 1.01 1.05-3.83-.25-.39A10.48 10.48 0 1 1 26.5 16 10.5 10.5 0 0 1 16 26.5z" />
+        </svg>
+      </a>
       <Analytics />
     </div>
   );

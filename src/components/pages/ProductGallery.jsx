@@ -1,21 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { loadProductData, filterProductsByCategory } from '../../utils/productParser';
+import { loadProductData, filterProductsByFilters } from '../../utils/productParser';
 import ProductSidecart from '../ProductSidecart';
 
 const ProductGallery = () => {
   const [products, setProducts] = useState([]);
-  const [filter, setFilter] = useState('all');
+  const [collectionFilter, setCollectionFilter] = useState('all');
+  const [filters, setFilters] = useState({
+    color: 'all',
+    thickness: 'all',
+    finish: 'all',
+    application: 'all'
+  });
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isSidecartOpen, setIsSidecartOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Parse filter from URL hash
-    const hash = window.location.hash;
-    const match = hash.match(/[?&]filter=([^&]+)/);
-    const urlFilter = match ? match[1] : 'all';
-    setFilter(urlFilter);
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      const match = hash.match(/[?&]filter=([^&]+)/);
+      const urlFilter = match ? match[1] : 'all';
+      setCollectionFilter(urlFilter);
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  useEffect(() => {
+    if ((collectionFilter === '12mm' || collectionFilter === '20mm') && filters.thickness === 'all') {
+      setFilters((prev) => ({ ...prev, thickness: collectionFilter }));
+    }
+  }, [collectionFilter, filters.thickness]);
 
   useEffect(() => {
     // Load products
@@ -31,14 +48,20 @@ const ProductGallery = () => {
   }, []);
 
   useEffect(() => {
-    // Update URL when filter changes
-    const newHash = filter === 'all' ? '#productos' : `#productos?filter=${filter}`;
+    // Update URL when collection filter changes
+    const newHash =
+      collectionFilter === 'all'
+        ? '#productos'
+        : `#productos?filter=${collectionFilter}`;
     if (window.location.hash !== newHash) {
       window.location.hash = newHash;
     }
-  }, [filter]);
+  }, [collectionFilter]);
 
-  const filteredProducts = filterProductsByCategory(products, filter);
+  const filteredProducts = filterProductsByFilters(products, {
+    ...filters,
+    collection: collectionFilter
+  });
 
   const handleProductClick = (product) => {
     setSelectedProduct(product);
@@ -63,24 +86,72 @@ const ProductGallery = () => {
       <div className="product-gallery-header">
         <h1>Galería de Superficies</h1>
         <div className="product-gallery-filters">
-          <button
-            className={`filter-button ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => setFilter('all')}
-          >
-            Todos
-          </button>
-          <button
-            className={`filter-button ${filter === '12mm' ? 'active' : ''}`}
-            onClick={() => setFilter('12mm')}
-          >
-            12mm
-          </button>
-          <button
-            className={`filter-button ${filter === '20mm' ? 'active' : ''}`}
-            onClick={() => setFilter('20mm')}
-          >
-            20mm
-          </button>
+          <div className="filter-group">
+            <span>Color</span>
+            <select
+              className="filter-select"
+              value={filters.color}
+              onChange={(event) =>
+                setFilters((prev) => ({ ...prev, color: event.target.value }))
+              }
+            >
+              {['all', 'Blancos', 'Grises', 'Negros', 'Tierra', 'Colores'].map(
+                (value) => (
+                  <option key={value} value={value}>
+                    {value === 'all' ? 'Todos' : value}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+          <div className="filter-group">
+            <span>Espesor</span>
+            <select
+              className="filter-select"
+              value={filters.thickness}
+              onChange={(event) =>
+                setFilters((prev) => ({ ...prev, thickness: event.target.value }))
+              }
+            >
+              {['all', '12mm', '20mm'].map((value) => (
+                <option key={value} value={value}>
+                  {value === 'all' ? 'Todos' : value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-group">
+            <span>Acabado</span>
+            <select
+              className="filter-select"
+              value={filters.finish}
+              onChange={(event) =>
+                setFilters((prev) => ({ ...prev, finish: event.target.value }))
+              }
+            >
+              {['all', 'Pulido', 'Mate', 'Natural', 'Satinado'].map((value) => (
+                <option key={value} value={value}>
+                  {value === 'all' ? 'Todos' : value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-group">
+            <span>Aplicación</span>
+            <select
+              className="filter-select"
+              value={filters.application}
+              onChange={(event) =>
+                setFilters((prev) => ({ ...prev, application: event.target.value }))
+              }
+            >
+              {['all', 'Interior', 'Exterior', 'Mesadas', 'Pisos'].map((value) => (
+                <option key={value} value={value}>
+                  {value === 'all' ? 'Todos' : value}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -125,8 +196,10 @@ const ProductGallery = () => {
 
       <ProductSidecart
         product={selectedProduct}
+        products={products}
         isOpen={isSidecartOpen}
         onClose={handleCloseSidecart}
+        onSelect={handleProductClick}
       />
     </div>
   );
