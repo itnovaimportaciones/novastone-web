@@ -288,10 +288,6 @@ const StonesSection = () => {
 
   return (
     <section className="stones" id="productos">
-      <div className="section-heading" data-reveal>
-        <p className="section-label">Piedras</p>
-        <h2>Explora la galeria de superficies Novastone.</h2>
-      </div>
       <div className="category-tiles" data-reveal>
         <button
           className="category-tile"

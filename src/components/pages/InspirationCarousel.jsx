@@ -128,7 +128,9 @@ const InspirationCarousel = () => {
                     }}
                   />
                   <div className="carousel-slide-info">
-                    <p className="carousel-product-name">{image.productName}</p>
+                    <p className="carousel-product-name">
+                      {image.productName} &rarr;
+                    </p>
                   </div>
                 </button>
               </div>

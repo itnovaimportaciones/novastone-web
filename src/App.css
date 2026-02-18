@@ -331,15 +331,15 @@ main {
 }
 
 .stones {
-  background: #0b0b0b;
+  background: transparent;
   color: #f5f1ec;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  padding: 80px 24px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 0;
 }
 
 .stones .section-heading {
@@ -758,12 +758,13 @@ main {
 
 /* Category Tiles */
 .category-tiles {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  padding: 0 32px;
+  gap: 0;
+  padding: 0;
 }
 
 .category-tile {
@@ -773,7 +774,7 @@ main {
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 .category-tile:hover {
@@ -783,16 +784,16 @@ main {
 
 .category-tile-image {
   position: relative;
-  aspect-ratio: 16 / 10;
-  min-height: 500px;
+  height: 100vh;
+  min-height: 480px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(245, 241, 236, 0.2);
-  border-radius: 8px;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -1151,7 +1152,7 @@ main {
 
   .category-tiles {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 0;
   }
 
   .product-gallery-grid {
