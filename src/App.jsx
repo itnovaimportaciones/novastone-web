@@ -295,8 +295,8 @@ const StonesSection = () => {
           onClick={() => handleCategoryClick('20mm')}
         >
           <div 
-            className="category-tile-image"
-            style={{ backgroundImage: 'url(/category/20mm%20cat.png)' }}
+          className="category-tile-image"
+          style={{ backgroundImage: 'url(/4Home/20mm%20explorar%20productos.png)' }}
           >
             <div className="category-tile-overlay">
               <h3>20mm</h3>
@@ -310,8 +310,8 @@ const StonesSection = () => {
           onClick={() => handleCategoryClick('12mm')}
         >
           <div 
-            className="category-tile-image"
-            style={{ backgroundImage: 'url(/category/12mm%20cat.JPG)' }}
+          className="category-tile-image"
+          style={{ backgroundImage: 'url(/4Home/12mm%20explorar%20productos.png)' }}
           >
             <div className="category-tile-overlay">
               <h3>12mm</h3>
@@ -536,10 +536,16 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Toggle body background for productos route (avoid sand borders around black page)
+  // Toggle body background for productos/collections routes (avoid sand borders around black page)
   useEffect(() => {
     document.body.classList.toggle('productos-route', currentRoute === 'productos');
-    return () => document.body.classList.remove('productos-route');
+    document.body.classList.toggle('collections-route', currentRoute === 'colecciones');
+    document.body.classList.toggle('inspiration-route', currentRoute === 'inspiracion');
+    return () => {
+      document.body.classList.remove('productos-route');
+      document.body.classList.remove('collections-route');
+      document.body.classList.remove('inspiration-route');
+    };
   }, [currentRoute]);
 
   useRevealOnScroll([currentRoute]);

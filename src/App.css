@@ -11,6 +11,14 @@ body.productos-route .App {
   background: #0b0b0b;
 }
 
+body.collections-route {
+  background: #0b0b0b;
+}
+
+body.collections-route .App {
+  background: #0b0b0b;
+}
+
 .site-header {
   position: fixed;
   top: 0;
@@ -36,6 +44,7 @@ body.productos-route .App {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 24px;
 }
 
@@ -57,8 +66,16 @@ body.productos-route .App {
 
 .brand-logo {
   display: block;
-  height: 16px;
+  height: 20px;
   width: auto;
+}
+
+body.inspiration-route .brand-logo {
+  filter: none;
+}
+
+body.inspiration-route .site-header.is-scrolled .brand-logo {
+  filter: brightness(0.2);
 }
 
 .brand a:hover {
@@ -72,6 +89,7 @@ body.productos-route .App {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
+  white-space: nowrap;
 }
 
 .nav-links a {
@@ -223,15 +241,15 @@ main {
   width: 54px;
   height: 54px;
   border-radius: 999px;
-  background: #ffffff;
+  background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #0b0b0b;
+  color: #ffffff;
   text-decoration: none;
   box-shadow: none;
   z-index: 30;
-  border: 1px solid rgba(11, 11, 11, 0.2);
+  border: none;
 }
 
 .whatsapp-fab svg {
@@ -819,18 +837,19 @@ main {
 }
 
 .category-tile-overlay h3 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  margin: 0 0 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  margin: 0 0 10px;
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
   font-weight: 400;
 }
 
 .category-tile-overlay p {
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  opacity: 0.8;
+  letter-spacing: 0.28em;
+  opacity: 0.75;
   margin: 0;
 }
 
@@ -845,7 +864,7 @@ main {
   min-height: 100vh;
   background: #0b0b0b;
   padding-top: 100px;
-  padding-bottom: 80px;
+  padding-bottom: 0;
 }
 
 .collections-header {
@@ -873,12 +892,13 @@ main {
 }
 
 .collections-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0;
 }
 
 .collections-card {
@@ -892,9 +912,11 @@ main {
 
 .collections-image {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 70vh;
+  min-height: 420px;
   overflow: hidden;
   background: rgba(245, 241, 236, 0.06);
+  position: relative;
 }
 
 .collections-image img {
@@ -904,8 +926,20 @@ main {
   display: block;
 }
 
+.collections-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.45) 100%);
+  z-index: 0;
+}
+
 .collections-meta {
-  padding-top: 16px;
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  z-index: 1;
+  text-align: left;
 }
 
 .collections-meta h3 {
@@ -914,7 +948,8 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 400;
-  font-size: 18px;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-family: 'Cormorant Garamond', serif;
 }
 
 .collections-meta span {
@@ -1162,6 +1197,11 @@ main {
 
   .product-gallery-header {
     padding: 24px 16px;
+  }
+
+  .collections-image {
+    height: 50vh;
+    min-height: 320px;
   }
 
   .product-gallery-filters {

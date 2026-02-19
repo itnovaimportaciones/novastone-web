@@ -4,31 +4,31 @@ const COLLECTIONS = [
   {
     id: '20mm',
     title: '20mm',
-    image: '/products/16ROYAL GREY/ROYAL GREY.jpg',
+    image: '/collections/Collection%2020mm.png',
     filter: '20mm'
   },
   {
     id: '12mm',
     title: '12mm',
-    image: '/products/21PURE WHITE/PURE WHITE.png',
+    image: '/collections/Collection%2012mm.png',
     filter: '12mm'
   },
   {
     id: 'full-body',
     title: 'Full Body',
-    image: '/products/19Nero Portoro/Nero Portoro Full Body.jpg',
+    image: '/collections/Collection%20Full%20Body.png',
     filter: 'full-body'
   },
   {
     id: 'espejada',
     title: 'Espejada',
-    image: '/products/11BVLGARI BLACK/BVLGARI BLACK RENDER.jpg',
+    image: '/collections/Collection%20Espejada.png',
     filter: 'espejada'
   },
   {
     id: 'luxury',
     title: 'Luxury',
-    image: '/products/20Laurent/Laurent Render 2.jpg',
+    image: '/collections/Collection%20Luxury.png',
     filter: 'luxury'
   }
 ];
@@ -51,10 +51,10 @@ const CollectionsPage = () => (
         >
           <div className="collections-image">
             <img src={collection.image} alt={collection.title} />
-          </div>
-          <div className="collections-meta">
-            <h3>{collection.title}</h3>
-            <span>Ver productos</span>
+            <div className="collections-meta">
+              <h3>{collection.title}</h3>
+              <span>Ver productos</span>
+            </div>
           </div>
         </button>
       ))}
