@@ -236,26 +236,37 @@ main {
 
 .whatsapp-fab {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
-  width: 54px;
-  height: 54px;
+  right: 20px;
+  bottom: 20px;
+  width: 56px;
+  height: 56px;
   border-radius: 999px;
-  background: transparent;
+  background: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #000000;
   text-decoration: none;
-  box-shadow: none;
-  z-index: 30;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  z-index: 9999;
   border: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .whatsapp-fab svg {
   width: 26px;
   height: 26px;
   fill: currentColor;
+}
+
+.whatsapp-fab:hover {
+  transform: scale(1.04);
+  opacity: 0.92;
+}
+
+.whatsapp-fab:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 3px;
 }
 
 .intro {
@@ -1197,6 +1208,13 @@ main {
 
   .product-gallery-header {
     padding: 24px 16px;
+  }
+
+  .whatsapp-fab {
+    right: 16px;
+    bottom: 16px;
+    width: 50px;
+    height: 50px;
   }
 
   .collections-image {

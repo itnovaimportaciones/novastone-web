@@ -8,6 +8,8 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const sidecartRef = useRef(null);
   const backdropRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const touchDeltaXRef = useRef(0);
 
   // GSAP Animation
   useEffect(() => {
@@ -61,10 +63,31 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
   const detailImages = safeProduct.detailImages || [];
   const nonRenderImages = safeProduct.nonRenderImages || [];
   const renderImages = safeProduct.renderImages || [];
-  const fullBodyImages = detailImages.filter((image) => /full body/i.test(image));
-  const galleryImages = [...renderImages, ...fullBodyImages].filter(Boolean);
-  const fallbackImages = nonRenderImages.length > 0 ? nonRenderImages : detailImages;
-  const carouselImages = galleryImages.length > 0 ? galleryImages : fallbackImages;
+  const normalizeKey = (value = '') =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
+      .replace(/\s+/g, ' ');
+  const getStem = (imagePath = '') => {
+    const filename = decodeURIComponent(imagePath.split('/').pop() || '');
+    return filename.replace(/\.[^.]+$/, '');
+  };
+  const findImage = (images = [], keys = []) =>
+    images.find((image) => keys.includes(normalizeKey(getStem(image))));
+
+  const baseKey = normalizeKey(safeProduct.name || '');
+  const textureImage =
+    findImage(detailImages, [baseKey]) || nonRenderImages[0] || detailImages[0];
+  const renderImage =
+    findImage(detailImages, [`${baseKey} render`]) || renderImages[0];
+  const fullBodyImage = findImage(detailImages, [
+    `${baseKey} full body`,
+    `${baseKey} fullbody`
+  ]);
+
+  const galleryImages = (renderImages || []).filter(Boolean);
+  const carouselImages = [textureImage, renderImage, fullBodyImage].filter(Boolean);
   const totalImages = carouselImages.length;
   const mainImage = totalImages > 0
     ? carouselImages[currentImageIndex % totalImages]
@@ -94,6 +117,32 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
     if (totalImages > 0) {
       setCurrentImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
     }
+  };
+
+  const handleTouchStart = (event) => {
+    touchStartXRef.current = event.touches?.[0]?.clientX ?? null;
+    touchDeltaXRef.current = 0;
+  };
+
+  const handleTouchMove = (event) => {
+    if (touchStartXRef.current == null) return;
+    const currentX = event.touches?.[0]?.clientX ?? touchStartXRef.current;
+    touchDeltaXRef.current = currentX - touchStartXRef.current;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartXRef.current == null) return;
+    const deltaX = touchDeltaXRef.current;
+    const swipeThreshold = 40;
+    if (Math.abs(deltaX) >= swipeThreshold) {
+      if (deltaX < 0) {
+        handleNextImage();
+      } else {
+        handlePrevImage();
+      }
+    }
+    touchStartXRef.current = null;
+    touchDeltaXRef.current = 0;
   };
 
   const whatsAppMessage = `Hola, quiero consultar disponibilidad de ${safeProduct.name || ''}.`;
@@ -141,7 +190,13 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
           {/* Main Image */}
           {totalImages > 0 && (
             <div className="relative bg-gray-100">
-              <div className="relative aspect-[4/3] overflow-hidden">
+              <div
+                className="relative aspect-[4/3] overflow-hidden"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+              >
                 <img
                   src={mainImage}
                   alt={product.name}
