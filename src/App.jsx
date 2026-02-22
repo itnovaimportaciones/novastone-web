@@ -53,16 +53,30 @@ const useRevealOnScroll = (deps = []) => {
 };
 
 const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleHomeClick = (e) => {
     e.preventDefault();
     window.location.hash = '';
     window.scrollTo(0, 0);
+    setIsMobileMenuOpen(false);
   };
   const handleNavClick = (hash) => (e) => {
     e.preventDefault();
     window.location.hash = hash;
     window.scrollTo(0, 0);
+    setIsMobileMenuOpen(false);
   };
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <header className="site-header">
@@ -87,6 +101,49 @@ const Header = () => {
           <a href="#inspiracion">Inspiracion</a>
           <a href="#contacto" className="nav-cta">Contactar</a>
         </nav>
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label="Abrir menu"
+          onClick={() => setIsMobileMenuOpen(true)}
+        >
+          &#9776;
+        </button>
+      </div>
+      <div className={`mobile-drawer ${isMobileMenuOpen ? 'is-open' : ''}`}>
+        <button
+          type="button"
+          className="mobile-drawer-backdrop"
+          aria-label="Cerrar menu"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            className="mobile-drawer-close"
+            aria-label="Cerrar menu"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            &#10005;
+          </button>
+          <nav className="mobile-drawer-links">
+            <a href="#novastone" onClick={handleNavClick('#novastone')}>
+              Novastone
+            </a>
+            <a href="#productos" onClick={handleNavClick('#productos')}>
+              Productos
+            </a>
+            <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
+              Colecciones
+            </a>
+            <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
+              Inspiracion
+            </a>
+            <a href="#contacto" onClick={handleNavClick('#contacto')}>
+              Contactar
+            </a>
+          </nav>
+        </div>
       </div>
     </header>
   );
