@@ -7,7 +7,7 @@ const COLLECTIONS = [
     image: '/collections/Collection%2020mm.png',
     filter: '20mm',
     description:
-      'Disponible en espesores 12mm y 20mm, con opciones Full Body, Espejada y Luxury.'
+      'Mayor espesor pensado para aplicaciones de alta exigencia, aportando solidez, presencia y durabilidad.'
   },
   {
     id: '12mm',
@@ -15,7 +15,7 @@ const COLLECTIONS = [
     image: '/collections/Collection%2012mm.png',
     filter: '12mm',
     description:
-      'Superficie que reproduce con fidelidad las vetas y texturas de la piedra natural, con un acabado visual y tactil unico.'
+      'Espesor versatil ideal para revestimientos, mobiliario y aplicaciones donde se busca ligereza y resistencia.'
   },
   {
     id: 'full-body',
@@ -23,7 +23,7 @@ const COLLECTIONS = [
     image: '/collections/Collection%20Full%20Body.png',
     filter: 'full-body',
     description:
-      'Diseno con vetas pasantes que se aprecian en todo el espesor del cuerpo de la placa.'
+      'Vetas pasantes en todo el espesor de la placa, como en la piedra natural.'
   },
   {
     id: 'espejada',
@@ -31,7 +31,7 @@ const COLLECTIONS = [
     image: '/collections/Collection%20Espejada.png',
     filter: 'espejada',
     description:
-      'La piedra sinterizada espejada es una variante con acabado pulido de alto brillo que refleja la luz y logra un efecto elegante.'
+      'Superficie con acabado Natural u Organico que reproduce el relieve de las vetas naturales, logrando un efecto visual y tactil unico.'
   },
   {
     id: 'luxury',
@@ -39,7 +39,7 @@ const COLLECTIONS = [
     image: '/collections/Collection%20Luxury.png',
     filter: 'luxury',
     description:
-      'Duplica el efecto del esmaltado con relieve, aportando mayor profundidad, brillo y realismo en cada diseno.'
+      'Superficies de estetica exclusiva con disenos refinados y acabados sofisticados de alto impacto visual.'
   }
 ];
 
