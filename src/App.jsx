@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import CollectionsPage from './components/pages/CollectionsPage';
 import ProductGallery from './components/pages/ProductGallery';
 import InspirationCarousel from './components/pages/InspirationCarousel';
+import HowToBuyPage from './components/pages/HowToBuyPage';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -99,6 +100,9 @@ const Header = () => {
             Colecciones
           </a>
           <a href="#inspiracion">Inspiracion</a>
+          <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
+            ¿Cómo Comprar?
+          </a>
           <a href="#contacto" className="nav-cta">Contactar</a>
         </nav>
         <button
@@ -138,6 +142,9 @@ const Header = () => {
             </a>
             <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
               Inspiracion
+            </a>
+            <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
+              ¿Cómo Comprar?
             </a>
             <a href="#contacto" onClick={handleNavClick('#contacto')}>
               Contactar
@@ -594,6 +601,8 @@ function App() {
         setCurrentRoute('colecciones');
       } else if (hash.startsWith('#inspiracion')) {
         setCurrentRoute('inspiracion');
+      } else if (hash.startsWith('#como-comprar')) {
+        setCurrentRoute('como-comprar');
       } else {
         setCurrentRoute('home');
       }
@@ -682,6 +691,20 @@ function App() {
         <Header />
         <main>
           <InspirationCarousel />
+        </main>
+        <Footer />
+        <WhatsAppFab />
+        <Analytics />
+      </div>
+    );
+  }
+
+  if (currentRoute === 'como-comprar') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <HowToBuyPage />
         </main>
         <Footer />
         <WhatsAppFab />

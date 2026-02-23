@@ -98,8 +98,32 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   opacity: 0.7;
 }
 
+.nav-links a:not(.nav-cta) {
+  position: relative;
+}
+
+.nav-links a:not(.nav-cta)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: opacity 0.28s ease-out, transform 0.28s ease-out;
+}
+
 .nav-links a:hover {
   opacity: 1;
+}
+
+.nav-links a:not(.nav-cta):hover::after,
+.nav-links a:not(.nav-cta):focus-visible::after {
+  opacity: 0.8;
+  transform: scaleX(1);
 }
 
 .nav-cta {
@@ -203,6 +227,177 @@ main {
   flex-direction: column;
   gap: 120px;
   padding: 0 24px;
+}
+
+.howto-page {
+  background: #0b0b0b;
+  color: #f5f1ec;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: 120px 24px 120px;
+}
+
+.howto-hero {
+  max-width: 1100px;
+  margin: 0 auto 72px;
+  text-align: center;
+}
+
+.howto-hero-title {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 400;
+  animation: howto-fade-up 0.32s ease-out both;
+}
+
+.howto-hero-subtitle {
+  margin: 0 auto;
+  max-width: 720px;
+  color: rgba(245, 241, 236, 0.75);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 13px;
+  line-height: 1.8;
+  animation: howto-fade-up 0.32s ease-out both;
+  animation-delay: 0.1s;
+}
+
+.howto-cards {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.howto-card {
+  border: 1px solid rgba(245, 241, 236, 0.12);
+  background: rgba(15, 13, 10, 0.6);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: transform 0.3s ease-out, border-color 0.3s ease-out, box-shadow 0.3s ease-out, background 0.3s ease-out;
+}
+
+.howto-card h2 {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+
+.howto-card p {
+  margin: 0;
+  color: rgba(245, 241, 236, 0.75);
+  line-height: 1.7;
+}
+
+.howto-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(32, 30, 28, 0.75);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+}
+
+.howto-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 241, 236, 0.5);
+  color: #f5f1ec;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  background: transparent;
+  transition: transform 0.24s ease-out, border-color 0.24s ease-out, background 0.24s ease-out;
+}
+
+.howto-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 241, 236, 0.9);
+  background: rgba(245, 241, 236, 0.08);
+}
+
+.howto-button-outline {
+  background: transparent;
+}
+
+.howto-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.howto-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.howto-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+}
+
+.howto-form input,
+.howto-form select {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(245, 241, 236, 0.2);
+  color: #f5f1ec;
+  padding: 10px 12px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.howto-form input:focus-visible,
+.howto-form select:focus-visible {
+  outline: 2px solid rgba(245, 241, 236, 0.6);
+  outline-offset: 2px;
+}
+
+.howto-success {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+@keyframes howto-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .howto-hero-title,
+  .howto-hero-subtitle,
+  .howto-card,
+  .howto-button {
+    animation: none;
+    transition: opacity 0.2s ease-out;
+    transform: none;
+  }
+
+  .howto-card:hover {
+    transform: none;
+  }
 }
 
 .hero {
@@ -1349,6 +1544,18 @@ main {
   .collections-image {
     height: 50vh;
     min-height: 320px;
+  }
+
+  .howto-page {
+    padding: 100px 20px 100px;
+  }
+
+  .howto-card {
+    transform: none;
+  }
+
+  .howto-card:active {
+    transform: scale(0.98);
   }
 
   .product-gallery-filters {
