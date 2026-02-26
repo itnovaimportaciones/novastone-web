@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "build:products": "node scripts/build-products-flat.mjs",
     "generate-products": "node scripts/generateProducts.js",
     "copy-images": "node scripts/copyProductImages.js",
     "setup-products": "npm run copy-images && npm run generate-products",

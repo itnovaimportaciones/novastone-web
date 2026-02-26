@@ -4,6 +4,7 @@ import CollectionsPage from './components/pages/CollectionsPage';
 import ProductGallery from './components/pages/ProductGallery';
 import InspirationCarousel from './components/pages/InspirationCarousel';
 import HowToBuyPage from './components/pages/HowToBuyPage';
+import AsociadosPage from './components/pages/AsociadosPage';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -603,6 +604,8 @@ function App() {
         setCurrentRoute('inspiracion');
       } else if (hash.startsWith('#como-comprar')) {
         setCurrentRoute('como-comprar');
+      } else if (hash.startsWith('#asociados')) {
+        setCurrentRoute('asociados');
       } else {
         setCurrentRoute('home');
       }
@@ -705,6 +708,20 @@ function App() {
         <Header />
         <main>
           <HowToBuyPage />
+        </main>
+        <Footer />
+        <WhatsAppFab />
+        <Analytics />
+      </div>
+    );
+  }
+
+  if (currentRoute === 'asociados') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <AsociadosPage />
         </main>
         <Footer />
         <WhatsAppFab />
