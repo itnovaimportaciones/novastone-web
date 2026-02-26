@@ -526,9 +526,9 @@ const AsociadosPage = () => {
         )
       );
       const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData?.session?.access_token || '';
+      const session = sessionData?.session || null;
       const payload = {
-        email: sessionData?.session?.user?.email || authEmail,
+        email: session?.user?.email || authEmail,
         model: item.model,
         thickness: item.thickness,
         expires_at: data.expires_at,
@@ -537,22 +537,22 @@ const AsociadosPage = () => {
       };
       console.log('EMAIL PAYLOAD', payload);
       console.log('ABOUT TO INVOKE', payload);
+      console.log('SESSION DEBUG:', session);
+      console.log('ACCESS TOKEN:', session?.access_token);
       try {
-        const res = await supabase.functions.invoke(
+        const { data: emailData, error: emailError } = await supabase.functions.invoke(
           'send-reservation-email',
           {
             body: payload,
-            headers: accessToken
-              ? {
-                  Authorization: `Bearer ${accessToken}`
-                }
-              : undefined
+            headers: {
+              Authorization: `Bearer ${session?.access_token ?? ''}`
+            }
           }
         );
-        console.log('INVOKE RESULT', res);
-        if (res?.error) {
-          console.error(res.error);
-          setEmailWarning(res.error.message || String(res.error));
+        console.log('INVOKE RESULT:', { data: emailData, error: emailError });
+        if (emailError) {
+          console.error(emailError);
+          setEmailWarning(emailError.message || String(emailError));
         }
       } catch (e) {
         console.error('INVOKE THROW', e);
