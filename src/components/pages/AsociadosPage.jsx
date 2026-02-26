@@ -527,6 +527,7 @@ const AsociadosPage = () => {
       );
       const { data: sessionData } = await supabase.auth.getSession();
       const session = sessionData?.session || null;
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       const payload = {
         email: session?.user?.email || authEmail,
         model: item.model,
@@ -545,14 +546,15 @@ const AsociadosPage = () => {
           {
             body: payload,
             headers: {
-              Authorization: `Bearer ${session?.access_token ?? ''}`
+              Authorization: `Bearer ${session?.access_token ?? ''}`,
+              apikey: anonKey,
+              'Content-Type': 'application/json'
             }
           }
         );
         console.log('INVOKE RESULT:', { data: emailData, error: emailError });
         if (emailError) {
-          console.error(emailError);
-          setEmailWarning(emailError.message || String(emailError));
+          throw emailError;
         }
       } catch (e) {
         console.error('INVOKE THROW', e);
