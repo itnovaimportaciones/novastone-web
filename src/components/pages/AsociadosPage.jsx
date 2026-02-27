@@ -528,6 +528,7 @@ const AsociadosPage = () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const session = sessionData?.session || null;
       const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const internalEmailSecret = import.meta.env.VITE_INTERNAL_EMAIL_SECRET;
       const payload = {
         email: session?.user?.email || authEmail,
         model: item.model,
@@ -540,13 +541,17 @@ const AsociadosPage = () => {
       console.log('ABOUT TO INVOKE', payload);
       console.log('SESSION DEBUG:', session);
       console.log('ACCESS TOKEN:', session?.access_token);
+      if (!internalEmailSecret) {
+        setEmailWarning('Falta VITE_INTERNAL_EMAIL_SECRET en el frontend.');
+        return;
+      }
       try {
         const { data: emailData, error: emailError } = await supabase.functions.invoke(
           'send-reservation-email',
           {
             body: payload,
             headers: {
-              Authorization: `Bearer ${session?.access_token ?? ''}`,
+              'x-internal-secret': internalEmailSecret,
               apikey: anonKey,
               'Content-Type': 'application/json'
             }
@@ -571,8 +576,13 @@ const AsociadosPage = () => {
     }
     const anon = import.meta.env.VITE_SUPABASE_ANON_KEY;
     const functionsBaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const internalEmailSecret = import.meta.env.VITE_INTERNAL_EMAIL_SECRET;
     if (!anon || !functionsBaseUrl) {
       setEmailWarning('Faltan variables de entorno de Supabase para test mail.');
+      return;
+    }
+    if (!internalEmailSecret) {
+      setEmailWarning('Falta VITE_INTERNAL_EMAIL_SECRET en el frontend.');
       return;
     }
     console.log('TEST SECRET CHECK', {
@@ -614,7 +624,7 @@ const AsociadosPage = () => {
       const res = await fetch(`${functionsBaseUrl}/functions/v1/send-reservation-email`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${anon}`,
+          'x-internal-secret': internalEmailSecret,
           apikey: anon,
           'Content-Type': 'application/json'
         },
