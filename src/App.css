@@ -2010,12 +2010,15 @@ main {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 0;
+  border: 1px solid rgba(18, 22, 30, 0.18);
+  background: #12161d;
+  box-shadow: 0 18px 40px rgba(8, 9, 12, 0.22);
 }
 
 .carousel-slides {
   display: flex;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -2103,30 +2106,32 @@ main {
 .carousel-dots {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-top: 40px;
+  gap: 10px;
+  margin-top: 34px;
   flex-wrap: wrap;
 }
 
 .carousel-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+  width: 24px;
+  height: 3px;
+  border-radius: 0;
   border: none;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(18, 22, 30, 0.28);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: width 0.28s ease-out, background 0.28s ease-out, opacity 0.28s ease-out;
   padding: 0;
+  opacity: 0.55;
 }
 
 .carousel-dot:hover {
-  background: rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+  background: rgba(18, 22, 30, 0.5);
 }
 
 .carousel-dot.active {
-  background: var(--color-ink);
-  width: 32px;
-  border-radius: 6px;
+  background: rgba(18, 22, 30, 0.95);
+  width: 62px;
+  opacity: 1;
 }
 
 .carousel-counter {
@@ -2174,11 +2179,11 @@ main {
   }
 
   .carousel-dot {
-    width: 10px;
-    height: 10px;
+    width: 18px;
+    height: 3px;
   }
 
   .carousel-dot.active {
-    width: 24px;
+    width: 40px;
   }
 }
