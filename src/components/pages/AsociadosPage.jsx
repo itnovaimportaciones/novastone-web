@@ -61,7 +61,47 @@ const AsociadosPage = () => {
   useEffect(() => {
     let isMounted = true;
 
+    const syncSessionFromMagicLinkHash = async () => {
+      const currentHash = window.location.hash || '';
+      let tokenFragment = '';
+
+      if (currentHash.startsWith('#access_token=')) {
+        tokenFragment = currentHash.slice(1);
+      } else {
+        const nestedTokenIndex = currentHash.indexOf('#access_token=');
+        if (nestedTokenIndex !== -1) {
+          tokenFragment = currentHash.slice(nestedTokenIndex + 1);
+        }
+      }
+
+      if (!tokenFragment) return;
+
+      const params = new URLSearchParams(tokenFragment);
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+
+      if (!accessToken || !refreshToken) {
+        window.history.replaceState({}, document.title, '/#asociados');
+        return;
+      }
+
+      const { error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+
+      if (error) {
+        console.error('Magic link session sync failed', error);
+      } else {
+        await supabase.auth.getUser();
+      }
+
+      window.history.replaceState({}, document.title, '/#asociados');
+    };
+
     const loadSession = async () => {
+      await syncSessionFromMagicLinkHash();
+
       if (isDevMode && localStorage.getItem(DEV_ADMIN_KEY) === 'true') {
         const devEmail = normalizeEmail(localStorage.getItem(DEV_ADMIN_EMAIL_KEY) || DEV_ADMIN_DEFAULT_EMAIL);
         if (!isMounted) return;
