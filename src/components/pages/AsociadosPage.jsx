@@ -343,7 +343,12 @@ const AsociadosPage = () => {
     setStatus('loading');
     setErrorMessage('');
     try {
-      const { error } = await supabase.auth.signInWithOtp({ email: targetEmail });
+      const { error } = await supabase.auth.signInWithOtp({
+        email: targetEmail,
+        options: {
+          emailRedirectTo: 'https://novastone.app/#asociados'
+        }
+      });
       if (error) {
         console.error(error);
         const rateLimitHit = String(error.message || '')
