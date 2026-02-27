@@ -24,6 +24,14 @@ serve(async (req) => {
     const FROM = Deno.env.get("RESERVATION_EMAIL_FROM") ?? Deno.env.get("RESEND_FROM") ?? "";
     const INTERNAL_EMAIL_SECRET = Deno.env.get("INTERNAL_EMAIL_SECRET") ?? "";
     const INTERNAL_BCC = "nova.grupoarg@gmail.com";
+    console.log("HEADERS:", {
+      origin: req.headers.get("origin"),
+      hasInternal: !!(req.headers.get("x-internal-secret") || req.headers.get("test_secret")),
+    });
+    console.log("ENV:", {
+      hasResend: !!Deno.env.get("RESEND_API_KEY"),
+      from: Deno.env.get("RESERVATION_EMAIL_FROM") || Deno.env.get("RESEND_FROM"),
+    });
 
     if (!RESEND_API_KEY) return json(500, { ok: false, error: "Missing RESEND_API_KEY env" });
     if (!FROM) return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM / RESEND_FROM env" });
@@ -95,6 +103,7 @@ serve(async (req) => {
       subject,
       html,
     };
+    console.log("PAYLOAD:", payload);
 
     // Resend API
     const resendResp = await fetch("https://api.resend.com/emails", {
