@@ -601,6 +601,8 @@ const AsociadosPage = () => {
   };
 
   const handleCancelReservation = async () => {
+    if (!activeReservation) return;
+
     try {
       setCancelling(true);
       setReservationError('');
@@ -942,14 +944,6 @@ const AsociadosPage = () => {
                         ? new Date(activeReservation.expires_at).toLocaleString('es-AR')
                         : '-'}
                     </p>
-                    <button
-                      type="button"
-                      className="asociados-button"
-                      onClick={handleCancelReservation}
-                      disabled={cancelling}
-                    >
-                      {cancelling ? 'Cancelando...' : 'Cancelar reserva'}
-                    </button>
                   </div>
                 )}
                 {reservationStatus === 'error' && (
@@ -973,14 +967,28 @@ const AsociadosPage = () => {
               </button>
             </div>
             {isAuthorized && (
-              <button
-                type="button"
-                className="asociados-button asociados-test-button"
-                onClick={handleSendTestEmail}
-                disabled={!isExpectedProject}
-              >
-                Enviar mail de prueba
-              </button>
+              <>
+                <button
+                  type="button"
+                  className="asociados-button asociados-test-button"
+                  onClick={handleSendTestEmail}
+                  disabled={!isExpectedProject}
+                >
+                  Enviar mail de prueba
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelReservation}
+                  disabled={!activeReservation || cancelling}
+                  className={`mt-3 w-full rounded-full border px-6 py-3 text-sm tracking-widest transition ${
+                    !activeReservation || cancelling
+                      ? 'opacity-40 cursor-not-allowed'
+                      : 'hover:opacity-90'
+                  }`}
+                >
+                  {cancelling ? 'CANCELANDO...' : 'CANCELAR RESERVA'}
+                </button>
+              </>
             )}
             {isAdmin && (
               <div className="asociados-admin-panel">
