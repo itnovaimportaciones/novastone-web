@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase, supabaseUrl } from '../../lib/supabaseClient';
 import { loadProductData } from '../../utils/productParser';
 import { extractTextureName } from '../../utils/extractTextureName';
@@ -32,6 +32,7 @@ const AsociadosPage = () => {
   const [activeReservation, setActiveReservation] = useState(null);
   const [reservationStatus, setReservationStatus] = useState('idle');
   const [reservationError, setReservationError] = useState('');
+  const [cancelling, setCancelling] = useState(false);
   const [emailWarning, setEmailWarning] = useState('');
   const [reloginNotice, setReloginNotice] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -294,63 +295,49 @@ const AsociadosPage = () => {
       .catch(() => setProducts([]));
   }, []);
 
+  const refetchInventory = useCallback(async () => {
+    setStockStatus('loading');
+    setStockError('');
+    await supabase.rpc('expire_reservations');
+    const { data, error } = await supabase
+      .from('slabs_inventory')
+      .select('id, model, thickness, stock, created_at')
+      .order('model', { ascending: true });
+    if (error) {
+      console.error(error);
+      setStockError(error.message || 'No pudimos cargar el stock.');
+      setStockStatus('error');
+      return;
+    }
+    setStockItems(data || []);
+    setStockStatus('ready');
+  }, []);
+
+  const refreshSessionAndReservation = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('slab_reservations')
+      .select('id, model, thickness, product_code, expires_at, status')
+      .eq('status', 'active')
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) {
+      console.error(error);
+      return;
+    }
+    setActiveReservation(data || null);
+  }, []);
+
   useEffect(() => {
     if (!hasSession || !isAuthorized || !isExpectedProject) return;
-    let isMounted = true;
-
-    const loadStock = async () => {
-      setStockStatus('loading');
-      setStockError('');
-      await supabase.rpc('expire_reservations');
-      const { data, error } = await supabase
-        .from('slabs_inventory')
-        .select('id, model, thickness, stock, created_at')
-        .order('model', { ascending: true });
-      if (!isMounted) return;
-      if (error) {
-        console.error(error);
-        setStockError(error.message || 'No pudimos cargar el stock.');
-        setStockStatus('error');
-        return;
-      }
-      setStockItems(data || []);
-      setStockStatus('ready');
-    };
-
-    loadStock();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [hasSession, isAuthorized, isExpectedProject]);
+    refetchInventory();
+  }, [hasSession, isAuthorized, isExpectedProject, refetchInventory]);
 
   useEffect(() => {
     if (!hasSession || !isAuthorized || !isExpectedProject) return;
-    let isMounted = true;
-
-    const loadActiveReservation = async () => {
-      const { data, error } = await supabase
-        .from('slab_reservations')
-        .select('id, model, thickness, product_code, expires_at, status')
-        .eq('status', 'active')
-        .gt('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (!isMounted) return;
-      if (error) {
-        console.error(error);
-        return;
-      }
-      setActiveReservation(data || null);
-    };
-
-    loadActiveReservation();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [hasSession, isAuthorized, isExpectedProject]);
+    refreshSessionAndReservation();
+  }, [hasSession, isAuthorized, isExpectedProject, refreshSessionAndReservation]);
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="robots"]');
@@ -610,6 +597,26 @@ const AsociadosPage = () => {
         console.error('INVOKE THROW', e);
         setEmailWarning(e?.message || String(e));
       }
+    }
+  };
+
+  const handleCancelReservation = async () => {
+    try {
+      setCancelling(true);
+      setReservationError('');
+
+      const { data, error } = await supabase.rpc('cancel_my_reservations');
+      if (error) throw error;
+
+      await refreshSessionAndReservation();
+      await refetchInventory();
+
+      window.alert(`Reserva cancelada. Stock restockeado: ${data ?? 0}`);
+    } catch (error) {
+      console.error(error);
+      window.alert(`No se pudo cancelar la reserva: ${error?.message ?? error}`);
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -928,12 +935,22 @@ const AsociadosPage = () => {
                 <h1>Stock disponible</h1>
                 <p>Listado actualizado para marmolerias asociadas.</p>
                 {activeReservation && (
-                  <p className="asociados-login-note">
-                    Tu reserva activa: {activeReservation.model} hasta{' '}
-                    {activeReservation.expires_at
-                      ? new Date(activeReservation.expires_at).toLocaleString('es-AR')
-                      : '-'}
-                  </p>
+                  <div className="asociados-login-note">
+                    <p>
+                      Tu reserva activa: {activeReservation.model} hasta{' '}
+                      {activeReservation.expires_at
+                        ? new Date(activeReservation.expires_at).toLocaleString('es-AR')
+                        : '-'}
+                    </p>
+                    <button
+                      type="button"
+                      className="asociados-button"
+                      onClick={handleCancelReservation}
+                      disabled={cancelling}
+                    >
+                      {cancelling ? 'Cancelando...' : 'Cancelar reserva'}
+                    </button>
+                  </div>
                 )}
                 {reservationStatus === 'error' && (
                   <p className="asociados-login-note">{reservationError}</p>
