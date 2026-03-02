@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createRemoteJWKSet, jwtVerify } from "https://esm.sh/jose@5.2.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +8,12 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const supabaseUrl =
+  Deno.env.get("SUPABASE_URL") ?? "https://xlyddqkksdafjhnsznlv.supabase.co";
+const issuer = `${supabaseUrl}/auth/v1`;
+const jwksUrl = `${issuer}/.well-known/jwks.json`;
+const jwks = createRemoteJWKSet(new URL(jwksUrl));
+
 function json(status: number, body: Record<string, unknown>) {
   return new Response(JSON.stringify(body), {
     status,
@@ -14,53 +21,126 @@ function json(status: number, body: Record<string, unknown>) {
   });
 }
 
+async function verifySupabaseJwt(authHeader: string | null) {
+  if (!authHeader?.startsWith("Bearer ")) {
+    return {
+      ok: false as const,
+      response: json(401, { code: 401, message: "Missing Authorization" }),
+    };
+  }
+
+  const token = authHeader.slice("Bearer ".length).trim();
+
+  try {
+    const verified = await jwtVerify(token, jwks, {
+      issuer,
+      audience: "authenticated",
+    });
+    console.log("JWT VERIFIED", {
+      issuer,
+      jwksUrl,
+      aud: verified.payload.aud ?? null,
+      exp: verified.payload.exp ?? null,
+      email: verified.payload.email ?? null,
+    });
+    return { ok: true as const, payload: verified.payload };
+  } catch (audienceError) {
+    console.warn("JWT VERIFY audience failed", audienceError);
+    try {
+      const verified = await jwtVerify(token, jwks, { issuer });
+      console.log("JWT VERIFIED (without audience)", {
+        issuer,
+        jwksUrl,
+        aud: verified.payload.aud ?? null,
+        exp: verified.payload.exp ?? null,
+        email: verified.payload.email ?? null,
+      });
+      return { ok: true as const, payload: verified.payload };
+    } catch (error) {
+      console.error("JWT VERIFY ERROR", error);
+      return {
+        ok: false as const,
+        response: json(401, {
+          code: 401,
+          message: "Invalid JWT (manual verify)",
+        }),
+      };
+    }
+  }
+}
+
 serve(async (req) => {
   try {
-    if (req.method === "OPTIONS") return new Response("ok", { status: 200, headers: corsHeaders });
-    if (req.method !== "POST") return json(405, { ok: false, error: "Method not allowed" });
+    if (req.method === "OPTIONS") {
+      return new Response("ok", { status: 200, headers: corsHeaders });
+    }
+
+    if (req.method !== "POST") {
+      return json(405, { ok: false, error: "Method not allowed" });
+    }
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
     const FROM = Deno.env.get("RESERVATION_EMAIL_FROM") ?? Deno.env.get("RESEND_FROM") ?? "";
     const INTERNAL_BCC = "nova.grupoarg@gmail.com";
-    console.log("HEADERS:", {
+
+    console.log("HEADERS", {
       origin: req.headers.get("origin"),
       hasAuthorization: !!req.headers.get("authorization"),
+      issuer,
+      jwksUrl,
     });
-    console.log("ENV:", {
-      hasResend: !!Deno.env.get("RESEND_API_KEY"),
-      from: Deno.env.get("RESERVATION_EMAIL_FROM") || Deno.env.get("RESEND_FROM"),
+    console.log("ENV", {
+      hasResend: !!RESEND_API_KEY,
+      from: FROM,
     });
 
-    if (!RESEND_API_KEY) return json(500, { ok: false, error: "Missing RESEND_API_KEY env" });
-    if (!FROM) return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM / RESEND_FROM env" });
+    if (!RESEND_API_KEY) {
+      return json(500, { ok: false, error: "Missing RESEND_API_KEY env" });
+    }
 
-    const payload = await req.json().catch(() => ({}));
+    if (!FROM) {
+      return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM / RESEND_FROM env" });
+    }
+
+    const jwtResult = await verifySupabaseJwt(req.headers.get("authorization"));
+    if (!jwtResult.ok) {
+      return jwtResult.response;
+    }
+
+    const body = await req.json().catch(() => ({}));
     console.log("PAYLOAD", {
-      email: payload?.email ?? payload?.to ?? payload?.user_email ?? null,
-      reservation_id: payload?.reservation_id ?? null,
-      expires_at: payload?.expires_at ?? payload?.expiresAt ?? null,
-      model: payload?.model ?? payload?.displayName ?? payload?.product_name ?? null,
-      thickness: payload?.thickness ?? null,
-      product_code: payload?.product_code ?? payload?.code ?? null,
+      email: body?.email ?? body?.to ?? body?.user_email ?? null,
+      reservation_id: body?.reservation_id ?? null,
+      expires_at: body?.expires_at ?? body?.expiresAt ?? null,
+      model: body?.model ?? body?.displayName ?? body?.product_name ?? null,
+      thickness: body?.thickness ?? null,
+      product_code: body?.product_code ?? body?.code ?? null,
     });
 
-    const email = payload?.email ?? payload?.to ?? payload?.user_email ?? "";
-    const reservationId = payload?.reservation_id ?? "";
-    const expiresAt = payload?.expires_at ?? payload?.expiresAt ?? "";
-    const model = payload?.model ?? payload?.displayName ?? payload?.product_name ?? "Modelo sin nombre";
-    const thickness = payload?.thickness ?? "";
-    const productCode = payload?.product_code ?? payload?.code ?? "";
+    const email = body?.email ?? body?.to ?? body?.user_email ?? "";
+    const reservationId = body?.reservation_id ?? "";
+    const expiresAt = body?.expires_at ?? body?.expiresAt ?? "";
+    const model = body?.model ?? body?.displayName ?? body?.product_name ?? "Modelo sin nombre";
+    const thickness = body?.thickness ?? "";
+    const productCode = body?.product_code ?? body?.code ?? "";
+    const jwtEmail = String(jwtResult.payload.email ?? "");
 
     if (!email || !reservationId || !expiresAt) {
       return json(400, {
         ok: false,
         error: "missing required fields",
-        got: Object.keys(payload ?? {}),
+        got: Object.keys(body ?? {}),
+      });
+    }
+
+    if (jwtEmail && email && jwtEmail !== email) {
+      return json(401, {
+        ok: false,
+        error: "JWT email mismatch",
       });
     }
 
     const subject = `Reserva confirmada – ${model}${productCode ? ` (${productCode})` : ""}`;
-
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.4">
         <h2 style="margin:0 0 12px 0">Reserva confirmada</h2>
@@ -87,6 +167,7 @@ serve(async (req) => {
       subject,
       html,
     };
+
     console.log("RESEND PAYLOAD", {
       to: email,
       reservation_id: reservationId,
@@ -112,7 +193,8 @@ serve(async (req) => {
     }
 
     return json(200, { ok: true });
-  } catch (err) {
-    return json(500, { ok: false, error: String(err) });
+  } catch (error) {
+    console.error("FUNCTION ERROR", error);
+    return json(500, { ok: false, error: String(error) });
   }
 });
