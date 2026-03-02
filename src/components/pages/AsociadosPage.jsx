@@ -578,20 +578,42 @@ const AsociadosPage = () => {
     return token || null;
   }, []);
 
+  const decodeJwtPayload = useCallback((token) => {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const json = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }, []);
+
   const sendReservationEmail = useCallback(async (payload) => {
     const token = await getValidAccessToken();
     if (!token) {
       throw new Error('NO_ACCESS_TOKEN (cannot call send-reservation-email)');
     }
 
-    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-reservation-email`;
+    const cleanToken = token.trim().replace(/^"|"$/g, '');
+    const jwtPayload = decodeJwtPayload(cleanToken);
+    const url = `${supabaseUrl}/functions/v1/send-reservation-email`;
+
+    console.log('JWT iss:', jwtPayload?.iss);
+    console.log('FETCH url:', url);
+    console.log('VITE_SUPABASE_URL:', supabaseUrl);
+    console.log(
+      'VITE_SUPABASE_ANON_KEY prefix:',
+      (import.meta.env.VITE_SUPABASE_ANON_KEY || '').slice(0, 12)
+    );
+    console.log('token prefix:', cleanToken.slice(0, 16), 'len:', cleanToken.length);
 
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${cleanToken}`
       },
       body: JSON.stringify(payload)
     });
@@ -607,7 +629,7 @@ const AsociadosPage = () => {
     } catch {
       return { ok: true, raw: text };
     }
-  }, [getValidAccessToken]);
+  }, [decodeJwtPayload, getValidAccessToken]);
 
   const handleReserve = async (item) => {
     if (!isExpectedProject) {
