@@ -316,7 +316,20 @@ const AsociadosPage = () => {
   const refreshSessionAndReservation = useCallback(async () => {
     const { data, error } = await supabase
       .from('slab_reservations')
-      .select('id, model, thickness, product_code, expires_at, status')
+      .select(`
+        id,
+        inventory_id,
+        user_email,
+        reserved_at,
+        expires_at,
+        status,
+        slabs_inventory (
+          id,
+          model,
+          thickness,
+          product_code
+        )
+      `)
       .eq('status', 'active')
       .gt('expires_at', new Date().toISOString())
       .order('created_at', { ascending: false })
@@ -326,7 +339,16 @@ const AsociadosPage = () => {
       console.error(error);
       return;
     }
-    setActiveReservation(data || null);
+    setActiveReservation(
+      data
+        ? {
+            ...data,
+            model: data.slabs_inventory?.model || '',
+            thickness: data.slabs_inventory?.thickness || '',
+            product_code: data.slabs_inventory?.product_code || ''
+          }
+        : null
+    );
   }, []);
 
   useEffect(() => {
