@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-internal-secret, test_secret",
+    "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -21,11 +21,10 @@ serve(async (req) => {
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
     const FROM = Deno.env.get("RESERVATION_EMAIL_FROM") ?? Deno.env.get("RESEND_FROM") ?? "";
-    const INTERNAL_EMAIL_SECRET = Deno.env.get("INTERNAL_EMAIL_SECRET") ?? "";
     const INTERNAL_BCC = "nova.grupoarg@gmail.com";
     console.log("HEADERS:", {
       origin: req.headers.get("origin"),
-      hasInternal: !!(req.headers.get("x-internal-secret") || req.headers.get("test_secret")),
+      hasAuthorization: !!req.headers.get("authorization"),
     });
     console.log("ENV:", {
       hasResend: !!Deno.env.get("RESEND_API_KEY"),
@@ -34,11 +33,10 @@ serve(async (req) => {
 
     if (!RESEND_API_KEY) return json(500, { ok: false, error: "Missing RESEND_API_KEY env" });
     if (!FROM) return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM / RESEND_FROM env" });
-    if (!INTERNAL_EMAIL_SECRET) return json(500, { ok: false, error: "Missing INTERNAL_EMAIL_SECRET env" });
 
-    const internal = req.headers.get("x-internal-secret") || req.headers.get("test_secret") || "";
-    if (internal !== INTERNAL_EMAIL_SECRET) {
-      return json(401, { ok: false, error: "Unauthorized" });
+    const auth = req.headers.get("authorization") ?? "";
+    if (!auth.startsWith("Bearer ")) {
+      return json(401, { ok: false, error: "missing bearer token" });
     }
 
     const payload = await req.json().catch(() => ({}));

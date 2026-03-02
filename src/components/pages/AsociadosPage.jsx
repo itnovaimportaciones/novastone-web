@@ -596,7 +596,6 @@ const AsociadosPage = () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const session = sessionData?.session || null;
       const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      const internalEmailSecret = import.meta.env.VITE_INTERNAL_EMAIL_SECRET;
       const payload = {
         email: session?.user?.email || authEmail,
         model: item.model,
@@ -612,10 +611,8 @@ const AsociadosPage = () => {
       };
       console.log('EMAIL PAYLOAD', payload);
       console.log('ABOUT TO INVOKE', payload);
-      console.log('SESSION DEBUG:', session);
-      console.log('ACCESS TOKEN:', session?.access_token);
-      if (!internalEmailSecret) {
-        setEmailWarning('Falta VITE_INTERNAL_EMAIL_SECRET en el frontend.');
+      if (!session?.access_token) {
+        setEmailWarning('Falta sesion autenticada para enviar el mail de reserva.');
         return;
       }
       try {
@@ -625,7 +622,6 @@ const AsociadosPage = () => {
             body: payload,
             headers: {
               Authorization: `Bearer ${session?.access_token ?? ''}`,
-              'x-internal-secret': internalEmailSecret,
               apikey: anonKey,
               'Content-Type': 'application/json'
             }
@@ -677,20 +673,18 @@ const AsociadosPage = () => {
       setEmailWarning(envMismatchMessage);
       return;
     }
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData?.session?.access_token;
     const anon = import.meta.env.VITE_SUPABASE_ANON_KEY;
     const functionsBaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const internalEmailSecret = import.meta.env.VITE_INTERNAL_EMAIL_SECRET;
     if (!anon || !functionsBaseUrl) {
       setEmailWarning('Faltan variables de entorno de Supabase para test mail.');
       return;
     }
-    if (!internalEmailSecret) {
-      setEmailWarning('Falta VITE_INTERNAL_EMAIL_SECRET en el frontend.');
+    if (!token) {
+      setEmailWarning('Falta sesion autenticada para enviar el mail de prueba.');
       return;
     }
-    console.log('TEST SECRET CHECK', {
-      hasSecret: Boolean(import.meta.env.VITE_TEST_SECRET)
-    });
 
     const defaultInventoryId = (stockItems || []).find((row) => (row.stock || 0) > 0)?.id || '';
     const to = window.prompt('Email destino', authEmail || '')?.trim();
@@ -711,23 +705,15 @@ const AsociadosPage = () => {
       reservation_id: `TEST-${Date.now()}`,
       model: selectedItem?.model || 'TEST',
       thickness: selectedItem?.thickness || '',
-      product_code: selectedItem?.product_code || '',
-      test_secret: import.meta.env.VITE_TEST_SECRET
+      product_code: selectedItem?.product_code || ''
     };
-    if (!payloadTest.test_secret) {
-      setEmailWarning('Falta VITE_TEST_SECRET en el frontend.');
-      return;
-    }
-    console.log('TEST EMAIL PAYLOAD', {
-      ...payloadTest,
-      test_secret: payloadTest.test_secret ? '***' : ''
-    });
+    console.log('TEST EMAIL PAYLOAD', payloadTest);
 
     try {
       const res = await fetch(`${functionsBaseUrl}/functions/v1/send-reservation-email`, {
         method: 'POST',
         headers: {
-          'x-internal-secret': internalEmailSecret,
+          Authorization: `Bearer ${token}`,
           apikey: anon,
           'Content-Type': 'application/json'
         },
