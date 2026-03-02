@@ -563,6 +563,52 @@ const AsociadosPage = () => {
     currentTarget.src = '/placeholder.jpg';
   };
 
+  const getValidAccessToken = useCallback(async () => {
+    const { data: s1 } = await supabase.auth.getSession();
+    let token = s1?.session?.access_token;
+
+    if (!token) {
+      const { data: s2, error } = await supabase.auth.refreshSession();
+      token = s2?.session?.access_token;
+      if (error) {
+        console.warn('refreshSession error', error);
+      }
+    }
+
+    return token || null;
+  }, []);
+
+  const sendReservationEmail = useCallback(async (payload) => {
+    const token = await getValidAccessToken();
+    if (!token) {
+      throw new Error('NO_ACCESS_TOKEN (cannot call send-reservation-email)');
+    }
+
+    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-reservation-email`;
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+    if (!res.ok) {
+      console.error('send-reservation-email failed', res.status, text);
+      throw new Error(`send-reservation-email ${res.status}: ${text}`);
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { ok: true, raw: text };
+    }
+  }, [getValidAccessToken]);
+
   const handleReserve = async (item) => {
     if (!isExpectedProject) {
       setReservationStatus('error');
@@ -586,6 +632,7 @@ const AsociadosPage = () => {
     setReservationStatus('success');
     if (data) {
       setActiveReservation(data);
+      setHasActiveReservation(true);
       setStockItems((prev) =>
         prev.map((row) =>
           row.id === item.id
@@ -593,11 +640,8 @@ const AsociadosPage = () => {
             : row
         )
       );
-      const { data: sessionData } = await supabase.auth.getSession();
-      const session = sessionData?.session || null;
-      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       const payload = {
-        email: session?.user?.email || authEmail,
+        email: authEmail,
         model: item.model,
         thickness: item.thickness,
         expires_at: data.expires_at,
@@ -610,29 +654,11 @@ const AsociadosPage = () => {
         reservation_id: data?.reservation_id || data?.id
       };
       console.log('EMAIL PAYLOAD', payload);
-      console.log('ABOUT TO INVOKE', payload);
-      if (!session?.access_token) {
-        setEmailWarning('Falta sesion autenticada para enviar el mail de reserva.');
-        return;
-      }
       try {
-        const { data: emailData, error: emailError } = await supabase.functions.invoke(
-          'send-reservation-email',
-          {
-            body: payload,
-            headers: {
-              Authorization: `Bearer ${session?.access_token ?? ''}`,
-              apikey: anonKey,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-        console.log('INVOKE RESULT:', { data: emailData, error: emailError });
-        if (emailError) {
-          throw emailError;
-        }
+        const emailData = await sendReservationEmail(payload);
+        console.log('SEND EMAIL RESULT:', emailData);
       } catch (e) {
-        console.error('INVOKE THROW', e);
+        console.error('SEND EMAIL THROW', e);
         setEmailWarning(e?.message || String(e));
       }
     }
@@ -673,16 +699,8 @@ const AsociadosPage = () => {
       setEmailWarning(envMismatchMessage);
       return;
     }
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token = sessionData?.session?.access_token;
-    const anon = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    const functionsBaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    if (!anon || !functionsBaseUrl) {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       setEmailWarning('Faltan variables de entorno de Supabase para test mail.');
-      return;
-    }
-    if (!token) {
-      setEmailWarning('Falta sesion autenticada para enviar el mail de prueba.');
       return;
     }
 
@@ -710,22 +728,7 @@ const AsociadosPage = () => {
     console.log('TEST EMAIL PAYLOAD', payloadTest);
 
     try {
-      const res = await fetch(`${functionsBaseUrl}/functions/v1/send-reservation-email`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          apikey: anon,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payloadTest)
-      });
-      if (!res.ok) {
-        const bodyText = await res.text();
-        console.error('TEST EMAIL ERROR', res.status, bodyText);
-        setEmailWarning(`Error al enviar: status ${res.status} body ${bodyText}`);
-        return;
-      }
-      const data = await res.json();
+      const data = await sendReservationEmail(payloadTest);
       setEmailWarning(`Email enviado: ${JSON.stringify(data)}`);
     } catch (error) {
       console.error('TEST EMAIL THROW', error);

@@ -34,11 +34,6 @@ serve(async (req) => {
     if (!RESEND_API_KEY) return json(500, { ok: false, error: "Missing RESEND_API_KEY env" });
     if (!FROM) return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM / RESEND_FROM env" });
 
-    const auth = req.headers.get("authorization") ?? "";
-    if (!auth.startsWith("Bearer ")) {
-      return json(401, { ok: false, error: "missing bearer token" });
-    }
-
     const payload = await req.json().catch(() => ({}));
     console.log("PAYLOAD", {
       email: payload?.email ?? payload?.to ?? payload?.user_email ?? null,
