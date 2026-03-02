@@ -602,7 +602,12 @@ const AsociadosPage = () => {
         model: item.model,
         thickness: item.thickness,
         expires_at: data.expires_at,
-        product_code: item.product_code || data?.product_code,
+        product_code:
+          activeReservation?.product_code
+          ?? activeReservation?.slabs_inventory?.product_code
+          ?? item.product_code
+          ?? data?.product_code
+          ?? null,
         reservation_id: data?.reservation_id || data?.id
       };
       console.log('EMAIL PAYLOAD', payload);

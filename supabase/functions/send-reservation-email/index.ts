@@ -16,7 +16,6 @@ function json(status: number, body: Record<string, unknown>) {
 
 serve(async (req) => {
   try {
-    // CORS preflight
     if (req.method === "OPTIONS") return new Response("ok", { status: 200, headers: corsHeaders });
     if (req.method !== "POST") return json(405, { ok: false, error: "Method not allowed" });
 
@@ -42,41 +41,32 @@ serve(async (req) => {
       return json(401, { ok: false, error: "Unauthorized" });
     }
 
-    const body = await req.json().catch(() => ({}));
+    const payload = await req.json().catch(() => ({}));
+    console.log("PAYLOAD", {
+      email: payload?.email ?? payload?.to ?? payload?.user_email ?? null,
+      reservation_id: payload?.reservation_id ?? null,
+      expires_at: payload?.expires_at ?? payload?.expiresAt ?? null,
+      model: payload?.model ?? payload?.displayName ?? payload?.product_name ?? null,
+      thickness: payload?.thickness ?? null,
+      product_code: payload?.product_code ?? payload?.code ?? null,
+    });
 
-    // Soporta nombres de campos típicos (no dependemos de 1 formato)
-    const to =
-      body?.to ??
-      body?.user_email ??
-      body?.email ??
-      "";
+    const email = payload?.email ?? payload?.to ?? payload?.user_email ?? "";
+    const reservationId = payload?.reservation_id ?? "";
+    const expiresAt = payload?.expires_at ?? payload?.expiresAt ?? "";
+    const model = payload?.model ?? payload?.displayName ?? payload?.product_name ?? "Modelo sin nombre";
+    const thickness = payload?.thickness ?? "";
+    const productCode = payload?.product_code ?? payload?.code ?? "";
 
-    const model =
-      body?.model ??
-      body?.displayName ??
-      body?.product_name ??
-      "Superficie reservada";
-
-    const code =
-      body?.code ??
-      body?.product_code ??
-      "";
-
-    const thickness =
-      body?.thickness ??
-      "";
-
-    const expiresAt =
-      body?.expires_at ??
-      body?.expiresAt ??
-      "";
-
-    if (!to || typeof to !== "string") {
-      return json(400, { ok: false, error: "Missing recipient email (to/user_email/email)" });
+    if (!email || !reservationId || !expiresAt) {
+      return json(400, {
+        ok: false,
+        error: "missing required fields",
+        got: Object.keys(payload ?? {}),
+      });
     }
 
-    // ✅ ACÁ va tu “estructura de mail” (si ya la tenían, reemplazar este HTML por el que acordaron)
-    const subject = `Reserva confirmada – ${model}${code ? ` (${code})` : ""}`;
+    const subject = `Reserva confirmada – ${model}${productCode ? ` (${productCode})` : ""}`;
 
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.4">
@@ -86,7 +76,8 @@ serve(async (req) => {
         </p>
         <table style="border-collapse: collapse; width: 100%; max-width: 560px">
           <tr><td style="padding:6px 0; color:#666">Modelo</td><td style="padding:6px 0"><b>${model}</b></td></tr>
-          ${code ? `<tr><td style="padding:6px 0; color:#666">Código</td><td style="padding:6px 0"><b>${code}</b></td></tr>` : ""}
+          <tr><td style="padding:6px 0; color:#666">Reserva</td><td style="padding:6px 0"><b>${reservationId}</b></td></tr>
+          ${productCode ? `<tr><td style="padding:6px 0; color:#666">Código</td><td style="padding:6px 0"><b>${productCode}</b></td></tr>` : ""}
           ${thickness ? `<tr><td style="padding:6px 0; color:#666">Espesor</td><td style="padding:6px 0"><b>${thickness}</b></td></tr>` : ""}
           ${expiresAt ? `<tr><td style="padding:6px 0; color:#666">Vence</td><td style="padding:6px 0"><b>${expiresAt}</b></td></tr>` : ""}
         </table>
@@ -96,37 +87,38 @@ serve(async (req) => {
       </div>
     `.trim();
 
-    const payload = {
+    const resendPayload = {
       from: FROM,
-      to,                // cliente
-      bcc: INTERNAL_BCC, // ✅ siempre copia a NOVA
+      to: email,
+      bcc: INTERNAL_BCC,
       subject,
       html,
     };
-    console.log("PAYLOAD:", payload);
+    console.log("RESEND PAYLOAD", {
+      to: email,
+      reservation_id: reservationId,
+      model,
+      thickness,
+      product_code: productCode || null,
+    });
 
-    // Resend API
     const resendResp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(resendPayload),
     });
 
     const resendJson = await resendResp.json().catch(() => ({}));
 
     if (!resendResp.ok) {
-      return json(500, {
-        ok: false,
-        error: "Resend API error",
-        status: resendResp.status,
-        details: resendJson,
-      });
+      console.error("RESEND ERROR", resendJson);
+      return json(500, { ok: false, error: resendJson });
     }
 
-    return json(200, { ok: true, resend: resendJson });
+    return json(200, { ok: true });
   } catch (err) {
     return json(500, { ok: false, error: String(err) });
   }
