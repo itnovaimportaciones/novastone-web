@@ -30,6 +30,7 @@ const AsociadosPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedThickness, setSelectedThickness] = useState('all');
   const [activeReservation, setActiveReservation] = useState(null);
+  const [hasActiveReservation, setHasActiveReservation] = useState(false);
   const [reservationStatus, setReservationStatus] = useState('idle');
   const [reservationError, setReservationError] = useState('');
   const [cancelling, setCancelling] = useState(false);
@@ -49,6 +50,7 @@ const AsociadosPage = () => {
   const [magicLinkRemaining, setMagicLinkRemaining] = useState(0);
 
   const rawStockItems = stockItems;
+  const user = hasSession ? { email: authEmail } : null;
   const isDevMode = import.meta.env.DEV === true;
   const expectedProjectHost = 'xlyddqkksdafjhnsznlv.supabase.co';
   const isExpectedProject = useMemo(
@@ -313,7 +315,23 @@ const AsociadosPage = () => {
     setStockStatus('ready');
   }, []);
 
-  const refreshSessionAndReservation = useCallback(async () => {
+  const normalizeReservation = useCallback((reservation) => {
+    if (!reservation) return null;
+    return {
+      ...reservation,
+      model: reservation.slabs_inventory?.model || '',
+      thickness: reservation.slabs_inventory?.thickness || '',
+      product_code: reservation.slabs_inventory?.product_code || ''
+    };
+  }, []);
+
+  const fetchMyActiveReservation = useCallback(async () => {
+    if (!authEmail) {
+      setActiveReservation(null);
+      setHasActiveReservation(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('slab_reservations')
       .select(`
@@ -330,26 +348,22 @@ const AsociadosPage = () => {
           product_code
         )
       `)
+      .eq('user_email', authEmail)
       .eq('status', 'active')
       .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: false })
+      .order('reserved_at', { ascending: false })
       .limit(1)
       .maybeSingle();
     if (error) {
       console.error(error);
+      setActiveReservation(null);
+      setHasActiveReservation(false);
       return;
     }
-    setActiveReservation(
-      data
-        ? {
-            ...data,
-            model: data.slabs_inventory?.model || '',
-            thickness: data.slabs_inventory?.thickness || '',
-            product_code: data.slabs_inventory?.product_code || ''
-          }
-        : null
-    );
-  }, []);
+    const normalized = normalizeReservation(data);
+    setActiveReservation(normalized);
+    setHasActiveReservation(Boolean(normalized));
+  }, [authEmail, normalizeReservation]);
 
   useEffect(() => {
     if (!hasSession || !isAuthorized || !isExpectedProject) return;
@@ -358,8 +372,8 @@ const AsociadosPage = () => {
 
   useEffect(() => {
     if (!hasSession || !isAuthorized || !isExpectedProject) return;
-    refreshSessionAndReservation();
-  }, [hasSession, isAuthorized, isExpectedProject, refreshSessionAndReservation]);
+    fetchMyActiveReservation();
+  }, [hasSession, isAuthorized, isExpectedProject, fetchMyActiveReservation]);
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="robots"]');
@@ -623,7 +637,7 @@ const AsociadosPage = () => {
   };
 
   const handleCancelReservation = async () => {
-    if (!activeReservation) return;
+    if (!hasActiveReservation) return;
 
     try {
       setCancelling(true);
@@ -632,8 +646,13 @@ const AsociadosPage = () => {
       const { data, error } = await supabase.rpc('cancel_my_reservations');
       if (error) throw error;
 
-      await refreshSessionAndReservation();
+      await fetchMyActiveReservation();
       await refetchInventory();
+      if (!data) {
+        setHasActiveReservation(false);
+        setActiveReservation(null);
+      }
+      setReservationError('');
 
       window.alert(`Reserva cancelada. Stock restockeado: ${data ?? 0}`);
     } catch (error) {
@@ -643,6 +662,8 @@ const AsociadosPage = () => {
       setCancelling(false);
     }
   };
+
+  const canCancel = !!user && hasActiveReservation && !cancelling;
 
   const handleSendTestEmail = async () => {
     setEmailWarning('');
@@ -1001,11 +1022,11 @@ const AsociadosPage = () => {
                 <button
                   type="button"
                   onClick={handleCancelReservation}
-                  disabled={!activeReservation || cancelling}
-                  className={`mt-3 w-full rounded-full border px-6 py-3 text-sm tracking-widest transition ${
-                    !activeReservation || cancelling
-                      ? 'opacity-40 cursor-not-allowed'
-                      : 'hover:opacity-90'
+                  disabled={!canCancel}
+                  className={`mt-3 w-full rounded-full px-6 py-4 text-sm tracking-widest border transition ${
+                    !canCancel
+                      ? 'opacity-40 pointer-events-none'
+                      : 'opacity-100 hover:opacity-90'
                   }`}
                 >
                   {cancelling ? 'CANCELANDO...' : 'CANCELAR RESERVA'}
