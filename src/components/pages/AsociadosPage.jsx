@@ -619,6 +619,7 @@ const AsociadosPage = () => {
           {
             body: payload,
             headers: {
+              Authorization: `Bearer ${session?.access_token ?? ''}`,
               'x-internal-secret': internalEmailSecret,
               apikey: anonKey,
               'Content-Type': 'application/json'
