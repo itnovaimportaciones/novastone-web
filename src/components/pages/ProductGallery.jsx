@@ -178,15 +178,15 @@ const ProductGallery = () => {
               <div className="product-gallery-hover">
                 <div className="product-gallery-hover-inner">
                   <h3>{product.name}</h3>
-                  {product.category && (
-                    <span className="product-category-badge">{product.category}</span>
-                  )}
-                  {product.surfaceFinishes?.length > 0 && (
-                    <div className="product-surface-badges">
+                  {(product.category || product.surfaceFinishes?.length > 0) && (
+                    <div className="product-badges">
+                      {product.category && (
+                        <span className="product-badge">{product.category}</span>
+                      )}
                       {product.surfaceFinishes.map((finish) => (
                         <span
                           key={`${product.id}-${finish}`}
-                          className="product-category-badge product-surface-badge"
+                          className="product-badge"
                         >
                           {finish}
                         </span>
