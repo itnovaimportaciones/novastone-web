@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 
 const WHATSAPP_PHONE = '+54 9 11 2480-0421';
-const WHATSAPP_MESSAGE = 'Hola, quiero conocer mas sobre Novastone.';
+const WHATSAPP_MESSAGE = 'Hola, quiero conocer más sobre Novastone.';
 const CONTACT_EMAIL = 'nova.grupoarg@gmail.com';
 
 const HowToBuyPage = () => {
@@ -40,7 +40,7 @@ const HowToBuyPage = () => {
         `Empresa: ${formState.company}`,
         `Rol: ${formState.role}`,
         `Email: ${formState.email}`,
-        `Telefono: ${formState.phone || '-'}`,
+        `Teléfono: ${formState.phone || '-'}`,
         `CUIT: ${formState.cuit}`,
         `Ciudad / Provincia: ${formState.city}`,
         `Mensaje: ${formState.message || '-'}`

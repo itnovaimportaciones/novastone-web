@@ -59,7 +59,7 @@ const AsociadosPage = () => {
   );
   const envMismatchMessage = isExpectedProject
     ? ''
-    : 'Frontend esta apuntando a otro Supabase project (env incorrecta).';
+    : 'Frontend está apuntando a otro Supabase project (env incorrecta).';
 
   useEffect(() => {
     let isMounted = true;
@@ -220,7 +220,7 @@ const AsociadosPage = () => {
         console.error(allowedResult.error);
         setAccessStatus('error');
         setAccessError(
-          `Error consultando whitelist: ${allowedResult.error.message || 'Error validando autorizacion.'}`
+          `Error consultando whitelist: ${allowedResult.error.message || 'Error validando autorización.'}`
         );
         return;
       }
@@ -422,7 +422,7 @@ const AsociadosPage = () => {
           setMagicLinkCooldownUntil(until);
           localStorage.setItem(MAGIC_LINK_COOLDOWN_KEY, String(until));
           setErrorMessage(
-            'Llegaste al limite de envios. Espera 120 segundos antes de reenviar el magic link.'
+            'Llegaste al límite de envíos. Espera 120 segundos antes de reenviar el magic link.'
           );
         } else {
           setErrorMessage(error.message || 'Error desconocido');
@@ -569,6 +569,12 @@ const AsociadosPage = () => {
       throw new Error('MISSING_INTERNAL_EMAIL_SECRET');
     }
     const url = `${supabaseUrl}/functions/v1/send-reservation-email`;
+    console.log('EMAIL_HEADERS_v3', {
+      'Content-Type': 'application/json',
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      'x-internal-secret': import.meta.env.VITE_INTERNAL_EMAIL_SECRET
+    });
 
     const res = await fetch(url, {
       method: 'POST',
@@ -725,7 +731,7 @@ const AsociadosPage = () => {
     if (!isAdmin) return;
     const normalized = normalizeEmail(adminEmailInput);
     if (!emailRegex.test(normalized)) {
-      setAdminError('Email invalido.');
+      setAdminError('Email inválido.');
       return;
     }
 
@@ -845,13 +851,13 @@ const AsociadosPage = () => {
         <div className="asociados-login">
           <div className="asociados-login-card">
             <h1>Cargando</h1>
-            <p>Estamos validando tu sesion.</p>
+            <p>Estamos validando tu sesión.</p>
           </div>
         </div>
       ) : !hasSession ? (
         <div className="asociados-login">
           <div className="asociados-login-card">
-            <h1>Portal de Marmolerias Asociadas</h1>
+            <h1>Portal de Marmolerías Asociadas</h1>
             <p>Ingresa tu email para acceder al stock disponible</p>
             {envMismatchMessage && <p className="asociados-login-note">{envMismatchMessage}</p>}
             {reloginNotice && <p className="asociados-login-note">{reloginNotice}</p>}
@@ -894,7 +900,7 @@ const AsociadosPage = () => {
                     !email
                   }
                 >
-                  Volver a iniciar sesion
+                  Volver a iniciar sesión
                 </button>
               )}
               {isDevMode && (
@@ -908,7 +914,7 @@ const AsociadosPage = () => {
               )}
               {status === 'sent' && (
                 <p className="asociados-login-note">
-                  Revisá tu email para ingresar con el enlace magico.
+                  Revisá tu email para ingresar con el enlace mágico.
                 </p>
               )}
               {status === 'error' && (
@@ -932,7 +938,7 @@ const AsociadosPage = () => {
             <h1>Error de acceso</h1>
             <p>{accessError || 'No pudimos validar tu acceso en este momento.'}</p>
             <button type="button" className="asociados-button" onClick={handleLogout}>
-              {isDevAdmin ? 'Salir (DEV)' : 'Cerrar sesion'}
+              {isDevAdmin ? 'Salir (DEV)' : 'Cerrar sesión'}
             </button>
           </div>
         </div>
@@ -940,7 +946,7 @@ const AsociadosPage = () => {
         <div className="asociados-login">
           <div className="asociados-login-card">
             <h1>Acceso no autorizado</h1>
-            <p>Este email no esta habilitado para ingresar.</p>
+            <p>Este email no está habilitado para ingresar.</p>
             {authEmail === 'manuzeolite@gmail.com' && (
               <p className="asociados-login-note">
                 DEBUG raw: {authEmailRaw || '-'} | normalized: {authEmail || '-'} | isAdmin:{' '}
@@ -948,7 +954,7 @@ const AsociadosPage = () => {
               </p>
             )}
             <button type="button" className="asociados-button" onClick={handleLogout}>
-              Cerrar sesion
+              Cerrar sesión
             </button>
           </div>
         </div>
@@ -958,7 +964,7 @@ const AsociadosPage = () => {
             <div className="asociados-stock-header-row">
               <div>
                 <h1>Stock disponible</h1>
-                <p>Listado actualizado para marmolerias asociadas.</p>
+                <p>Listado actualizado para marmolerías asociadas.</p>
                 {activeReservation && (
                   <div className="asociados-login-note">
                     <p>
@@ -986,7 +992,7 @@ const AsociadosPage = () => {
                 )}
               </div>
               <button type="button" className="asociados-button" onClick={handleLogout}>
-                {isDevAdmin ? 'Salir (DEV)' : 'Cerrar sesion'}
+                {isDevAdmin ? 'Salir (DEV)' : 'Cerrar sesión'}
               </button>
             </div>
             {isAuthorized && (

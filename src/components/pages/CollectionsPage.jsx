@@ -39,7 +39,7 @@ const COLLECTIONS = [
     image: '/collections/Collection%20Luxury.png',
     filter: 'luxury',
     description:
-      'Superficies de estetica exclusiva con disenos refinados y acabados sofisticados de alto impacto visual.'
+      'Superficies de estética exclusiva con diseños refinados y acabados sofisticados de alto impacto visual.'
   }
 ];
 

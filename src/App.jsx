@@ -19,8 +19,8 @@ const LOCAL_PRODUCTS_KEY = 'novastone-products';
 const CONTACT_PHONE = '+54 9 11 2480-0421';
 const CONTACT_EMAIL = 'nova.grupoarg@gmail.com';
 const CONTACT_ADDRESS =
-  'Direccion - El Hornero, Bajada Km 55,5 colectora panamericana, Monseñor D´andrea Y, B1629 Pilar, Provincia de Buenos Aires';
-const WHATSAPP_MESSAGE = 'Hola, quiero conocer mas sobre Novastone.';
+  'Dirección - El Hornero, Bajada Km 55,5 colectora panamericana, Monseñor D´andrea Y, B1629 Pilar, Provincia de Buenos Aires';
+const WHATSAPP_MESSAGE = 'Hola, quiero conocer más sobre Novastone.';
 
 const loadProducts = async () => {
   const res = await fetch(DEFAULT_PRODUCTS_URL, { cache: 'no-store' });
@@ -100,7 +100,7 @@ const Header = () => {
           <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
             Colecciones
           </a>
-          <a href="#inspiracion">Inspiracion</a>
+          <a href="#inspiracion">Inspiración</a>
           <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
             ¿Cómo Comprar?
           </a>
@@ -142,7 +142,7 @@ const Header = () => {
               Colecciones
             </a>
             <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
-              Inspiracion
+              Inspiración
             </a>
             <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
               ¿Cómo Comprar?
@@ -195,9 +195,9 @@ const HeroSection = () => {
       </div>
       <div className="hero-content" data-reveal>
         <p className="hero-eyebrow">Novastone · Piedra Sinterizada</p>
-        <h1>La evolucion natural del diseno</h1>
+        <h1>La evolución natural del diseño</h1>
         <p className="hero-subtitle">
-          Superficies que combinan resistencia extrema con una estetica
+          Superficies que combinan resistencia extrema con una estética
           contemporanea para proyectos residenciales y comerciales.
         </p>
       </div>
@@ -232,13 +232,13 @@ const SinteredSection = () => (
     <div className="sintered-grid" data-reveal>
       <div>
         <p className="section-label">Piedra sinterizada</p>
-        <h2>Precision, textura y durabilidad sin limites.</h2>
+        <h2>Precisión, textura y durabilidad sin límites.</h2>
       </div>
       <div className="sintered-copy">
         <p>
           Superficies de gran formato con baja porosidad, alta resistencia al
-          calor y a las manchas. Ideal para cocinas, banos, fachadas y pisos de
-          alto transito.
+          calor y a las manchas. Ideal para cocinas, baños, fachadas y pisos de
+          alto tránsito.
         </p>
         <p>
           Disponible en espesores 12mm y 20mm, con opciones Full Body, Espejada
@@ -262,17 +262,17 @@ const SinteredSection = () => (
         </p>
       </article>
       <article>
-        <h3>Acabado replica natural</h3>
+        <h3>Acabado réplica natural</h3>
         <p>
           Superficie que reproduce con fidelidad las vetas y texturas de la
           piedra natural, con un acabado visual y tactil unico.
         </p>
       </article>
       <article>
-        <h3>Acabado replica organica</h3>
+        <h3>Acabado réplica orgánica</h3>
         <p>
           Duplica el efecto del esmaltado con relieve, aportando mayor
-          profundidad, brillo y realismo en cada diseno.
+          profundidad, brillo y realismo en cada diseño.
         </p>
       </article>
     </div>
@@ -406,7 +406,7 @@ const StonesSection = () => {
 const InspirationSection = () => (
   <section className="inspiration" id="inspiracion">
     <div className="section-heading" data-reveal>
-      <p className="section-label">Inspiracion</p>
+      <p className="section-label">Inspiración</p>
       <h2>Espacios que elevan la experiencia cotidiana.</h2>
     </div>
     <div className="inspiration-grid" data-reveal>
@@ -431,7 +431,7 @@ const Footer = () => (
     <div className="footer-inner" data-reveal>
       <div>
         <p className="section-label">Contacto</p>
-        <h2>Visita nuestro showroom o solicita una cotizacion.</h2>
+        <h2>Visita nuestro showroom o solicita una cotización.</h2>
       </div>
       <div className="footer-actions">
         <a href={`mailto:${CONTACT_EMAIL}`} className="contact-link">
@@ -457,7 +457,7 @@ const Footer = () => (
           {CONTACT_PHONE}
         </a>
         <span>{CONTACT_ADDRESS}</span>
-        <button type="button">Solicitar cotizacion</button>
+        <button type="button">Solicitar cotización</button>
       </div>
     </div>
   </footer>
@@ -491,7 +491,7 @@ const AdminPanel = ({ products, setProducts }) => {
       setProducts(parsed);
       setStatus('Productos guardados en este navegador.');
     } catch (error) {
-      setStatus('JSON invalido.');
+      setStatus('JSON inválido.');
     }
   };
 
@@ -500,7 +500,7 @@ const AdminPanel = ({ products, setProducts }) => {
     localStorage.removeItem(LOCAL_PRODUCTS_KEY);
     setProducts(fresh);
     setDraft(JSON.stringify(fresh, null, 2));
-    setStatus('Restaurado desde products.json.');
+    setStatus('Restáurado desde products.json.');
   };
 
   const downloadJson = () => {
@@ -559,7 +559,7 @@ const AdminPanel = ({ products, setProducts }) => {
         </div>
         <div className="admin-actions">
           <button type="button" onClick={handleReset}>
-            Restaurar
+            Restáurar
           </button>
           <button type="button" onClick={downloadJson}>
             Descargar JSON
