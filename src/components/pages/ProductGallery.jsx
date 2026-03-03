@@ -181,6 +181,18 @@ const ProductGallery = () => {
                   {product.category && (
                     <span className="product-category-badge">{product.category}</span>
                   )}
+                  {product.surfaceFinishes?.length > 0 && (
+                    <div className="product-surface-badges">
+                      {product.surfaceFinishes.map((finish) => (
+                        <span
+                          key={`${product.id}-${finish}`}
+                          className="product-category-badge product-surface-badge"
+                        >
+                          {finish}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

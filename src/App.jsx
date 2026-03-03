@@ -5,6 +5,7 @@ import ProductGallery from './components/pages/ProductGallery';
 import InspirationCarousel from './components/pages/InspirationCarousel';
 import HowToBuyPage from './components/pages/HowToBuyPage';
 import AsociadosPage from './components/pages/AsociadosPage';
+import { COLLECTIONS_COPY, COLLECTIONS_ORDER } from './content/collectionsCopy';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -227,6 +228,8 @@ const IntroSection = () => (
   </section>
 );
 
+const SINTERED_COLLECTIONS = COLLECTIONS_ORDER.map((id) => ({ id, ...COLLECTIONS_COPY[id] }));
+
 const SinteredSection = () => (
   <section className="sintered" id="novastone">
     <div className="sintered-grid" data-reveal>
@@ -247,34 +250,12 @@ const SinteredSection = () => (
       </div>
     </div>
     <div className="sintered-highlights" data-reveal>
-      <article>
-        <h3>Full Body</h3>
-        <p>
-          Diseno con vetas pasantes que se aprecian en todo el espesor del
-          cuerpo de la placa.
-        </p>
-      </article>
-      <article>
-        <h3>Espejada</h3>
-        <p>
-          La piedra sinterizada espejada es una variante con acabado pulido de
-          alto brillo que refleja la luz y logra un efecto elegante.
-        </p>
-      </article>
-      <article>
-        <h3>Acabado réplica natural</h3>
-        <p>
-          Superficie que reproduce con fidelidad las vetas y texturas de la
-          piedra natural, con un acabado visual y tactil unico.
-        </p>
-      </article>
-      <article>
-        <h3>Acabado réplica orgánica</h3>
-        <p>
-          Duplica el efecto del esmaltado con relieve, aportando mayor
-          profundidad, brillo y realismo en cada diseño.
-        </p>
-      </article>
+      {SINTERED_COLLECTIONS.map((collection) => (
+        <article key={collection.id}>
+          <h3>{collection.title}</h3>
+          <p>{collection.description}</p>
+        </article>
+      ))}
     </div>
   </section>
 );

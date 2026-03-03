@@ -1,47 +1,36 @@
 import React from 'react';
+import { COLLECTIONS_COPY, COLLECTIONS_ORDER } from '../../content/collectionsCopy';
 
 const COLLECTIONS = [
   {
     id: '20mm',
-    title: '20mm',
     image: '/collections/Collection%2020mm.png',
-    filter: '20mm',
-    description:
-      'Mayor espesor pensado para aplicaciones de alta exigencia, aportando solidez, presencia y durabilidad.'
+    filter: '20mm'
   },
   {
     id: '12mm',
-    title: '12mm',
     image: '/collections/Collection%2012mm.png',
-    filter: '12mm',
-    description:
-      'Espesor versatil ideal para revestimientos, mobiliario y aplicaciones donde se busca ligereza y resistencia.'
+    filter: '12mm'
   },
   {
     id: 'full-body',
-    title: 'Full Body',
     image: '/collections/Collection%20Full%20Body.png',
-    filter: 'full-body',
-    description:
-      'Vetas pasantes en todo el espesor de la placa, como en la piedra natural.'
+    filter: 'full-body'
   },
   {
     id: 'espejada',
-    title: 'Espejada',
     image: '/collections/Collection%20Espejada.png',
-    filter: 'espejada',
-    description:
-      'Superficie con acabado Natural u Organico que reproduce el relieve de las vetas naturales, logrando un efecto visual y tactil unico.'
+    filter: 'espejada'
   },
   {
     id: 'luxury',
-    title: 'Luxury',
     image: '/collections/Collection%20Luxury.png',
-    filter: 'luxury',
-    description:
-      'Superficies de estética exclusiva con diseños refinados y acabados sofisticados de alto impacto visual.'
+    filter: 'luxury'
   }
-];
+].map((collection) => ({
+  ...collection,
+  ...COLLECTIONS_COPY[collection.id]
+})).sort((a, b) => COLLECTIONS_ORDER.indexOf(a.id) - COLLECTIONS_ORDER.indexOf(b.id));
 
 const CollectionsPage = () => (
   <div className="collections-page">

@@ -12,6 +12,37 @@ const SPEC_LABELS = [
 
 const normalizeText = (value = '') => value.replace(/\s+/g, ' ').trim();
 
+const THICKNESS_OVERRIDES = {
+  brazilianite: '12MM',
+  'new taj majal': '12MM'
+};
+
+const SURFACE_BADGES = [
+  { key: 'MATE', patterns: [/\bmate\b/i] },
+  { key: 'PULIDO', patterns: [/\bpulido\b/i] },
+  { key: 'SATIN', patterns: [/\bsatin(?:ado)?\b/i] },
+  { key: 'NATURAL', patterns: [/\bnatural\b/i] },
+  { key: 'VETA PASANTE', patterns: [/veta\s+pasante/i] }
+];
+
+const getThicknessOverride = (name = '') => {
+  const key = normalizeText(name).toLowerCase();
+  return THICKNESS_OVERRIDES[key] || '';
+};
+
+const parseSurfaceFinishes = (sourceText = '') => {
+  const text = normalizeText(sourceText);
+  const found = [];
+
+  for (const item of SURFACE_BADGES) {
+    if (item.patterns.some((pattern) => pattern.test(text))) {
+      found.push(item.key);
+    }
+  }
+
+  return [...new Set(found)];
+};
+
 const extractSpecs = (text = '') => {
   const normalized = normalizeText(text);
   const specs = {};
@@ -69,6 +100,7 @@ const enrichProduct = (product) => {
   const hasFullBody = (product.detailImages || []).some((image) =>
     /full body/i.test(image)
   );
+  const surfaceFinishes = parseSurfaceFinishes(finish);
 
   return {
     ...product,
@@ -78,7 +110,8 @@ const enrichProduct = (product) => {
     colorGroup: deriveColorGroup(colors),
     applications,
     interiorExterior,
-    thickness: product.category || '',
+    thickness: product.category || getThicknessOverride(product.name),
+    surfaceFinishes,
     collection: hasFullBody ? 'full-body' : product.collection
   };
 };
