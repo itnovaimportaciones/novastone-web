@@ -17,6 +17,19 @@ const THICKNESS_OVERRIDES = {
   'new taj majal': '12MM'
 };
 
+const PRODUCT_OVERRIDES = {
+  brazilianite: {
+    category: '12mm',
+    description:
+      'Inspirado en cuarcitas claras de brillo mineral, presenta un fondo beige grisáceo con un entramado suave y cristalino que genera profundidad y un movimiento delicado. Su textura transmite naturalidad, luz y un aspecto elegante y sereno. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige grisáceo con textura cristalina suave Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Mate'
+  },
+  'new taj majal': {
+    category: '12mm',
+    description:
+      'De apariencia similar a cuarcitas claras y refinadas, presenta un fondo blanco cálido con un entramado suave de nubes minerales y vetas finas en tonos beige y gris muy sutiles. Su textura aporta profundidad y un movimiento delicado, manteniendo una estética luminosa y serena. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco cálido con vetas suaves beige y grises Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido'
+  }
+};
+
 const SURFACE_BADGES = [
   { key: 'MATE', patterns: [/\bmate\b/i] },
   { key: 'PULIDO', patterns: [/\bpulido\b/i] },
@@ -28,6 +41,11 @@ const SURFACE_BADGES = [
 const getThicknessOverride = (name = '') => {
   const key = normalizeText(name).toLowerCase();
   return THICKNESS_OVERRIDES[key] || '';
+};
+
+const getProductOverride = (name = '') => {
+  const key = normalizeText(name).toLowerCase();
+  return PRODUCT_OVERRIDES[key] || null;
 };
 
 const parseSurfaceFinishes = (sourceText = '') => {
@@ -92,7 +110,10 @@ const deriveColorGroup = (value = '') => {
 };
 
 const enrichProduct = (product) => {
-  const { intro, specs } = parseProductDescription(product.description || '');
+  const override = getProductOverride(product.name);
+  const resolvedDescription = product.description || override?.description || '';
+  const resolvedCategory = product.category || override?.category || '';
+  const { intro, specs } = parseProductDescription(resolvedDescription);
   const finish = specs['Terminación Superficial'] || '';
   const applications = splitList(specs['Aplicaciones']);
   const interiorExterior = splitList(specs['Interior / Exterior']);
@@ -104,13 +125,15 @@ const enrichProduct = (product) => {
 
   return {
     ...product,
+    description: resolvedDescription,
     descriptionIntro: intro,
     specs,
     finish,
     colorGroup: deriveColorGroup(colors),
     applications,
     interiorExterior,
-    thickness: product.category || getThicknessOverride(product.name),
+    category: resolvedCategory,
+    thickness: resolvedCategory || getThicknessOverride(product.name),
     surfaceFinishes,
     collection: hasFullBody ? 'full-body' : product.collection
   };
