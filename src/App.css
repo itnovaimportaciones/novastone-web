@@ -150,7 +150,8 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  z-index: 300;
+  z-index: 20000;
+  isolation: isolate;
 }
 
 .mobile-drawer.is-open {
@@ -159,26 +160,35 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
 }
 
 .mobile-drawer-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.72);
   border: none;
+  pointer-events: auto;
+  touch-action: none;
 }
 
 .mobile-drawer-panel {
-  position: absolute;
+  position: fixed;
   top: 0;
+  bottom: 0;
   right: 0;
   width: min(320px, 86vw);
-  height: 100%;
-  background: #0b0b0b;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  background: #000000;
   color: #ffffff;
-  padding: calc(60px + env(safe-area-inset-top, 0px)) 28px 32px;
+  padding:
+    calc(60px + env(safe-area-inset-top, 0px))
+    calc(28px + env(safe-area-inset-right, 0px))
+    calc(32px + env(safe-area-inset-bottom, 0px))
+    calc(28px + env(safe-area-inset-left, 0px));
   transform: translateX(100%);
   transition: transform 0.35s ease;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  z-index: 1;
 }
 
 .mobile-drawer.is-open .mobile-drawer-panel {
@@ -187,13 +197,28 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
 
 .mobile-drawer-close {
   position: absolute;
-  top: calc(18px + env(safe-area-inset-top, 0px));
+  top: 18px;
   right: 18px;
   background: transparent;
   border: none;
-  color: inherit;
+  color: #ffffff;
   font-size: 24px;
   cursor: pointer;
+  z-index: 2;
+}
+
+.mobile-drawer-header {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: 32px;
+}
+
+.mobile-drawer-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #000000;
+  padding-top: 24px;
 }
 
 .mobile-drawer-links {
@@ -206,8 +231,12 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
 }
 
 .mobile-drawer-links a {
-  color: inherit;
+  color: #ffffff;
   text-decoration: none;
+}
+
+body.mobile-menu-open {
+  overflow: hidden;
 }
 
 .site-header.is-scrolled .brand {

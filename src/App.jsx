@@ -71,51 +71,78 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobileMenuOpen && isMobileViewport) {
+      const scrollY = window.scrollY;
+      document.body.dataset.lockScrollY = String(scrollY);
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.classList.add('mobile-menu-open');
     } else {
+      const lockScrollY = Number(document.body.dataset.lockScrollY || 0);
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.classList.remove('mobile-menu-open');
+      delete document.body.dataset.lockScrollY;
+      if (lockScrollY > 0) {
+        window.scrollTo(0, lockScrollY);
+      }
     }
     return () => {
+      const lockScrollY = Number(document.body.dataset.lockScrollY || 0);
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.classList.remove('mobile-menu-open');
+      delete document.body.dataset.lockScrollY;
+      if (lockScrollY > 0) {
+        window.scrollTo(0, lockScrollY);
+      }
     };
   }, [isMobileMenuOpen]);
 
   return (
-    <header className="site-header">
-      <div className="header-inner">
-        <div className="brand">
-          <a href="#" onClick={handleHomeClick}>
-            <img
-              className="brand-logo"
-              src="/LOGO%20SVG%20NOVASTONE.svg"
-              alt="Novastone"
-            />
-          </a>
+    <>
+      <header className="site-header">
+        <div className="header-inner">
+          <div className="brand">
+            <a href="#" onClick={handleHomeClick}>
+              <img
+                className="brand-logo"
+                src="/LOGO%20SVG%20NOVASTONE.svg"
+                alt="Novastone"
+              />
+            </a>
+          </div>
+          <nav className="nav-links">
+            <a href="#novastone">Novastone</a>
+            <a href="#productos" onClick={handleNavClick('#productos')}>
+              Productos
+            </a>
+            <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
+              Colecciones
+            </a>
+            <a href="#inspiracion">Inspiración</a>
+            <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
+              ¿Cómo Comprar?
+            </a>
+            <a href="#contacto" className="nav-cta">Contactar</a>
+          </nav>
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label="Abrir menu"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            &#9776;
+          </button>
         </div>
-        <nav className="nav-links">
-          <a href="#novastone">Novastone</a>
-          <a href="#productos" onClick={handleNavClick('#productos')}>
-            Productos
-          </a>
-          <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
-            Colecciones
-          </a>
-          <a href="#inspiracion">Inspiración</a>
-          <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
-            ¿Cómo Comprar?
-          </a>
-          <a href="#contacto" className="nav-cta">Contactar</a>
-        </nav>
-        <button
-          type="button"
-          className="mobile-menu-toggle"
-          aria-label="Abrir menu"
-          onClick={() => setIsMobileMenuOpen(true)}
-        >
-          &#9776;
-        </button>
-      </div>
+      </header>
       <div className={`mobile-drawer ${isMobileMenuOpen ? 'is-open' : ''}`}>
         <button
           type="button"
@@ -124,15 +151,17 @@ const Header = () => {
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
-          <button
-            type="button"
-            className="mobile-drawer-close"
-            aria-label="Cerrar menu"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            &#10005;
-          </button>
-          <nav className="mobile-drawer-links">
+          <div className="mobile-drawer-header">
+            <button
+              type="button"
+              className="mobile-drawer-close"
+              aria-label="Cerrar menu"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              &#10005;
+            </button>
+          </div>
+          <nav className="mobile-drawer-content mobile-drawer-links">
             <a href="#novastone" onClick={handleNavClick('#novastone')}>
               Novastone
             </a>
@@ -154,7 +183,7 @@ const Header = () => {
           </nav>
         </div>
       </div>
-    </header>
+    </>
   );
 };
 
