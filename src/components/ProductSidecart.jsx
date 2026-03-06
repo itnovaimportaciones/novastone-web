@@ -155,14 +155,14 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
       {/* Backdrop */}
       <div
         ref={backdropRef}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] opacity-0"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[260] opacity-0"
         onClick={onClose}
       />
 
       {/* Sidecart */}
       <div
         ref={sidecartRef}
-        className="fixed inset-y-0 right-0 w-full max-w-2xl bg-white border-l border-gray-200 z-[101] flex flex-col translate-x-full overflow-hidden"
+        className="fixed inset-y-0 right-0 w-full max-w-2xl bg-white border-l border-gray-200 z-[261] flex flex-col translate-x-full overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
@@ -175,8 +175,9 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
             )}
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors ml-4"
+            className="text-gray-400 hover:text-gray-600 transition-colors ml-4 relative z-10"
             aria-label="Cerrar"
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
