@@ -143,46 +143,48 @@ const Header = () => {
           </button>
         </div>
       </header>
-      <div className={`mobile-drawer ${isMobileMenuOpen ? 'is-open' : ''}`}>
-        <button
-          type="button"
-          className="mobile-drawer-backdrop"
-          aria-label="Cerrar menu"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-        <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
-          <div className="mobile-drawer-header">
-            <button
-              type="button"
-              className="mobile-drawer-close"
-              aria-label="Cerrar menu"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              &#10005;
-            </button>
+      {isMobileMenuOpen && (
+        <div className="mobile-drawer is-open">
+          <button
+            type="button"
+            className="mobile-drawer-backdrop"
+            aria-label="Cerrar menu"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
+            <div className="mobile-drawer-header">
+              <button
+                type="button"
+                className="mobile-drawer-close"
+                aria-label="Cerrar menu"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                &#10005;
+              </button>
+            </div>
+            <nav className="mobile-drawer-content mobile-drawer-links">
+              <a href="#novastone" onClick={handleNavClick('#novastone')}>
+                Novastone
+              </a>
+              <a href="#productos" onClick={handleNavClick('#productos')}>
+                Productos
+              </a>
+              <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
+                Colecciones
+              </a>
+              <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
+                Inspiración
+              </a>
+              <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
+                ¿Cómo Comprar?
+              </a>
+              <a href="#contacto" onClick={handleNavClick('#contacto')}>
+                Contactar
+              </a>
+            </nav>
           </div>
-          <nav className="mobile-drawer-content mobile-drawer-links">
-            <a href="#novastone" onClick={handleNavClick('#novastone')}>
-              Novastone
-            </a>
-            <a href="#productos" onClick={handleNavClick('#productos')}>
-              Productos
-            </a>
-            <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
-              Colecciones
-            </a>
-            <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
-              Inspiración
-            </a>
-            <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
-              ¿Cómo Comprar?
-            </a>
-            <a href="#contacto" onClick={handleNavClick('#contacto')}>
-              Contactar
-            </a>
-          </nav>
         </div>
-      </div>
+      )}
     </>
   );
 };
