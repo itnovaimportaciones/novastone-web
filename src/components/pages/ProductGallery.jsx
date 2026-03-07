@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { loadProductData, filterProductsByFilters } from '../../utils/productParser';
+import { matchesCollection, normalizeCollectionKey } from '../../content/collectionProductMap';
 import ProductSidecart from '../ProductSidecart';
 
 const ProductGallery = () => {
@@ -18,9 +19,16 @@ const ProductGallery = () => {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      const match = hash.match(/[?&]filter=([^&]+)/);
-      const urlFilter = match ? match[1] : 'all';
-      setCollectionFilter(urlFilter);
+      const hashQueryIndex = hash.indexOf('?');
+      const hashQuery = hashQueryIndex >= 0 ? hash.slice(hashQueryIndex + 1) : '';
+      const hashParams = new URLSearchParams(hashQuery);
+      const searchParams = new URLSearchParams(window.location.search);
+      const rawCollection =
+        hashParams.get('collection') ||
+        hashParams.get('filter') ||
+        searchParams.get('collection') ||
+        'all';
+      setCollectionFilter(normalizeCollectionKey(rawCollection));
     };
 
     handleHashChange();
@@ -48,19 +56,23 @@ const ProductGallery = () => {
   }, []);
 
   useEffect(() => {
-    // Update URL when collection filter changes
+    // Update hash query when collection filter changes
     const newHash =
       collectionFilter === 'all'
         ? '#productos'
-        : `#productos?filter=${collectionFilter}`;
+        : `#productos?collection=${collectionFilter}`;
     if (window.location.hash !== newHash) {
       window.location.hash = newHash;
     }
   }, [collectionFilter]);
 
-  const filteredProducts = filterProductsByFilters(products, {
+  const productsByCollection = products.filter((product) =>
+    matchesCollection(product.name, collectionFilter)
+  );
+
+  const filteredProducts = filterProductsByFilters(productsByCollection, {
     ...filters,
-    collection: collectionFilter
+    collection: 'all'
   });
 
   const handleProductClick = (product) => {
@@ -85,6 +97,15 @@ const ProductGallery = () => {
     <div className="product-gallery-page">
       <div className="product-gallery-header">
         <h1>Galería de Superficies</h1>
+        {collectionFilter !== 'all' && (
+          <button
+            type="button"
+            className="product-clear-filter"
+            onClick={() => setCollectionFilter('all')}
+          >
+            Limpiar filtro
+          </button>
+        )}
         <div className="product-gallery-filters">
           <div className="filter-group">
             <span>Color</span>

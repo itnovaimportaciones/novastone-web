@@ -377,7 +377,7 @@ const ProductModal = ({ product, products = [], onClose, onSelect }) => {
 
 const StonesSection = () => {
   const handleCategoryClick = (category) => {
-    window.location.hash = `#productos?filter=${category}`;
+    window.location.hash = `#productos?collection=${category}`;
   };
 
   return (

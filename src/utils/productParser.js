@@ -26,7 +26,7 @@ const PRODUCT_OVERRIDES = {
   'new taj majal': {
     category: '12mm',
     description:
-      'De apariencia similar a cuarcitas claras y refinadas, presenta un fondo blanco cálido con un entramado suave de nubes minerales y vetas finas en tonos beige y gris muy sutiles. Su textura aporta profundidad y un movimiento delicado, manteniendo una estética luminosa y serena. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco cálido con vetas suaves beige y grises Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido'
+      'De apariencia similar a cuarcitas claras y refinadas, presenta un fondo blanco cálido con un entramado suave de nubes minerales y vetas finas en tonos beige y gris muy sutiles. Su textura aporta profundidad y un movimiento delicado, manteniendo una estética luminosa y serena. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco cálido con vetas suaves beige y grises Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Acabado Natural'
   }
 };
 

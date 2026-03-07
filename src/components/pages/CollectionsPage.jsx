@@ -15,7 +15,7 @@ const COLLECTIONS = [
   {
     id: 'full-body',
     image: '/collections/Collection%20Full%20Body.png',
-    filter: 'full-body'
+    filter: 'fullbody'
   },
   {
     id: 'espejada',
@@ -45,7 +45,7 @@ const CollectionsPage = () => (
           type="button"
           className="collections-card"
           onClick={() => {
-            window.location.hash = `#productos?filter=${collection.filter}`;
+            window.location.hash = `#productos?collection=${collection.filter}`;
           }}
         >
           <div className="collections-image">
