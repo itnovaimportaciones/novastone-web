@@ -15,6 +15,8 @@ const HERO_SLIDES = [
   '/hero/Home_4.png'
 ];
 
+const DRAWER_PANEL_DURATION_MS = 520;
+
 const DEFAULT_PRODUCTS_URL = '/products.json';
 const LOCAL_PRODUCTS_KEY = 'novastone-products';
 const CONTACT_PHONE = '+54 9 11 2480-0421';
@@ -57,6 +59,8 @@ const useRevealOnScroll = (deps = []) => {
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDrawerMounted, setIsDrawerMounted] = useState(false);
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const handleHomeClick = (e) => {
     e.preventDefault();
     window.location.hash = '';
@@ -106,6 +110,29 @@ const Header = () => {
     };
   }, [isMobileMenuOpen]);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      setIsDrawerMounted(true);
+      const frameId = window.requestAnimationFrame(() => {
+        setIsDrawerVisible(true);
+      });
+      return () => window.cancelAnimationFrame(frameId);
+    }
+
+    setIsDrawerVisible(false);
+    const timeoutId = window.setTimeout(() => {
+      setIsDrawerMounted(false);
+    }, DRAWER_PANEL_DURATION_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isDrawerMounted) {
+      setIsDrawerVisible(false);
+    }
+  }, [isDrawerMounted]);
+
   return (
     <>
       <header className="site-header">
@@ -143,8 +170,8 @@ const Header = () => {
           </button>
         </div>
       </header>
-      {isMobileMenuOpen && (
-        <div className="mobile-drawer is-open">
+      {isDrawerMounted && (
+        <div className={`mobile-drawer ${isDrawerVisible ? 'is-open' : 'is-closing'}`}>
           <button
             type="button"
             className="mobile-drawer-backdrop"
