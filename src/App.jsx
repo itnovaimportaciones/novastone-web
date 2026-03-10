@@ -198,6 +198,13 @@ const Header = () => {
           />
           <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
             <div className="mobile-drawer-header">
+              <a className="mobile-drawer-brand" href="#" onClick={handleHomeClick}>
+                <img
+                  className="mobile-drawer-brand-logo"
+                  src="/LOGO%20SVG%20NOVASTONE.svg"
+                  alt="Novastone"
+                />
+              </a>
               <button
                 type="button"
                 className="mobile-drawer-close"
@@ -207,25 +214,39 @@ const Header = () => {
                 &#10005;
               </button>
             </div>
-            <nav className="mobile-drawer-content mobile-drawer-links">
-              <a href="#novastone" onClick={handleNavClick('#novastone')}>
-                Novastone
-              </a>
-              <a href="#productos" onClick={handleNavClick('#productos')}>
-                Productos
-              </a>
-              <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
-                Colecciones
-              </a>
-              <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
-                Inspiración
-              </a>
-              <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
-                ¿Cómo Comprar?
-              </a>
-              <a href="#contacto" onClick={handleNavClick('#contacto')}>
-                Contactar
-              </a>
+            <p className="mobile-drawer-tagline">
+              Superficies sinterizadas
+              <br />
+              para arquitectura
+            </p>
+            <div className="mobile-drawer-divider" aria-hidden="true" />
+            <nav className="mobile-drawer-content">
+              <div className="mobile-drawer-links mobile-drawer-links-primary">
+                <a href="#productos" onClick={handleNavClick('#productos')}>
+                  Productos
+                </a>
+                <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
+                  Colecciones
+                </a>
+                <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
+                  Inspiración
+                </a>
+              </div>
+              <div className="mobile-drawer-divider" aria-hidden="true" />
+              <div className="mobile-drawer-links mobile-drawer-links-secondary">
+                <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
+                  ¿Cómo Comprar?
+                </a>
+                <a href="#contacto" onClick={handleNavClick('#contacto')}>
+                  Contactar
+                </a>
+              </div>
+              <div className="mobile-drawer-divider" aria-hidden="true" />
+              <div className="mobile-drawer-social" aria-label="Redes sociales">
+                <span>Instagram</span>
+                <span>Pinterest</span>
+                <span>LinkedIn</span>
+              </div>
             </nav>
           </div>
         </div>

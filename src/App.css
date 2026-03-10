@@ -179,10 +179,10 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   height: 100dvh;
   min-height: 100dvh;
   max-height: 100dvh;
-  background: #000000;
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
   color: #ffffff;
   padding:
-    calc(60px + env(safe-area-inset-top, 0px))
+    calc(24px + env(safe-area-inset-top, 0px))
     calc(28px + env(safe-area-inset-right, 0px))
     calc(32px + env(safe-area-inset-bottom, 0px))
     calc(28px + env(safe-area-inset-left, 0px));
@@ -207,29 +207,74 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
 }
 
 .mobile-drawer-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
+  position: relative;
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: background 0.25s ease;
+}
+
+.mobile-drawer-close:hover,
+.mobile-drawer-close:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .mobile-drawer-header {
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   flex: 0 0 auto;
-  min-height: 32px;
+  min-height: 36px;
+}
+
+.mobile-drawer-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.mobile-drawer-brand-logo {
+  display: block;
+  height: 18px;
+  width: auto;
+}
+
+.mobile-drawer-tagline {
+  margin: 16px 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  line-height: 1.7;
+  color: rgba(245, 241, 236, 0.58);
+}
+
+.mobile-drawer-divider {
+  height: 1px;
+  width: 100%;
+  background: rgba(245, 241, 236, 0.16);
 }
 
 .mobile-drawer-content {
   flex: 1 1 auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: #000000;
-  padding-top: 24px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding-top: 18px;
+  padding-bottom: 10px;
 }
 
 .mobile-drawer-links {
@@ -241,9 +286,33 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   letter-spacing: 0.12em;
 }
 
+.mobile-drawer-links-primary,
+.mobile-drawer-links-secondary {
+  padding: 14px 0;
+}
+
 .mobile-drawer-links a {
   color: #ffffff;
   text-decoration: none;
+  opacity: 0.88;
+  transition: opacity 0.24s ease;
+}
+
+.mobile-drawer-links a:hover,
+.mobile-drawer-links a:focus-visible {
+  opacity: 1;
+}
+
+.mobile-drawer-social {
+  margin-top: auto;
+  padding: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: rgba(245, 241, 236, 0.62);
 }
 
 body.mobile-menu-open {
