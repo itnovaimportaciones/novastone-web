@@ -315,6 +315,49 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   color: rgba(245, 241, 236, 0.62);
 }
 
+.mobile-drawer-footer {
+  padding: 16px 0 0;
+  text-align: center;
+}
+
+.mobile-drawer-footer p {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: rgba(245, 241, 236, 0.58);
+  line-height: 1.7;
+}
+
+.mobile-drawer-footer-icons {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.mobile-drawer-footer-icons a {
+  color: rgba(245, 241, 236, 0.9);
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-drawer-footer-icons a:hover,
+.mobile-drawer-footer-icons a:focus-visible {
+  opacity: 0.75;
+  transform: scale(1.06);
+}
+
+.mobile-drawer-footer-icons svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
 body.mobile-menu-open {
   overflow: hidden;
 }
