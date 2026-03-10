@@ -244,12 +244,6 @@ const Header = () => {
                 </a>
               </div>
               <div className="mobile-drawer-divider" aria-hidden="true" />
-              <div className="mobile-drawer-social" aria-label="Redes sociales">
-                <span>Instagram</span>
-                <span>Pinterest</span>
-                <span>LinkedIn</span>
-              </div>
-              <div className="mobile-drawer-divider" aria-hidden="true" />
               <footer className="mobile-drawer-footer">
                 <p>Showroom y distribución</p>
                 <p>Argentina</p>
