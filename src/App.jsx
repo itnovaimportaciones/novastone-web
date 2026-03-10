@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import CollectionsPage from './components/pages/CollectionsPage';
 import ProductGallery from './components/pages/ProductGallery';
@@ -61,6 +61,8 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDrawerMounted, setIsDrawerMounted] = useState(false);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const closeTimerRef = useRef(null);
+  const openRafRef = useRef(null);
   const handleHomeClick = (e) => {
     e.preventDefault();
     window.location.hash = '';
@@ -110,28 +112,44 @@ const Header = () => {
     };
   }, [isMobileMenuOpen]);
 
+  useEffect(() => () => {
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+    }
+    if (openRafRef.current) {
+      window.cancelAnimationFrame(openRafRef.current);
+    }
+  }, []);
+
   useEffect(() => {
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    if (openRafRef.current) {
+      window.cancelAnimationFrame(openRafRef.current);
+      openRafRef.current = null;
+    }
+
     if (isMobileMenuOpen) {
       setIsDrawerMounted(true);
-      const frameId = window.requestAnimationFrame(() => {
-        setIsDrawerVisible(true);
+      setIsDrawerVisible(false);
+      openRafRef.current = window.requestAnimationFrame(() => {
+        openRafRef.current = window.requestAnimationFrame(() => {
+          setIsDrawerVisible(true);
+          openRafRef.current = null;
+        });
       });
-      return () => window.cancelAnimationFrame(frameId);
+      return undefined;
     }
 
     setIsDrawerVisible(false);
-    const timeoutId = window.setTimeout(() => {
+    closeTimerRef.current = window.setTimeout(() => {
       setIsDrawerMounted(false);
+      closeTimerRef.current = null;
     }, DRAWER_PANEL_DURATION_MS);
-
-    return () => window.clearTimeout(timeoutId);
+    return undefined;
   }, [isMobileMenuOpen]);
-
-  useEffect(() => {
-    if (!isDrawerMounted) {
-      setIsDrawerVisible(false);
-    }
-  }, [isDrawerMounted]);
 
   return (
     <>
