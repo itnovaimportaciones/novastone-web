@@ -303,6 +303,45 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   opacity: 1;
 }
 
+.mobile-drawer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  position: relative;
+}
+
+.mobile-drawer-link-bullet {
+  width: 10px;
+  display: inline-flex;
+  justify-content: center;
+  color: rgba(245, 241, 236, 0.86);
+  opacity: 0;
+}
+
+.mobile-drawer-link.is-active .mobile-drawer-link-bullet {
+  opacity: 1;
+}
+
+.mobile-drawer-link::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: rgba(245, 241, 236, 0.72);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  transition: transform 230ms ease-out, opacity 230ms ease-out;
+}
+
+.mobile-drawer-link.is-tapped::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
 .mobile-drawer-social {
   margin-top: auto;
   padding: 16px 0 0;

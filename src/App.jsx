@@ -62,8 +62,20 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDrawerMounted, setIsDrawerMounted] = useState(false);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [activeMenuHash, setActiveMenuHash] = useState('#novastone');
+  const [tappedMobileHash, setTappedMobileHash] = useState('');
   const closeTimerRef = useRef(null);
   const openRafRef = useRef(null);
+  const mobileTapTimerRef = useRef(null);
+  const getActiveMenuHash = () => {
+    const hash = (window.location.hash || '').toLowerCase();
+    if (hash.startsWith('#productos')) return '#productos';
+    if (hash.startsWith('#colecciones')) return '#colecciones';
+    if (hash.startsWith('#inspiracion')) return '#inspiracion';
+    if (hash.startsWith('#como-comprar')) return '#como-comprar';
+    if (hash.startsWith('#contacto')) return '#contacto';
+    return '#novastone';
+  };
   const handleHomeClick = (e) => {
     e.preventDefault();
     window.location.hash = '';
@@ -76,7 +88,31 @@ const Header = () => {
     window.scrollTo(0, 0);
     setIsMobileMenuOpen(false);
   };
+  const handleMobileNavClick = (hash) => (e) => {
+    e.preventDefault();
+    if (mobileTapTimerRef.current) {
+      window.clearTimeout(mobileTapTimerRef.current);
+      mobileTapTimerRef.current = null;
+    }
+    setTappedMobileHash(hash);
+    mobileTapTimerRef.current = window.setTimeout(() => {
+      window.location.hash = hash;
+      window.scrollTo(0, 0);
+      setIsMobileMenuOpen(false);
+      setTappedMobileHash('');
+      mobileTapTimerRef.current = null;
+    }, 220);
+  };
   const mobileWhatsAppUrl = `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
+  useEffect(() => {
+    const syncActiveHash = () => {
+      setActiveMenuHash(getActiveMenuHash());
+    };
+    syncActiveHash();
+    window.addEventListener('hashchange', syncActiveHash);
+    return () => window.removeEventListener('hashchange', syncActiveHash);
+  }, []);
 
   useEffect(() => {
     const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
@@ -120,6 +156,9 @@ const Header = () => {
     }
     if (openRafRef.current) {
       window.cancelAnimationFrame(openRafRef.current);
+    }
+    if (mobileTapTimerRef.current) {
+      window.clearTimeout(mobileTapTimerRef.current);
     }
   }, []);
 
@@ -224,23 +263,48 @@ const Header = () => {
             <div className="mobile-drawer-divider" aria-hidden="true" />
             <nav className="mobile-drawer-content">
               <div className="mobile-drawer-links mobile-drawer-links-primary">
-                <a href="#productos" onClick={handleNavClick('#productos')}>
-                  Productos
+                <a
+                  href="#productos"
+                  className={`mobile-drawer-link ${activeMenuHash === '#productos' ? 'is-active' : ''} ${tappedMobileHash === '#productos' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('#productos')}
+                >
+                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
+                  <span>Productos</span>
                 </a>
-                <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
-                  Colecciones
+                <a
+                  href="#colecciones"
+                  className={`mobile-drawer-link ${activeMenuHash === '#colecciones' ? 'is-active' : ''} ${tappedMobileHash === '#colecciones' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('#colecciones')}
+                >
+                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
+                  <span>Colecciones</span>
                 </a>
-                <a href="#inspiracion" onClick={handleNavClick('#inspiracion')}>
-                  Inspiración
+                <a
+                  href="#inspiracion"
+                  className={`mobile-drawer-link ${activeMenuHash === '#inspiracion' ? 'is-active' : ''} ${tappedMobileHash === '#inspiracion' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('#inspiracion')}
+                >
+                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
+                  <span>Inspiración</span>
                 </a>
               </div>
               <div className="mobile-drawer-divider" aria-hidden="true" />
               <div className="mobile-drawer-links mobile-drawer-links-secondary">
-                <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
-                  ¿Cómo Comprar?
+                <a
+                  href="#como-comprar"
+                  className={`mobile-drawer-link ${activeMenuHash === '#como-comprar' ? 'is-active' : ''} ${tappedMobileHash === '#como-comprar' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('#como-comprar')}
+                >
+                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
+                  <span>¿Cómo Comprar?</span>
                 </a>
-                <a href="#contacto" onClick={handleNavClick('#contacto')}>
-                  Contactar
+                <a
+                  href="#contacto"
+                  className={`mobile-drawer-link ${activeMenuHash === '#contacto' ? 'is-active' : ''} ${tappedMobileHash === '#contacto' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('#contacto')}
+                >
+                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
+                  <span>Contactar</span>
                 </a>
               </div>
               <div className="mobile-drawer-divider" aria-hidden="true" />
