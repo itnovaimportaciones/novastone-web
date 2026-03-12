@@ -20,7 +20,7 @@ const DRAWER_PANEL_DURATION_MS = 520;
 const DEFAULT_PRODUCTS_URL = '/products.json';
 const LOCAL_PRODUCTS_KEY = 'novastone-products';
 const CONTACT_PHONE = '+54 9 11 2480-0421';
-const INSTAGRAM_URL = 'https://www.instagram.com/novastone/';
+const INSTAGRAM_URL = 'https://www.instagram.com/novastone_ar/';
 const CONTACT_EMAIL = 'nova.grupoarg@gmail.com';
 const CONTACT_ADDRESS =
   'Dirección - El Hornero, Bajada Km 55,5 colectora panamericana, Monseñor D´andrea Y, B1629 Pilar, Provincia de Buenos Aires';
