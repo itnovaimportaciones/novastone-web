@@ -464,5 +464,43 @@
     ],
     "description": "Una piedra de presencia única y artística, donde el blanco se combina con grandes corrientes minerales en tonos azul verdoso y acentos cálidos que le aportan profundidad. Sus vetas amplias y orgánicas generan un movimiento expresivo, con un carácter sofisticado y distintivo. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco con vetas azul verdosas y detalles cálidos Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Pulido",
     "category": "12mm"
+  },
+  {
+    "id": "25arctic-ice-white",
+    "name": "Arctic Ice White",
+    "order": 25,
+    "folderName": "25Arctic Ice White",
+    "thumbnailImage": "/products/25Arctic Ice White/ARCTIC ICE WHITE.png",
+    "detailImages": [
+      "/products/25Arctic Ice White/ARCTIC ICE WHITE RENDER.jpg",
+      "/products/25Arctic Ice White/ARCTIC ICE WHITE.png"
+    ],
+    "renderImages": [
+      "/products/25Arctic Ice White/ARCTIC ICE WHITE RENDER.jpg"
+    ],
+    "nonRenderImages": [
+      "/products/25Arctic Ice White/ARCTIC ICE WHITE.png"
+    ],
+    "description": "",
+    "category": null
+  },
+  {
+    "id": "26lighting-grey",
+    "name": "Lighting Grey",
+    "order": 26,
+    "folderName": "26Lighting Grey",
+    "thumbnailImage": "/products/26Lighting Grey/Lighting Grey.jpg",
+    "detailImages": [
+      "/products/26Lighting Grey/Lighting Grey render.png",
+      "/products/26Lighting Grey/Lighting Grey.jpg"
+    ],
+    "renderImages": [
+      "/products/26Lighting Grey/Lighting Grey render.png"
+    ],
+    "nonRenderImages": [
+      "/products/26Lighting Grey/Lighting Grey.jpg"
+    ],
+    "description": "",
+    "category": null
   }
 ]
