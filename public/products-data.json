@@ -156,10 +156,12 @@
     "thumbnailImage": "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY.jpg",
     "detailImages": [
       "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER.jpg",
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER 2.jpg",
       "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY.jpg"
     ],
     "renderImages": [
-      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER.jpg"
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER.jpg",
+      "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY RENDER 2.jpg"
     ],
     "nonRenderImages": [
       "/products/9ARMANI DEEP GREY/ARMANI DEEP GREY.jpg"
@@ -175,10 +177,12 @@
     "thumbnailImage": "/products/10CARMEN/CARMEN.jpg",
     "detailImages": [
       "/products/10CARMEN/CARMEN RENDER.jpg",
+      "/products/10CARMEN/CARMEN RENDER 2.jpg",
       "/products/10CARMEN/CARMEN.jpg"
     ],
     "renderImages": [
-      "/products/10CARMEN/CARMEN RENDER.jpg"
+      "/products/10CARMEN/CARMEN RENDER.jpg",
+      "/products/10CARMEN/CARMEN RENDER 2.jpg"
     ],
     "nonRenderImages": [
       "/products/10CARMEN/CARMEN.jpg"
@@ -290,10 +294,14 @@
     "thumbnailImage": "/products/16ROYAL GREY/ROYAL GREY.jpg",
     "detailImages": [
       "/products/16ROYAL GREY/ROYAL GREY RENDER.jpg",
+      "/products/16ROYAL GREY/ROYAL GREY RENDER 2.jpg",
+      "/products/16ROYAL GREY/ROYAL GREY RENDER 3.jpg",
       "/products/16ROYAL GREY/ROYAL GREY.jpg"
     ],
     "renderImages": [
-      "/products/16ROYAL GREY/ROYAL GREY RENDER.jpg"
+      "/products/16ROYAL GREY/ROYAL GREY RENDER.jpg",
+      "/products/16ROYAL GREY/ROYAL GREY RENDER 2.jpg",
+      "/products/16ROYAL GREY/ROYAL GREY RENDER 3.jpg"
     ],
     "nonRenderImages": [
       "/products/16ROYAL GREY/ROYAL GREY.jpg"
@@ -406,10 +414,12 @@
     "thumbnailImage": "/products/22LOUISKIN/LOUISKIN.jpg",
     "detailImages": [
       "/products/22LOUISKIN/LOUISKIN RENDER.jpg",
+      "/products/22LOUISKIN/LOUISKIN RENDER 2.jpg",
       "/products/22LOUISKIN/LOUISKIN.jpg"
     ],
     "renderImages": [
-      "/products/22LOUISKIN/LOUISKIN RENDER.jpg"
+      "/products/22LOUISKIN/LOUISKIN RENDER.jpg",
+      "/products/22LOUISKIN/LOUISKIN RENDER 2.jpg"
     ],
     "nonRenderImages": [
       "/products/22LOUISKIN/LOUISKIN.jpg"

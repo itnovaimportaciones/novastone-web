@@ -87,7 +87,10 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
   ]);
 
   const galleryImages = (renderImages || []).filter(Boolean);
-  const carouselImages = [textureImage, renderImage, fullBodyImage].filter(Boolean);
+  const additionalRenderImages = galleryImages.filter((image) => image !== renderImage);
+  const carouselImages = [textureImage, renderImage, ...additionalRenderImages, fullBodyImage]
+    .filter(Boolean)
+    .filter((image, index, list) => list.indexOf(image) === index);
   const totalImages = carouselImages.length;
   const mainImage = totalImages > 0
     ? carouselImages[currentImageIndex % totalImages]
