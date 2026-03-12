@@ -2,10 +2,12 @@ import React, { useMemo, useState } from 'react';
 
 const WHATSAPP_PHONE = '+54 9 11 2480-0421';
 const WHATSAPP_MESSAGE = 'Hola, quiero conocer más sobre Novastone.';
-const CONTACT_EMAIL = 'nova.grupoarg@gmail.com';
+const HOWTOBUY_ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-howto-buy-email`;
 
 const HowToBuyPage = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [formState, setFormState] = useState({
     name: '',
     company: '',
@@ -29,26 +31,60 @@ const HowToBuyPage = () => {
     setFormState((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (isSubmitted) return;
+    if (isSubmitted || isSubmitting) return;
+    setSubmitError('');
+    setIsSubmitting(true);
 
-    const params = new URLSearchParams({
-      subject: 'Solicitud mayorista Novastone',
-      body: [
-        `Nombre y Apellido: ${formState.name}`,
-        `Empresa: ${formState.company}`,
-        `Rol: ${formState.role}`,
-        `Email: ${formState.email}`,
-        `Teléfono: ${formState.phone || '-'}`,
-        `CUIT: ${formState.cuit}`,
-        `Ciudad / Provincia: ${formState.city}`,
-        `Mensaje: ${formState.message || '-'}`
-      ].join('\n')
-    });
+    try {
+      const internalSecret = import.meta.env.VITE_INTERNAL_EMAIL_SECRET;
+      if (!internalSecret) {
+        throw new Error('Configuración incompleta de envío.');
+      }
 
-    window.location.href = `mailto:${CONTACT_EMAIL}?${params.toString()}`;
-    setIsSubmitted(true);
+      const payload = {
+        name: formState.name,
+        company: formState.company,
+        role: formState.role,
+        email: formState.email,
+        phone: formState.phone,
+        cuit: formState.cuit,
+        city: formState.city,
+        message: formState.message
+      };
+
+      const response = await fetch(HOWTOBUY_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+          'x-internal-secret': internalSecret
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const responseText = await response.text();
+      let responseData = {};
+
+      try {
+        responseData = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        responseData = {};
+      }
+
+      if (!response.ok || responseData.ok !== true) {
+        console.error('HowToBuy submit failed', response.status, responseData || responseText);
+        throw new Error(responseData?.error || 'No pudimos enviar tu consulta. Probá de nuevo.');
+      }
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('HowToBuy submit failed', error);
+      setSubmitError(error?.message || 'No pudimos enviar tu consulta. Probá de nuevo.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,8 +92,9 @@ const HowToBuyPage = () => {
       <div className="howto-hero">
         <h1 className="howto-hero-title">¿Cómo comprar NOVASTONE?</h1>
         <p className="howto-hero-subtitle">
-          Novastone es la marca. Para diseñar tu espacio, te conectamos con
-          marmolerías asociadas que fabrican e instalan tu proyecto.
+          Novastone es piedra sinterizada ultracompacta para proyectos de
+          arquitectura y diseño. Te conectamos con marmolerías asociadas que
+          fabrican e instalan tu proyecto.
         </p>
       </div>
 
@@ -167,8 +204,9 @@ const HowToBuyPage = () => {
                 </label>
               </div>
               <button className="howto-button howto-button-outline" type="submit">
-                Enviar
+                {isSubmitting ? 'Enviando...' : 'Enviar'}
               </button>
+              {submitError ? <p className="howto-error">{submitError}</p> : null}
             </form>
           )}
         </article>
