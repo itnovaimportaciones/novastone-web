@@ -120,9 +120,12 @@
     "folderName": "7AUTUMN MAPLE",
     "thumbnailImage": "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg",
     "detailImages": [
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg",
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
     ],
-    "renderImages": [],
+    "renderImages": [
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg"
+    ],
     "nonRenderImages": [
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
     ],
