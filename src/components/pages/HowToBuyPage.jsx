@@ -59,7 +59,8 @@ const HowToBuyPage = () => {
         headers: {
           'Content-Type': 'application/json',
           apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-          'x-internal-secret': internalSecret
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'x-internal-secret': import.meta.env.VITE_INTERNAL_EMAIL_SECRET
         },
         body: JSON.stringify(payload)
       });
