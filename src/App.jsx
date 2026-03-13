@@ -812,13 +812,15 @@ function App() {
     if (!header) return undefined;
 
     const handleScroll = () => {
-      header.classList.toggle('is-scrolled', window.scrollY > 10);
+      const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
+      const scrollThreshold = isMobileViewport ? 24 : 10;
+      header.classList.toggle('is-scrolled', window.scrollY > scrollThreshold);
     };
 
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentRoute]);
 
   useEffect(() => {
     const local = localStorage.getItem(LOCAL_PRODUCTS_KEY);
