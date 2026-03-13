@@ -168,11 +168,12 @@ const HowToBuyPage = () => {
               </div>
               <div className="howto-form-row">
                 <label>
-                  Teléfono (opcional)
+                  Teléfono
                   <input
                     type="tel"
                     value={formState.phone}
                     onChange={handleChange('phone')}
+                    required
                   />
                 </label>
                 <label>
