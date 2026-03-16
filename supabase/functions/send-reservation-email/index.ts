@@ -24,7 +24,10 @@ serve(async (req) => {
       return json(405, { ok: false, error: "Method not allowed" });
     }
 
+    console.log("HEADERS:", Object.fromEntries(req.headers.entries()));
+    console.log("INTERNAL_EMAIL_SECRET ENV:", Deno.env.get("INTERNAL_EMAIL_SECRET"));
     const secret = req.headers.get("x-internal-secret") ?? "";
+    console.log("SECRET RECEIVED:", secret);
     const expected = Deno.env.get("INTERNAL_EMAIL_SECRET") ?? "";
     if (!expected || secret !== expected) {
       return json(401, { code: 401, message: "Unauthorized (bad secret)" });

@@ -4,8 +4,71 @@ import { parseProductDescription } from '../utils/productParser';
 
 const WHATSAPP_PHONE = '5491124800421';
 
+const rotateImageIfPortrait = (src) =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const { naturalWidth: width, naturalHeight: height } = img;
+      if (!width || !height || width >= height) {
+        resolve(src);
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = height;
+      canvas.height = width;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(src);
+        return;
+      }
+
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(img, -width / 2, -height / 2);
+      resolve(canvas.toDataURL('image/jpeg', 0.95));
+    };
+    img.onerror = () => resolve(src);
+    img.src = src;
+  });
+
+const slugifyMoodboardKey = (value = '') =>
+  String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .replace(/_+/g, '_');
+
+const imageExists = async (src) => {
+  try {
+    const response = await fetch(src, { method: 'GET', cache: 'no-store' });
+    if (!response.ok) return false;
+    const contentType = response.headers.get('content-type') || '';
+    return contentType.toLowerCase().startsWith('image/');
+  } catch {
+    return false;
+  }
+};
+
+const firstExisting = async (candidates = []) => {
+  for (const src of candidates) {
+    // eslint-disable-next-line no-await-in-loop
+    const ok = await imageExists(src);
+    if (ok) return src;
+  }
+  return null;
+};
+
 const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [slabPreviewSrc, setSlabPreviewSrc] = useState('');
+  const [moodboardPreviewImages, setMoodboardPreviewImages] = useState([]);
+  const [isSlabLightboxOpen, setIsSlabLightboxOpen] = useState(false);
+  const [canHoverSlabPreview, setCanHoverSlabPreview] = useState(false);
+  const [isSlabPreviewHovering, setIsSlabPreviewHovering] = useState(false);
+  const [slabPreviewOffset, setSlabPreviewOffset] = useState({ x: 0, y: 0 });
   const sidecartRef = useRef(null);
   const backdropRef = useRef(null);
   const touchStartXRef = useRef(null);
@@ -44,8 +107,19 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
   useEffect(() => {
     if (product) {
       setCurrentImageIndex(0);
+      setIsSlabLightboxOpen(false);
+      setIsSlabPreviewHovering(false);
+      setSlabPreviewOffset({ x: 0, y: 0 });
     }
   }, [product]);
+
+  useEffect(() => {
+    const media = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const sync = () => setCanHoverSlabPreview(media.matches);
+    sync();
+    media.addEventListener('change', sync);
+    return () => media.removeEventListener('change', sync);
+  }, []);
 
   // Prevent body scroll when sidecart is open
   useEffect(() => {
@@ -101,14 +175,72 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
     [safeProduct.description]
   );
 
-  const similarProducts = useMemo(() => {
-    const otherProducts = products.filter((item) => item.id !== safeProduct.id);
-    for (let i = otherProducts.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [otherProducts[i], otherProducts[j]] = [otherProducts[j], otherProducts[i]];
-    }
-    return otherProducts.slice(0, 6);
-  }, [products, safeProduct.id]);
+  useEffect(() => {
+    let active = true;
+
+    const resolvePreviewImages = async () => {
+      const baseKey = slugifyMoodboardKey(safeProduct.name || '');
+      const keyVariants = [baseKey, baseKey.replace(/_/g, '-')].filter(Boolean);
+      const exts = ['jpg', 'jpeg', 'png', 'webp'];
+      const folderImages = [];
+
+      for (const key of keyVariants) {
+        const basePath = `/moodboard/${key}`;
+        for (let i = 1; i <= 6; i += 1) {
+          const candidates = exts.map(
+            (ext) => `${basePath}/${key}_moodboard_${i}.${ext}`
+          );
+          // eslint-disable-next-line no-await-in-loop
+          const found = await firstExisting(candidates);
+          if (found) folderImages.push(found);
+          if (folderImages.length >= 4) break;
+        }
+        if (folderImages.length > 0) break;
+      }
+
+      if (!active) return;
+
+      if (folderImages.length > 0) {
+        setMoodboardPreviewImages(folderImages.slice(0, 4));
+        return;
+      }
+
+      const fallbackCandidates = [
+        ...(renderImages || []),
+        ...(detailImages || []).filter((image) => image !== textureImage),
+        renderImage,
+        fullBodyImage,
+      ]
+        .filter(Boolean)
+        .filter((image, index, list) => list.indexOf(image) === index)
+        .slice(0, 4);
+
+      if (fallbackCandidates.length >= 4) {
+        setMoodboardPreviewImages(fallbackCandidates);
+        return;
+      }
+
+      const seed = fallbackCandidates.length > 0 ? fallbackCandidates : [textureImage].filter(Boolean);
+      const filled = [...fallbackCandidates];
+      while (seed.length > 0 && filled.length < 4) {
+        filled.push(seed[filled.length % seed.length]);
+      }
+      setMoodboardPreviewImages(filled);
+    };
+
+    resolvePreviewImages();
+
+    return () => {
+      active = false;
+    };
+  }, [
+    safeProduct.name,
+    renderImages,
+    detailImages,
+    textureImage,
+    renderImage,
+    fullBodyImage,
+  ]);
 
   const handleNextImage = () => {
     if (totalImages > 0) {
@@ -150,6 +282,45 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
 
   const whatsAppMessage = `Hola, quiero consultar disponibilidad de ${safeProduct.name || ''}.`;
   const whatsAppUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(whatsAppMessage)}`;
+  const textureSlug = slugifyMoodboardKey(safeProduct.name || '');
+  const exploreTextureUrl = textureSlug
+    ? `/inspiracion?texture=${encodeURIComponent(textureSlug)}`
+    : '/inspiracion';
+
+  useEffect(() => {
+    let active = true;
+    if (!textureImage) {
+      setSlabPreviewSrc('');
+      return undefined;
+    }
+
+    rotateImageIfPortrait(textureImage).then((resolvedSrc) => {
+      if (!active) return;
+      setSlabPreviewSrc(resolvedSrc || textureImage);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [textureImage]);
+
+  useEffect(() => {
+    if (!isSlabLightboxOpen) return undefined;
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') {
+        setIsSlabLightboxOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isSlabLightboxOpen]);
+
+  const slabHoverScale = canHoverSlabPreview && isSlabPreviewHovering ? 1.1 : 1;
+  const slabTranslateX =
+    canHoverSlabPreview && isSlabPreviewHovering ? slabPreviewOffset.x : 0;
+  const slabTranslateY =
+    canHoverSlabPreview && isSlabPreviewHovering ? slabPreviewOffset.y : 0;
+  const slabTransform = `translate(${slabTranslateX}%, ${slabTranslateY}%) scale(${slabHoverScale})`;
 
   if (!isOpen || !product) return null;
 
@@ -291,7 +462,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                   href={whatsAppUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center mt-6 px-5 py-3 border border-black text-black uppercase tracking-[0.2em] text-xs"
+                  className="inline-flex items-center justify-center mt-6 px-5 py-3 uppercase tracking-[0.2em] text-xs nav-cta product-sidecart-cta"
                 >
                   Consultar disponibilidad
                 </a>
@@ -299,72 +470,132 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
             </div>
           )}
 
-          {/* Render Images Gallery */}
-          {galleryImages.length > 0 && (
+          {/* Technical slab preview */}
+          {textureImage && (
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Novastone en Espacios</h3>
-              <div className="grid grid-cols-2 gap-4">
-                {galleryImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
-                    onClick={() => {
-                      const imageIndex = galleryImages.indexOf(image);
-                      setCurrentImageIndex(imageIndex);
-                    }}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} - Vista ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = '/placeholder.jpg';
-                      }}
-                    />
-                  </div>
-                ))}
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Placa 3.20 x 1.6 mts
+              </h3>
+              <div
+                className="slab-preview-frame"
+                onMouseEnter={() => {
+                  if (canHoverSlabPreview) setIsSlabPreviewHovering(true);
+                }}
+                onMouseLeave={() => {
+                  if (!canHoverSlabPreview) return;
+                  setIsSlabPreviewHovering(false);
+                  setSlabPreviewOffset({ x: 0, y: 0 });
+                }}
+                onMouseMove={(event) => {
+                  if (!canHoverSlabPreview) return;
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  const px = (event.clientX - rect.left) / rect.width;
+                  const py = (event.clientY - rect.top) / rect.height;
+                  const offsetX = (px - 0.5) * -8;
+                  const offsetY = (py - 0.5) * -6;
+                  setSlabPreviewOffset({ x: offsetX, y: offsetY });
+                }}
+                onClick={() => setIsSlabLightboxOpen(true)}
+              >
+                <img
+                  src={slabPreviewSrc || textureImage}
+                  alt={`${product.name} - Textura completa`}
+                  className="slab-preview-image"
+                  style={{ transform: slabTransform }}
+                  onError={(e) => {
+                    e.target.src = '/placeholder.jpg';
+                  }}
+                />
               </div>
             </div>
           )}
 
-          {similarProducts.length > 0 && (
+          {textureImage && (
             <div className="p-6 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Productos similares
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {similarProducts.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className="text-left border border-gray-200 bg-white"
-                    onClick={() => onSelect?.(item)}
+              <div className="grid grid-cols-12 gap-3">
+                <div className="col-span-5 rounded-lg overflow-hidden bg-gray-100">
+                  <a
+                    href={exploreTextureUrl}
+                    aria-label="Explorar textura"
+                    className="moodboard-preview-cta group"
                   >
-                    <div className="aspect-[4/5] overflow-hidden bg-gray-100">
-                      <img
-                        src={item.thumbnailImage}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src = '/placeholder.jpg';
-                        }}
-                      />
-                    </div>
-                    <div className="p-3">
-                      <span className="block text-xs uppercase tracking-[0.2em] text-gray-500">
-                        {item.category || 'Coleccion'}
+                    <img
+                      src={textureImage}
+                      alt={`${product.name} textura activa`}
+                      className="moodboard-preview-cta-image"
+                      onError={(e) => {
+                        e.target.src = '/placeholder.jpg';
+                      }}
+                    />
+                    <div className="moodboard-preview-cta-overlay">
+                      <span className="moodboard-preview-cta-text">
+                        <span className="moodboard-preview-cta-line">Explorar</span>
+                        <span className="moodboard-preview-cta-line">
+                          Textura
+                          <span className="moodboard-preview-cta-arrow" aria-hidden="true">
+                            &nbsp;&rarr;
+                          </span>
+                        </span>
                       </span>
-                      <p className="text-sm uppercase tracking-[0.12em] text-gray-900 mt-2">
-                        {item.name}
-                      </p>
                     </div>
-                  </button>
-                ))}
+                  </a>
+                </div>
+                <div className="col-span-7 grid grid-cols-2 gap-3">
+                  {moodboardPreviewImages.map((image, index) => (
+                    <div
+                      key={`${product.id}-moodboard-preview-${index + 1}`}
+                      className="rounded-lg overflow-hidden bg-gray-100"
+                    >
+                      <div className="aspect-square">
+                        <img
+                          src={image}
+                          alt={`${product.name} inspiración ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = '/placeholder.jpg';
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {isSlabLightboxOpen && (
+        <div
+          className="slab-lightbox-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Vista ampliada de ${product.name}`}
+          onClick={() => setIsSlabLightboxOpen(false)}
+        >
+          <button
+            type="button"
+            className="slab-lightbox-close"
+            onClick={() => setIsSlabLightboxOpen(false)}
+            aria-label="Cerrar imagen"
+          >
+            &#10005;
+          </button>
+          <div
+            className="slab-lightbox-content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img
+              src={slabPreviewSrc || textureImage}
+              alt={`${product.name} - Textura completa ampliada`}
+              className="slab-lightbox-image"
+              onError={(e) => {
+                e.target.src = '/placeholder.jpg';
+              }}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };

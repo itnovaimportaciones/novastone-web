@@ -5,6 +5,8 @@ import ProductGallery from './components/pages/ProductGallery';
 import InspirationCarousel from './components/pages/InspirationCarousel';
 import HowToBuyPage from './components/pages/HowToBuyPage';
 import AsociadosPage from './components/pages/AsociadosPage';
+import ExploreTexturesPage from './components/pages/ExploreTexturesPage';
+import ExploreTexturesMoodboardPage from './components/pages/ExploreTexturesMoodboardPage';
 import { COLLECTIONS_COPY, COLLECTIONS_ORDER } from './content/collectionsCopy';
 import './App.css';
 
@@ -69,15 +71,34 @@ const Header = () => {
   const mobileTapTimerRef = useRef(null);
   const getActiveMenuHash = () => {
     const hash = (window.location.hash || '').toLowerCase();
+    const path = (window.location.pathname || '').toLowerCase();
     if (hash.startsWith('#productos')) return '#productos';
     if (hash.startsWith('#colecciones')) return '#colecciones';
-    if (hash.startsWith('#inspiracion')) return '#inspiracion';
+    if (hash.startsWith('#proyectos') || path === '/proyectos') {
+      return '#proyectos';
+    }
     if (hash.startsWith('#como-comprar')) return '#como-comprar';
     if (hash.startsWith('#contacto')) return '#contacto';
+    if (
+      hash.startsWith('#inspiracion') ||
+      hash.startsWith('#explorar-texturas') ||
+      path === '/inspiracion' ||
+      path === '/explorar-texturas' ||
+      path === '/explorar-texturas-moodboard'
+    ) {
+      return '#inspiracion';
+    }
+    if (hash.startsWith('#explorar-texturas-orb') || path === '/explorar-texturas-orb') {
+      return '#inspiracion';
+    }
     return '#novastone';
   };
   const handleHomeClick = (e) => {
     e.preventDefault();
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
     window.location.hash = '';
     window.scrollTo(0, 0);
     setIsMobileMenuOpen(false);
@@ -103,6 +124,36 @@ const Header = () => {
       mobileTapTimerRef.current = null;
     }, 220);
   };
+  const handleExploreClick = (e) => {
+    e.preventDefault();
+    window.history.pushState({}, '', '/inspiracion');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo(0, 0);
+    setIsMobileMenuOpen(false);
+  };
+  const handleProjectsClick = (e) => {
+    e.preventDefault();
+    window.history.pushState({}, '', '/proyectos');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo(0, 0);
+    setIsMobileMenuOpen(false);
+  };
+  const handleMobileProjectsClick = (e) => {
+    e.preventDefault();
+    if (mobileTapTimerRef.current) {
+      window.clearTimeout(mobileTapTimerRef.current);
+      mobileTapTimerRef.current = null;
+    }
+    setTappedMobileHash('#proyectos');
+    mobileTapTimerRef.current = window.setTimeout(() => {
+      window.history.pushState({}, '', '/proyectos');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+      window.scrollTo(0, 0);
+      setIsMobileMenuOpen(false);
+      setTappedMobileHash('');
+      mobileTapTimerRef.current = null;
+    }, 220);
+  };
   const mobileWhatsAppUrl = `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
   useEffect(() => {
@@ -111,7 +162,11 @@ const Header = () => {
     };
     syncActiveHash();
     window.addEventListener('hashchange', syncActiveHash);
-    return () => window.removeEventListener('hashchange', syncActiveHash);
+    window.addEventListener('popstate', syncActiveHash);
+    return () => {
+      window.removeEventListener('hashchange', syncActiveHash);
+      window.removeEventListener('popstate', syncActiveHash);
+    };
   }, []);
 
   useEffect(() => {
@@ -213,7 +268,10 @@ const Header = () => {
             <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
               Colecciones
             </a>
-            <a href="#inspiracion">Inspiración</a>
+            <a href="/proyectos" onClick={handleProjectsClick}>Proyectos</a>
+            <a href="/inspiracion" onClick={handleExploreClick}>
+              Inspiración
+            </a>
             <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
               ¿Cómo Comprar?
             </a>
@@ -280,9 +338,17 @@ const Header = () => {
                   <span>Colecciones</span>
                 </a>
                 <a
-                  href="#inspiracion"
-                  className={`mobile-drawer-link ${activeMenuHash === '#inspiracion' ? 'is-active' : ''} ${tappedMobileHash === '#inspiracion' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('#inspiracion')}
+                  href="/proyectos"
+                  className={`mobile-drawer-link ${activeMenuHash === '#proyectos' ? 'is-active' : ''} ${tappedMobileHash === '#proyectos' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileProjectsClick}
+                >
+                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
+                  <span>Proyectos</span>
+                </a>
+                <a
+                  href="/inspiracion"
+                  className={`mobile-drawer-link ${activeMenuHash === '#inspiracion' ? 'is-active' : ''}`}
+                  onClick={handleExploreClick}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
                   <span>Inspiración</span>
@@ -766,38 +832,69 @@ function App() {
     );
   }, []);
 
-  // Handle hash-based routing
+  // Handle hash/path routing
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleLocationChange = () => {
       const hash = window.location.hash;
+      const pathname = window.location.pathname;
+      const normalizedPath = pathname.toLowerCase();
+
+      if (
+        normalizedPath === '/explorar-texturas' ||
+        normalizedPath === '/explorar-texturas-moodboard'
+      ) {
+        const search = window.location.search || '';
+        window.history.replaceState({}, '', `/inspiracion${search}`);
+      }
+
       if (hash.startsWith('#productos')) {
         setCurrentRoute('productos');
       } else if (hash.startsWith('#colecciones')) {
         setCurrentRoute('colecciones');
-      } else if (hash.startsWith('#inspiracion')) {
-        setCurrentRoute('inspiracion');
+      } else if (
+        hash.startsWith('#proyectos') ||
+        normalizedPath === '/proyectos'
+      ) {
+        setCurrentRoute('proyectos');
+      } else if (
+        hash.startsWith('#inspiracion') ||
+        hash.startsWith('#explorar-texturas') ||
+        normalizedPath === '/inspiracion' ||
+        normalizedPath === '/explorar-texturas' ||
+        normalizedPath === '/explorar-texturas-moodboard'
+      ) {
+        setCurrentRoute('explorar-texturas');
       } else if (hash.startsWith('#como-comprar')) {
         setCurrentRoute('como-comprar');
       } else if (hash.startsWith('#asociados')) {
         setCurrentRoute('asociados');
+      } else if (
+        hash.startsWith('#explorar-texturas-orb') ||
+        pathname === '/explorar-texturas-orb'
+      ) {
+        setCurrentRoute('explorar-texturas-orb');
       } else {
         setCurrentRoute('home');
       }
     };
 
-    // Check initial hash
-    handleHashChange();
+    // Check initial route
+    handleLocationChange();
 
-    // Listen for hash changes
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    // Listen for location changes
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, []);
 
   // Toggle body background for productos/collections routes (avoid sand borders around black page)
   useEffect(() => {
     document.body.classList.toggle('productos-route', currentRoute === 'productos');
     document.body.classList.toggle('collections-route', currentRoute === 'colecciones');
-    document.body.classList.toggle('inspiration-route', currentRoute === 'inspiracion');
+    document.body.classList.toggle('inspiration-route', currentRoute === 'proyectos');
     return () => {
       document.body.classList.remove('productos-route');
       document.body.classList.remove('collections-route');
@@ -864,7 +961,7 @@ function App() {
   }
 
   // Render inspiration carousel page
-  if (currentRoute === 'inspiracion') {
+  if (currentRoute === 'proyectos') {
     return (
       <div className="App">
         <Header />
@@ -912,6 +1009,34 @@ function App() {
         <Header />
         <main>
           <CollectionsPage />
+        </main>
+        <Footer />
+        <WhatsAppFab />
+        <Analytics />
+      </div>
+    );
+  }
+
+  if (currentRoute === 'explorar-texturas') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <ExploreTexturesMoodboardPage />
+        </main>
+        <Footer />
+        <WhatsAppFab />
+        <Analytics />
+      </div>
+    );
+  }
+
+  if (currentRoute === 'explorar-texturas-orb') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <ExploreTexturesPage />
         </main>
         <Footer />
         <WhatsAppFab />

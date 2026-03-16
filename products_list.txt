@@ -1,0 +1,143 @@
+name: ARMANI DEEP GREY
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: ATYs GREY
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: AUTUMN MAPLE
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: Beige Stone
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: Brazilianite
+product_code: -
+collection: -
+category: -
+thickness: 12MM
+
+name: BVLGARI BLACK
+product_code: -
+collection: -
+category: 20mm
+thickness: 20mm
+
+name: CALACATTA ROMA
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: CARMEN
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: CHANEL
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: FENDI WHITE
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: Laurent
+product_code: -
+collection: -
+category: 20mm
+thickness: 20mm
+
+name: Limestone
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: LOUISKIN
+product_code: -
+collection: -
+category: 20mm
+thickness: 20mm
+
+name: NATA
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: Nero Portoro
+product_code: -
+collection: -
+category: 20mm
+thickness: 20mm
+
+name: NEW TAJ MAJAL
+product_code: -
+collection: -
+category: -
+thickness: 12MM
+
+name: PANDORA
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: Portland
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: PURE BLACK
+product_code: -
+collection: -
+category: 20mm
+thickness: 20mm
+
+name: PURE WHITE
+product_code: -
+collection: -
+category: 20mm
+thickness: 20mm
+
+name: ROYAL GREY
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: SPANISH GREY
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: WHITE TRAVERTINE
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm
+
+name: Yellow Travertine
+product_code: -
+collection: -
+category: 12mm
+thickness: 12mm

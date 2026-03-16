@@ -90,8 +90,8 @@ const InspirationCarousel = () => {
   return (
     <div className="inspiration-carousel-page">
       <div className="inspiration-carousel-header">
-        <h1>Inspiración</h1>
-        <p className="inspiration-subtitle">Espacios que elevan la experiencia cotidiana.</p>
+        <h1>Proyectos</h1>
+        <p className="inspiration-subtitle">Novastone pensado en proyectos que elevan la experiencia cotidiana.</p>
       </div>
 
       <div className="inspiration-carousel-container">
