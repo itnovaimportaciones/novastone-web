@@ -3304,8 +3304,8 @@ main {
   }
 
   .texture-moodboard-stage {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 100%;
     height: auto;
@@ -3313,8 +3313,9 @@ main {
   }
 
   .texture-moodboard-feature {
-    grid-column: 1;
-    grid-row: 1;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
     transform: none;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
   }
@@ -3323,19 +3324,14 @@ main {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    grid-template-columns:
-      minmax(0, var(--mc1, 1fr))
-      minmax(0, var(--mc2, 1fr));
-    grid-template-rows:
-      minmax(120px, var(--mr1, 1fr))
-      minmax(120px, var(--mr2, 1fr))
-      minmax(120px, var(--mr3, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: repeat(3, minmax(120px, 1fr)) !important;
     grid-template-areas:
       'a b'
       'c d'
       'e e';
-    grid-column: 1;
-    grid-row: 2;
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .texture-moodboard-divider {
@@ -3344,6 +3340,10 @@ main {
 
   .texture-moodboard-card {
     min-width: 0;
+  }
+
+  .texture-moodboard-mosaic.is-hovering .texture-moodboard-card {
+    opacity: 1;
   }
 
   .texture-moodboard-mosaic.layout-vertical_bias,
@@ -3358,12 +3358,12 @@ main {
 }
 
 @media (max-width: 640px) {
-  .texture-moodboard-feature {
-    min-height: 340px;
+  .texture-moodboard-panel {
+    padding: 8px;
   }
 
   .texture-moodboard-mosaic {
-    grid-template-rows: repeat(3, minmax(110px, 1fr));
+    grid-template-rows: repeat(3, minmax(104px, 1fr)) !important;
   }
 
   .texture-rail-item {
