@@ -71,7 +71,7 @@ const ExploreTexturesMoodboardPage = () => {
     <section className="explore-moodboard-page">
       <div className="explore-moodboard-intro explore-intro">
         <p className="explore-intro-eyebrow">Inspiración curada con IA</p>
-        <h1 className="explore-intro-title">Inspiración</h1>
+        <h1 className="explore-intro-title">INSPIRACIÓN</h1>
         <p className="explore-intro-copy">
           Una selección de referencias visuales para descubrir cómo combinar materiales,
           colores y terminaciones en espacios contemporáneos.

@@ -77,7 +77,7 @@ const Header = () => {
     if (hash.startsWith('#proyectos') || path === '/proyectos') {
       return '#proyectos';
     }
-    if (hash.startsWith('#como-comprar')) return '#como-comprar';
+    if (hash.startsWith('#como-comprar') || path === '/como-comprar') return '#como-comprar';
     if (hash.startsWith('#contacto')) return '#contacto';
     if (
       hash.startsWith('#inspiracion') ||
@@ -864,7 +864,10 @@ function App() {
         normalizedPath === '/explorar-texturas-moodboard'
       ) {
         setCurrentRoute('explorar-texturas');
-      } else if (hash.startsWith('#como-comprar')) {
+      } else if (
+        hash.startsWith('#como-comprar') ||
+        normalizedPath === '/como-comprar'
+      ) {
         setCurrentRoute('como-comprar');
       } else if (hash.startsWith('#asociados')) {
         setCurrentRoute('asociados');
