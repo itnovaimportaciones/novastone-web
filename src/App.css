@@ -3278,17 +3278,51 @@ main {
 @media (max-width: 900px) {
   .explore-moodboard-page {
     padding: 104px 16px 52px;
+    overflow-x: hidden;
+  }
+
+  .texture-moodboard-fullwidth {
+    width: 100%;
+    left: 0;
+    transform: none;
+    overflow-x: clip;
+  }
+
+  .texture-moodboard-panel {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .texture-moodboard-feature {
     min-height: 360px;
+    min-width: 0;
   }
 
   .texture-moodboard-overlay h2 {
     font-size: clamp(24px, 8vw, 38px);
   }
 
+  .texture-moodboard-stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    gap: 10px;
+  }
+
+  .texture-moodboard-feature {
+    grid-column: 1;
+    grid-row: 1;
+    transform: none;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+  }
+
   .texture-moodboard-mosaic {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     grid-template-columns:
       minmax(0, var(--mc1, 1fr))
       minmax(0, var(--mc2, 1fr));
@@ -3300,26 +3334,16 @@ main {
       'a b'
       'c d'
       'e e';
-    grid-column: 1 / span 2;
-    grid-row: auto;
-  }
-
-  .texture-moodboard-stage {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 340px auto;
-    height: auto;
-    gap: 10px;
-  }
-
-  .texture-moodboard-feature {
-    grid-column: 1 / span 2;
-    grid-row: 1;
-    transform: none;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+    grid-column: 1;
+    grid-row: 2;
   }
 
   .texture-moodboard-divider {
     display: none;
+  }
+
+  .texture-moodboard-card {
+    min-width: 0;
   }
 
   .texture-moodboard-mosaic.layout-vertical_bias,
