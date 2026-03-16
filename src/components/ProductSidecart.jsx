@@ -286,6 +286,13 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
   const exploreTextureUrl = textureSlug
     ? `/inspiracion?texture=${encodeURIComponent(textureSlug)}`
     : '/inspiracion';
+  const handleExploreTextureNavigation = (event) => {
+    event.preventDefault();
+    window.history.pushState({}, '', exploreTextureUrl);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo(0, 0);
+    onClose?.();
+  };
 
   useEffect(() => {
     let active = true;
@@ -518,6 +525,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                     href={exploreTextureUrl}
                     aria-label="Explorar textura"
                     className="moodboard-preview-cta group"
+                    onClick={handleExploreTextureNavigation}
                   >
                     <img
                       src={textureImage}
