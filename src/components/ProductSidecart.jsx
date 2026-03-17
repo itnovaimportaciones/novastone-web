@@ -459,7 +459,10 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                           <span>{item.label}</span>
                         </div>
                         <p className="text-gray-700 mt-2 leading-relaxed">
-                          {item.value}
+                          {item.label === 'Tipo de Material' &&
+                          String(item.value).trim().toLowerCase() === 'ultracompacto'
+                            ? 'Piedra Sinterizada Ultracompactada'
+                            : item.value}
                         </p>
                       </div>
                     ) : null

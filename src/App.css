@@ -70,14 +70,6 @@ body.collections-route .App {
   width: auto;
 }
 
-body.inspiration-route .brand-logo {
-  filter: none;
-}
-
-body.inspiration-route .site-header.is-scrolled .brand-logo {
-  filter: brightness(0.2);
-}
-
 .brand a:hover {
   opacity: 0.8;
 }
@@ -556,12 +548,38 @@ body.mobile-menu-open {
   color: var(--color-ink);
 }
 
+.site-header.is-scrolled .brand-logo {
+  filter: brightness(0);
+}
+
 .site-header.is-scrolled .nav-links a {
   color: var(--color-ink);
 }
 
 .site-header.is-scrolled .nav-cta {
   border-color: var(--color-ink);
+}
+
+body.inspiration-route .site-header,
+body.inspiration-route .site-header.is-scrolled {
+  background: rgba(8, 8, 8, 0.92);
+  border-bottom: 1px solid rgba(245, 241, 236, 0.2);
+  backdrop-filter: blur(6px);
+}
+
+body.inspiration-route .site-header .nav-links a,
+body.inspiration-route .site-header.is-scrolled .nav-links a {
+  color: #ffffff;
+}
+
+body.inspiration-route .site-header .nav-cta,
+body.inspiration-route .site-header.is-scrolled .nav-cta {
+  border-color: #ffffff;
+}
+
+body.inspiration-route .site-header .brand-logo,
+body.inspiration-route .site-header.is-scrolled .brand-logo {
+  filter: none;
 }
 
 main {
@@ -2265,6 +2283,10 @@ main {
 
   .site-header.is-scrolled .mobile-menu-toggle {
     color: var(--color-ink);
+  }
+
+  body.inspiration-route .site-header.is-scrolled .mobile-menu-toggle {
+    color: #ffffff;
   }
 
   main {
