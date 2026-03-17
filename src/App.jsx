@@ -64,34 +64,19 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDrawerMounted, setIsDrawerMounted] = useState(false);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [activeMenuHash, setActiveMenuHash] = useState('#novastone');
-  const [tappedMobileHash, setTappedMobileHash] = useState('');
+  const [activeMenuPath, setActiveMenuPath] = useState('/');
+  const [tappedMobilePath, setTappedMobilePath] = useState('');
   const closeTimerRef = useRef(null);
   const openRafRef = useRef(null);
   const mobileTapTimerRef = useRef(null);
-  const getActiveMenuHash = () => {
-    const hash = (window.location.hash || '').toLowerCase();
+  const getActiveMenuPath = () => {
     const path = (window.location.pathname || '').toLowerCase();
-    if (hash.startsWith('#productos')) return '#productos';
-    if (hash.startsWith('#colecciones')) return '#colecciones';
-    if (hash.startsWith('#proyectos') || path === '/proyectos') {
-      return '#proyectos';
-    }
-    if (hash.startsWith('#como-comprar') || path === '/como-comprar') return '#como-comprar';
-    if (hash.startsWith('#contacto')) return '#contacto';
-    if (
-      hash.startsWith('#inspiracion') ||
-      hash.startsWith('#explorar-texturas') ||
-      path === '/inspiracion' ||
-      path === '/explorar-texturas' ||
-      path === '/explorar-texturas-moodboard'
-    ) {
-      return '#inspiracion';
-    }
-    if (hash.startsWith('#explorar-texturas-orb') || path === '/explorar-texturas-orb') {
-      return '#inspiracion';
-    }
-    return '#novastone';
+    if (path === '/productos') return '/productos';
+    if (path === '/colecciones') return '/colecciones';
+    if (path === '/proyectos') return '/proyectos';
+    if (path === '/inspiracion' || path === '/explorar-texturas-orb') return '/inspiracion';
+    if (path === '/como-comprar') return '/como-comprar';
+    return '/';
   };
   const handleHomeClick = (e) => {
     e.preventDefault();
@@ -99,28 +84,32 @@ const Header = () => {
       window.history.pushState({}, '', '/');
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
-    window.location.hash = '';
+    if (window.location.hash) {
+      window.history.replaceState({}, '', window.location.pathname + window.location.search);
+    }
     window.scrollTo(0, 0);
     setIsMobileMenuOpen(false);
   };
-  const handleNavClick = (hash) => (e) => {
+  const handleNavClick = (path) => (e) => {
     e.preventDefault();
-    window.location.hash = hash;
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo(0, 0);
     setIsMobileMenuOpen(false);
   };
-  const handleMobileNavClick = (hash) => (e) => {
+  const handleMobileNavClick = (path) => (e) => {
     e.preventDefault();
     if (mobileTapTimerRef.current) {
       window.clearTimeout(mobileTapTimerRef.current);
       mobileTapTimerRef.current = null;
     }
-    setTappedMobileHash(hash);
+    setTappedMobilePath(path);
     mobileTapTimerRef.current = window.setTimeout(() => {
-      window.location.hash = hash;
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
       window.scrollTo(0, 0);
       setIsMobileMenuOpen(false);
-      setTappedMobileHash('');
+      setTappedMobilePath('');
       mobileTapTimerRef.current = null;
     }, 220);
   };
@@ -144,13 +133,13 @@ const Header = () => {
       window.clearTimeout(mobileTapTimerRef.current);
       mobileTapTimerRef.current = null;
     }
-    setTappedMobileHash('#proyectos');
+    setTappedMobilePath('/proyectos');
     mobileTapTimerRef.current = window.setTimeout(() => {
       window.history.pushState({}, '', '/proyectos');
       window.dispatchEvent(new PopStateEvent('popstate'));
       window.scrollTo(0, 0);
       setIsMobileMenuOpen(false);
-      setTappedMobileHash('');
+      setTappedMobilePath('');
       mobileTapTimerRef.current = null;
     }, 220);
   };
@@ -158,13 +147,11 @@ const Header = () => {
 
   useEffect(() => {
     const syncActiveHash = () => {
-      setActiveMenuHash(getActiveMenuHash());
+      setActiveMenuPath(getActiveMenuPath());
     };
     syncActiveHash();
-    window.addEventListener('hashchange', syncActiveHash);
     window.addEventListener('popstate', syncActiveHash);
     return () => {
-      window.removeEventListener('hashchange', syncActiveHash);
       window.removeEventListener('popstate', syncActiveHash);
     };
   }, []);
@@ -252,7 +239,7 @@ const Header = () => {
       <header className="site-header">
         <div className="header-inner">
           <div className="brand">
-            <a href="#" onClick={handleHomeClick}>
+            <a href="/" onClick={handleHomeClick}>
               <img
                 className="brand-logo"
                 src="/LOGO%20SVG%20NOVASTONE.svg"
@@ -261,21 +248,21 @@ const Header = () => {
             </a>
           </div>
           <nav className="nav-links">
-            <a href="#novastone">Novastone</a>
-            <a href="#productos" onClick={handleNavClick('#productos')}>
+            <a href="/" onClick={handleHomeClick}>Novastone</a>
+            <a href="/productos" onClick={handleNavClick('/productos')}>
               Productos
             </a>
-            <a href="#colecciones" onClick={handleNavClick('#colecciones')}>
+            <a href="/colecciones" onClick={handleNavClick('/colecciones')}>
               Colecciones
             </a>
             <a href="/proyectos" onClick={handleProjectsClick}>Proyectos</a>
             <a href="/inspiracion" onClick={handleExploreClick}>
               Inspiración
             </a>
-            <a href="#como-comprar" onClick={handleNavClick('#como-comprar')}>
+            <a href="/como-comprar" onClick={handleNavClick('/como-comprar')}>
               ¿Cómo Comprar?
             </a>
-            <a href="#contacto" className="nav-cta">Contactar</a>
+            <a href="/como-comprar" onClick={handleNavClick('/como-comprar')} className="nav-cta">Contactar</a>
           </nav>
           <button
             type="button"
@@ -297,7 +284,7 @@ const Header = () => {
           />
           <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
             <div className="mobile-drawer-header">
-              <a className="mobile-drawer-brand" href="#" onClick={handleHomeClick}>
+              <a className="mobile-drawer-brand" href="/" onClick={handleHomeClick}>
                 <img
                   className="mobile-drawer-brand-logo"
                   src="/LOGO%20SVG%20NOVASTONE.svg"
@@ -322,24 +309,24 @@ const Header = () => {
             <nav className="mobile-drawer-content">
               <div className="mobile-drawer-links mobile-drawer-links-primary">
                 <a
-                  href="#productos"
-                  className={`mobile-drawer-link ${activeMenuHash === '#productos' ? 'is-active' : ''} ${tappedMobileHash === '#productos' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('#productos')}
+                  href="/productos"
+                  className={`mobile-drawer-link ${activeMenuPath === '/productos' ? 'is-active' : ''} ${tappedMobilePath === '/productos' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('/productos')}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
                   <span>Productos</span>
                 </a>
                 <a
-                  href="#colecciones"
-                  className={`mobile-drawer-link ${activeMenuHash === '#colecciones' ? 'is-active' : ''} ${tappedMobileHash === '#colecciones' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('#colecciones')}
+                  href="/colecciones"
+                  className={`mobile-drawer-link ${activeMenuPath === '/colecciones' ? 'is-active' : ''} ${tappedMobilePath === '/colecciones' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('/colecciones')}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
                   <span>Colecciones</span>
                 </a>
                 <a
                   href="/proyectos"
-                  className={`mobile-drawer-link ${activeMenuHash === '#proyectos' ? 'is-active' : ''} ${tappedMobileHash === '#proyectos' ? 'is-tapped' : ''}`}
+                  className={`mobile-drawer-link ${activeMenuPath === '/proyectos' ? 'is-active' : ''} ${tappedMobilePath === '/proyectos' ? 'is-tapped' : ''}`}
                   onClick={handleMobileProjectsClick}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
@@ -347,7 +334,7 @@ const Header = () => {
                 </a>
                 <a
                   href="/inspiracion"
-                  className={`mobile-drawer-link ${activeMenuHash === '#inspiracion' ? 'is-active' : ''}`}
+                  className={`mobile-drawer-link ${activeMenuPath === '/inspiracion' ? 'is-active' : ''}`}
                   onClick={handleExploreClick}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
@@ -357,17 +344,17 @@ const Header = () => {
               <div className="mobile-drawer-divider" aria-hidden="true" />
               <div className="mobile-drawer-links mobile-drawer-links-secondary">
                 <a
-                  href="#como-comprar"
-                  className={`mobile-drawer-link ${activeMenuHash === '#como-comprar' ? 'is-active' : ''} ${tappedMobileHash === '#como-comprar' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('#como-comprar')}
+                  href="/como-comprar"
+                  className={`mobile-drawer-link ${activeMenuPath === '/como-comprar' ? 'is-active' : ''} ${tappedMobilePath === '/como-comprar' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('/como-comprar')}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
                   <span>¿Cómo Comprar?</span>
                 </a>
                 <a
-                  href="#contacto"
-                  className={`mobile-drawer-link ${activeMenuHash === '#contacto' ? 'is-active' : ''} ${tappedMobileHash === '#contacto' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('#contacto')}
+                  href="/como-comprar"
+                  className={`mobile-drawer-link ${activeMenuPath === '/como-comprar' ? 'is-active' : ''} ${tappedMobilePath === '/como-comprar' ? 'is-tapped' : ''}`}
+                  onClick={handleMobileNavClick('/como-comprar')}
                 >
                   <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
                   <span>Contactar</span>
@@ -602,7 +589,9 @@ const ProductModal = ({ product, products = [], onClose, onSelect }) => {
 
 const StonesSection = () => {
   const handleCategoryClick = (category) => {
-    window.location.hash = `#productos?collection=${category}`;
+    window.history.pushState({}, '', `/productos?collection=${category}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -838,36 +827,48 @@ function App() {
       const hash = window.location.hash;
       const pathname = window.location.pathname;
       const normalizedPath = pathname.toLowerCase();
+      let effectivePath = normalizedPath;
+
+      const hashQueryIndex = hash.indexOf('?');
+      const hashOnly = (hashQueryIndex >= 0 ? hash.slice(0, hashQueryIndex) : hash).toLowerCase();
+      const hashQuery = hashQueryIndex >= 0 ? hash.slice(hashQueryIndex + 1) : '';
+      const legacyHashRoutes = {
+        '#productos': '/productos',
+        '#colecciones': '/colecciones',
+        '#proyectos': '/proyectos',
+        '#inspiracion': '/inspiracion',
+        '#explorar-texturas': '/inspiracion',
+        '#como-comprar': '/como-comprar',
+      };
+
+      if (legacyHashRoutes[hashOnly]) {
+        const search = hashQuery ? `?${hashQuery}` : window.location.search || '';
+        window.history.replaceState({}, '', `${legacyHashRoutes[hashOnly]}${search}`);
+        effectivePath = legacyHashRoutes[hashOnly];
+      }
 
       if (
-        normalizedPath === '/explorar-texturas' ||
-        normalizedPath === '/explorar-texturas-moodboard'
+        effectivePath === '/explorar-texturas' ||
+        effectivePath === '/explorar-texturas-moodboard'
       ) {
         const search = window.location.search || '';
         window.history.replaceState({}, '', `/inspiracion${search}`);
+        effectivePath = '/inspiracion';
       }
 
-      if (hash.startsWith('#productos')) {
+      if (effectivePath === '/productos') {
         setCurrentRoute('productos');
-      } else if (hash.startsWith('#colecciones')) {
+      } else if (effectivePath === '/colecciones') {
         setCurrentRoute('colecciones');
-      } else if (
-        hash.startsWith('#proyectos') ||
-        normalizedPath === '/proyectos'
-      ) {
+      } else if (effectivePath === '/proyectos') {
         setCurrentRoute('proyectos');
       } else if (
-        hash.startsWith('#inspiracion') ||
-        hash.startsWith('#explorar-texturas') ||
-        normalizedPath === '/inspiracion' ||
-        normalizedPath === '/explorar-texturas' ||
-        normalizedPath === '/explorar-texturas-moodboard'
+        effectivePath === '/inspiracion' ||
+        effectivePath === '/explorar-texturas' ||
+        effectivePath === '/explorar-texturas-moodboard'
       ) {
         setCurrentRoute('explorar-texturas');
-      } else if (
-        hash.startsWith('#como-comprar') ||
-        normalizedPath === '/como-comprar'
-      ) {
+      } else if (effectivePath === '/como-comprar') {
         setCurrentRoute('como-comprar');
       } else if (hash.startsWith('#asociados')) {
         setCurrentRoute('asociados');
