@@ -2299,6 +2299,10 @@ main {
     gap: 80px;
   }
 
+  body.home-route main {
+    padding-top: 0;
+  }
+
   .modal-gallery {
     grid-template-columns: 1fr;
   }
