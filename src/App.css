@@ -3326,6 +3326,10 @@ main {
     overflow-x: hidden;
   }
 
+  body.inspiracion-route .site-footer {
+    margin-top: 0;
+  }
+
   .explore-moodboard-page {
     padding: 104px 16px 52px;
     overflow-x: hidden;
@@ -3414,6 +3418,11 @@ main {
 
   .texture-moodboard-mosaic {
     grid-template-rows: repeat(3, minmax(104px, 1fr)) !important;
+  }
+
+  body.inspiracion-route .texture-rail-item {
+    width: 148px;
+    min-width: 148px;
   }
 
   .texture-rail-item {
