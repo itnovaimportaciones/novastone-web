@@ -569,15 +569,25 @@ const AsociadosPage = () => {
       throw new Error('MISSING_INTERNAL_EMAIL_SECRET');
     }
 
-    const {
-      data: { session }
-    } = await supabase.auth.getSession();
-    console.log('SESSION:', session);
-    if (!session) {
-      throw new Error('NO_SESSION');
+    const { data, error } = await supabase.auth.refreshSession();
+    if (error) {
+      throw new Error(`SESSION_REFRESH_FAILED: ${error.message}`);
     }
-    if (!session.access_token) {
-      throw new Error('NO_SESSION_ACCESS_TOKEN');
+    const session = data?.session;
+    console.log('SESSION_FULL', session);
+    console.log('ACCESS_TOKEN_RAW', session?.access_token);
+    console.log(
+      'AUTH_HEADER_FINAL',
+      session?.access_token ? `Bearer ${session.access_token}` : null
+    );
+    if (!session || !session.access_token) {
+      throw new Error('NO_VALID_SESSION_AFTER_REFRESH');
+    }
+    if (typeof session.access_token !== 'string') {
+      throw new Error('INVALID_ACCESS_TOKEN_TYPE');
+    }
+    if (!session.access_token.includes('.')) {
+      throw new Error('INVALID_ACCESS_TOKEN_FORMAT');
     }
 
     const url = `${supabaseUrl}/functions/v1/send-reservation-email`;
