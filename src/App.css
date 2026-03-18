@@ -2303,6 +2303,10 @@ main {
     padding-top: 0;
   }
 
+  body.inspiracion-route main {
+    padding-top: 0;
+  }
+
   .modal-gallery {
     grid-template-columns: 1fr;
   }

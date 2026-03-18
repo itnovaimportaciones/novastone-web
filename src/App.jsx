@@ -900,11 +900,13 @@ function App() {
     document.body.classList.toggle('collections-route', currentRoute === 'colecciones');
     document.body.classList.toggle('inspiration-route', currentRoute === 'proyectos');
     document.body.classList.toggle('home-route', currentRoute === 'home');
+    document.body.classList.toggle('inspiracion-route', currentRoute === 'explorar-texturas');
     return () => {
       document.body.classList.remove('productos-route');
       document.body.classList.remove('collections-route');
       document.body.classList.remove('inspiration-route');
       document.body.classList.remove('home-route');
+      document.body.classList.remove('inspiracion-route');
     };
   }, [currentRoute]);
 
