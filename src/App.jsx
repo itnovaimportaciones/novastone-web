@@ -899,10 +899,12 @@ function App() {
     document.body.classList.toggle('productos-route', currentRoute === 'productos');
     document.body.classList.toggle('collections-route', currentRoute === 'colecciones');
     document.body.classList.toggle('inspiration-route', currentRoute === 'proyectos');
+    document.body.classList.toggle('home-route', currentRoute === 'home');
     return () => {
       document.body.classList.remove('productos-route');
       document.body.classList.remove('collections-route');
       document.body.classList.remove('inspiration-route');
+      document.body.classList.remove('home-route');
     };
   }, [currentRoute]);
 

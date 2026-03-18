@@ -2256,6 +2256,11 @@ main {
     align-items: center;
   }
 
+  body.home-route .site-header:not(.is-scrolled) .header-inner {
+    padding: 20px 22px 14px;
+    min-height: 74px;
+  }
+
   .brand {
     display: flex;
     align-items: center;
