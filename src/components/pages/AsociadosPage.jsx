@@ -568,21 +568,29 @@ const AsociadosPage = () => {
     if (!internalSecret) {
       throw new Error('MISSING_INTERNAL_EMAIL_SECRET');
     }
+
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+    if (!accessToken) {
+      throw new Error('NO_SESSION_ACCESS_TOKEN');
+    }
+
     const url = `${supabaseUrl}/functions/v1/send-reservation-email`;
-    console.log('EMAIL_HEADERS_v3', {
-      'Content-Type': 'application/json',
-      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-      'x-internal-secret': import.meta.env.VITE_INTERNAL_EMAIL_SECRET
+    console.log('send-reservation-email request', {
+      hasAccessToken: Boolean(accessToken),
+      hasInternalSecret: Boolean(internalSecret),
+      url,
     });
 
     const res = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
         apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        'x-internal-secret': import.meta.env.VITE_INTERNAL_EMAIL_SECRET
+        'x-internal-secret': internalSecret
       },
       body: JSON.stringify(payload)
     });

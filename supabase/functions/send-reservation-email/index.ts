@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,6 +17,8 @@ function json(status: number, body: Record<string, unknown>) {
 
 serve(async (req) => {
   try {
+    console.log("send-reservation-email:start");
+
     if (req.method === "OPTIONS") {
       return new Response("ok", { status: 200, headers: corsHeaders });
     }
@@ -24,28 +27,60 @@ serve(async (req) => {
       return json(405, { ok: false, error: "Method not allowed" });
     }
 
-    console.log("HEADERS:", Object.fromEntries(req.headers.entries()));
-    console.log("INTERNAL_EMAIL_SECRET ENV:", Deno.env.get("INTERNAL_EMAIL_SECRET"));
-    const secret = req.headers.get("x-internal-secret") ?? "";
-    console.log("SECRET RECEIVED:", secret);
-    const expected = Deno.env.get("INTERNAL_EMAIL_SECRET") ?? "";
-    if (!expected || secret !== expected) {
-      return json(401, { code: 401, message: "Unauthorized (bad secret)" });
+    console.log("hasAuthHeader", !!req.headers.get("Authorization"));
+    const INTERNAL_EMAIL_SECRET = Deno.env.get("INTERNAL_EMAIL_SECRET");
+    if (!INTERNAL_EMAIL_SECRET) {
+      return json(500, { ok: false, error: "Missing INTERNAL_EMAIL_SECRET" });
     }
 
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
-    const FROM = Deno.env.get("RESERVATION_EMAIL_FROM") ?? Deno.env.get("RESEND_FROM") ?? "";
+    const secret = req.headers.get("x-internal-secret") ?? "";
+    if (secret !== INTERNAL_EMAIL_SECRET) {
+      console.error("Unauthorized: bad internal secret");
+      return json(401, { ok: false, error: "Unauthorized" });
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return json(500, { ok: false, error: "Missing SUPABASE_URL or SUPABASE_ANON_KEY env" });
+    }
+    if (!supabaseServiceRoleKey) {
+      return json(500, { ok: false, error: "Missing SUPABASE_SERVICE_ROLE_KEY" });
+    }
+
+    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: {
+          Authorization: req.headers.get("Authorization") ?? "",
+        },
+      },
+    });
+    const { data: authData, error: authError } = await authClient.auth.getUser();
+    if (authError || !authData?.user) {
+      console.error("Unauthorized: auth.getUser failed", authError?.message ?? "missing user");
+      return json(401, { ok: false, error: "Unauthorized" });
+    }
+    const user = authData.user;
+    console.log("userEmail", user?.email ?? null);
+    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const RESERVATION_EMAIL_FROM =
+      Deno.env.get("RESERVATION_EMAIL_FROM") ?? Deno.env.get("RESEND_FROM");
     const INTERNAL_BCC = "nova.grupoarg@gmail.com";
 
     if (!RESEND_API_KEY) {
-      return json(500, { ok: false, error: "Missing RESEND_API_KEY env" });
+      return json(500, { ok: false, error: "Missing RESEND_API_KEY" });
     }
 
-    if (!FROM) {
-      return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM / RESEND_FROM env" });
+    if (!RESERVATION_EMAIL_FROM) {
+      return json(500, { ok: false, error: "Missing RESERVATION_EMAIL_FROM" });
     }
+    console.log("mailFrom", RESERVATION_EMAIL_FROM ?? null);
 
     const body = await req.json().catch(() => ({}));
+    console.log("send-reservation-email payload keys", Object.keys(body ?? {}));
 
     const email = body?.email ?? body?.to ?? body?.user_email ?? "";
     const reservationId = body?.reservation_id ?? "";
@@ -83,13 +118,14 @@ serve(async (req) => {
     `.trim();
 
     const resendPayload = {
-      from: FROM,
+      from: RESERVATION_EMAIL_FROM,
       to: email,
       bcc: INTERNAL_BCC,
       subject,
       html,
     };
 
+    console.log("send-reservation-email:before-resend");
     const resendResp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -100,12 +136,31 @@ serve(async (req) => {
     });
 
     const resendJson = await resendResp.json().catch(() => ({}));
+    console.log("Resend response status", resendResp.status, resendJson);
 
     if (!resendResp.ok) {
-      console.error("RESEND ERROR", resendJson);
-      return json(500, { ok: false, error: resendJson });
+      console.error("send-reservation-email:resend-error", resendJson);
+      const queuePayload = {
+        reservation_id: reservationId || null,
+        payload: body,
+        error: JSON.stringify(resendJson),
+        status: "pending",
+        retries: 0,
+      };
+      const { error: queueError } = await adminClient
+        .from("reservation_email_queue")
+        .insert(queuePayload);
+      if (queueError) {
+        console.error("send-reservation-email:queue-insert-error", queueError);
+        return json(500, { ok: false, error: resendJson, queueError: queueError.message });
+      }
+      console.log("send-reservation-email:queued-for-retry", {
+        reservationId: reservationId || null,
+      });
+      return json(202, { ok: true, queued: true });
     }
 
+    console.log("send-reservation-email:success");
     return json(200, { ok: true });
   } catch (error) {
     console.error("FUNCTION ERROR", error);
