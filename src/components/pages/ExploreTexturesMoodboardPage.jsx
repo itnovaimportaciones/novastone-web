@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { loadProductData } from '../../utils/productParser';
 import TextureMoodboardPanel from '../explore/TextureMoodboardPanel';
 import TextureRail from '../explore/TextureRail';
+import { trackCustom } from '../../lib/metaPixel';
 
 const slugifyTexture = (value = '') =>
   String(value)
@@ -21,6 +22,7 @@ const ExploreTexturesMoodboardPage = () => {
   const [products, setProducts] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [loading, setLoading] = useState(true);
+  const lastTrackedTextureRef = useRef('');
 
   useEffect(() => {
     let mounted = true;
@@ -66,6 +68,16 @@ const ExploreTexturesMoodboardPage = () => {
     () => products.find((item) => item.id === selectedId) || null,
     [products, selectedId]
   );
+
+  useEffect(() => {
+    if (!selectedProduct?.name) return;
+    const textureName = selectedProduct.name;
+    if (lastTrackedTextureRef.current === textureName) return;
+    lastTrackedTextureRef.current = textureName;
+    trackCustom('ViewInspiration', {
+      texture_name: textureName,
+    });
+  }, [selectedProduct]);
 
   return (
     <section className="explore-moodboard-page">

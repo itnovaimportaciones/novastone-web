@@ -1,4 +1,5 @@
 import React from 'react';
+import { trackCustom } from '../../lib/metaPixel';
 
 const TextureRail = ({ products, selectedId, onSelect }) => {
   return (
@@ -13,7 +14,13 @@ const TextureRail = ({ products, selectedId, onSelect }) => {
               key={product.id}
               type="button"
               className={`texture-rail-item ${isActive ? 'is-active' : ''}`}
-              onClick={() => onSelect(product.id)}
+              onClick={() => {
+                trackCustom('TextureInteraction', {
+                  interaction_type: 'selector_click',
+                  texture_name: product.name || null,
+                });
+                onSelect(product.id);
+              }}
               title={product.name}
             >
               <div className="texture-rail-item-media">

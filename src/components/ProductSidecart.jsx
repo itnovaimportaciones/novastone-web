@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 import { parseProductDescription } from '../utils/productParser';
+import { trackContact, trackCustom } from '../lib/metaPixel';
 
 const WHATSAPP_PHONE = '5491124800421';
 
@@ -298,10 +299,25 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
     : '/inspiracion';
   const handleExploreTextureNavigation = (event) => {
     event.preventDefault();
+    trackCustom('CTAInteraction', {
+      cta_name: 'explorar-textura',
+      origin: 'producto',
+      texture_name: safeProduct.name || null,
+      product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+    });
     window.history.pushState({}, '', exploreTextureUrl);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo(0, 0);
     onClose?.();
+  };
+
+  const openSlabLightbox = () => {
+    if (isSlabLightboxOpen) return;
+    trackCustom('ViewSlab', {
+      texture_name: safeProduct.name || null,
+      product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+    });
+    setIsSlabLightboxOpen(true);
   };
 
   useEffect(() => {
@@ -551,6 +567,14 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center mt-6 px-5 py-3 uppercase tracking-[0.2em] text-xs nav-cta product-sidecart-cta"
+                  onClick={() =>
+                    trackContact({
+                      channel: 'whatsapp',
+                      origin: 'producto',
+                      page_section: 'sidecart-ficha-tecnica',
+                      texture_name: safeProduct.name || null,
+                    })
+                  }
                 >
                   Consultar disponibilidad
                 </a>
@@ -583,7 +607,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                   const offsetY = (py - 0.5) * -6;
                   setSlabPreviewOffset({ x: offsetX, y: offsetY });
                 }}
-                onClick={() => setIsSlabLightboxOpen(true)}
+                onClick={openSlabLightbox}
               >
                 <img
                   src={slabPreviewSrc || textureImage}

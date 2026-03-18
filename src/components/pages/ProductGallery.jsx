@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadProductData, filterProductsByFilters } from '../../utils/productParser';
 import { matchesCollection, normalizeCollectionKey } from '../../content/collectionProductMap';
 import ProductSidecart from '../ProductSidecart';
+import { trackViewContent } from '../../lib/metaPixel';
 
 const ProductGallery = () => {
   const [products, setProducts] = useState([]);
@@ -76,6 +77,11 @@ const ProductGallery = () => {
   });
 
   const handleProductClick = (product) => {
+    trackViewContent({
+      content_name: product?.name || 'Producto',
+      content_type: 'product',
+      content_ids: [product?.productCode || product?.code || product?.id || product?.name || 'unknown'],
+    });
     setSelectedProduct(product);
     setIsSidecartOpen(true);
   };

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { trackContact, trackLead } from '../../lib/metaPixel';
 
 const WHATSAPP_PHONE = '+54 9 11 2480-0421';
 const WHATSAPP_MESSAGE = 'Hola, quiero conocer más sobre Novastone.';
@@ -79,6 +80,7 @@ const HowToBuyPage = () => {
         throw new Error(responseData?.error || 'No pudimos enviar tu consulta. Probá de nuevo.');
       }
 
+      trackLead({ form_name: 'como-comprar' });
       setIsSubmitted(true);
     } catch (error) {
       console.error('HowToBuy submit failed', error);
@@ -108,7 +110,19 @@ const HowToBuyPage = () => {
               cotizar, fabricar e instalar.
             </p>
           </div>
-          <a className="howto-button" href={whatsAppUrl} target="_blank" rel="noreferrer">
+          <a
+            className="howto-button"
+            href={whatsAppUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() =>
+              trackContact({
+                channel: 'whatsapp',
+                origin: 'como-comprar',
+                page_section: 'particulares',
+              })
+            }
+          >
             Hablar por WhatsApp
           </a>
         </article>

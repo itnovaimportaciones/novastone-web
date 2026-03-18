@@ -8,6 +8,7 @@ import AsociadosPage from './components/pages/AsociadosPage';
 import ExploreTexturesPage from './components/pages/ExploreTexturesPage';
 import ExploreTexturesMoodboardPage from './components/pages/ExploreTexturesMoodboardPage';
 import { COLLECTIONS_COPY } from './content/collectionsCopy';
+import { trackContact, trackCustom, trackPageView } from './lib/metaPixel';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -144,6 +145,13 @@ const Header = () => {
     }, 220);
   };
   const mobileWhatsAppUrl = `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+  const handleMobileWhatsAppClick = () => {
+    trackContact({
+      channel: 'whatsapp',
+      origin: 'header',
+      page_section: 'mobile-drawer',
+    });
+  };
 
   useEffect(() => {
     const syncActiveHash = () => {
@@ -383,6 +391,7 @@ const Header = () => {
                     target="_blank"
                     rel="noreferrer"
                     aria-label="WhatsApp"
+                    onClick={handleMobileWhatsAppClick}
                   >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path
@@ -401,22 +410,35 @@ const Header = () => {
   );
 };
 
-const WhatsAppFab = () => (
-  <a
-    className="whatsapp-fab"
-    href={`https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="WhatsApp"
-  >
+const WhatsAppFab = () => {
+  const handleClick = () => {
+    const path = window.location.pathname.toLowerCase();
+    const origin = path === '/inspiracion' ? 'inspiracion' : 'footer';
+    trackContact({
+      channel: 'whatsapp',
+      origin,
+      page_section: 'floating-button',
+    });
+  };
+
+  return (
+    <a
+      className="whatsapp-fab"
+      href={`https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="WhatsApp"
+      onClick={handleClick}
+    >
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path
         d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .18 5.33.18 11.88c0 2.09.54 4.13 1.57 5.94L0 24l6.36-1.67a11.85 11.85 0 0 0 5.7 1.45h.01c6.55 0 11.88-5.33 11.88-11.89 0-3.17-1.23-6.15-3.43-8.41ZM12.07 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.77.99 1-3.67-.23-.38a9.87 9.87 0 0 1-1.51-5.27c0-5.47 4.45-9.92 9.92-9.92 2.65 0 5.13 1.03 7 2.92a9.86 9.86 0 0 1 2.88 7.01c0 5.47-4.45 9.92-9.88 9.92Zm5.44-7.41c-.3-.15-1.77-.87-2.04-.96-.27-.1-.47-.15-.66.15-.2.3-.77.96-.95 1.16-.17.2-.35.23-.65.08-.3-.15-1.25-.46-2.38-1.48-.88-.79-1.47-1.77-1.64-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.66-1.6-.91-2.2-.24-.58-.49-.5-.66-.5h-.57c-.2 0-.52.07-.8.36-.27.3-1.04 1.01-1.04 2.46 0 1.45 1.06 2.85 1.2 3.05.15.2 2.08 3.17 5.03 4.44.7.3 1.24.48 1.67.62.7.22 1.34.19 1.84.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.13-.28-.2-.58-.35Z"
         fill="currentColor"
       />
     </svg>
-  </a>
-);
+    </a>
+  );
+};
 
 const HeroSection = () => {
   const [active, setActive] = useState(0);
@@ -684,6 +706,13 @@ const Footer = () => (
           target="_blank"
           rel="noreferrer"
           className="contact-link"
+          onClick={() =>
+            trackContact({
+              channel: 'whatsapp',
+              origin: 'footer',
+              page_section: 'footer-contact',
+            })
+          }
         >
           <span className="contact-icon" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="currentColor">
@@ -698,6 +727,13 @@ const Footer = () => (
           target="_blank"
           rel="noreferrer"
           className="quote-cta"
+          onClick={() =>
+            trackContact({
+              channel: 'whatsapp',
+              origin: 'footer',
+              page_section: 'footer-quote',
+            })
+          }
         >
           Solicitar cotización
         </a>
@@ -925,6 +961,20 @@ function App() {
   }, [currentRoute]);
 
   useRevealOnScroll([currentRoute]);
+
+  useEffect(() => {
+    trackPageView();
+    const pathname = window.location.pathname.toLowerCase();
+    const keyPageMap = {
+      '/productos': 'productos',
+      '/inspiracion': 'inspiracion',
+      '/como-comprar': 'como-comprar',
+    };
+    const pageName = keyPageMap[pathname];
+    if (pageName) {
+      trackCustom('KeyPageView', { page_name: pageName });
+    }
+  }, [currentRoute]);
 
   useEffect(() => {
     const header = document.querySelector('.site-header');
