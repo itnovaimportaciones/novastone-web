@@ -5,10 +5,7 @@ export const COLLECTION_PRODUCT_MAP = {
   '20mm': [
     'PURE BLACK',
     'PURE WHITE',
-    'BVLGARI BLACK',
-    'LAURENT',
-    'LOUISKIN',
-    'NERO PORTORO'
+    'BVLGARI BLACK'
   ],
   '12mm': [
     'ATYs GREY',
@@ -27,7 +24,10 @@ export const COLLECTION_PRODUCT_MAP = {
     'ROYAL GREY',
     'SPANISH GREY',
     'WHITE TRAVERTINE',
-    'YELLOW TRAVERTINE'
+    'YELLOW TRAVERTINE',
+    'LAURENT',
+    'LOUISKIN',
+    'NERO PORTORO'
   ],
   'full-body': [
     'BVLGARI BLACK',
