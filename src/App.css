@@ -3311,6 +3311,21 @@ main {
 }
 
 @media (max-width: 900px) {
+  body.inspiracion-route main {
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: hidden;
+  }
+
+  body.inspiracion-route .explore-moodboard-page {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: 12px;
+    padding-right: 12px;
+    overflow-x: hidden;
+  }
+
   .explore-moodboard-page {
     padding: 104px 16px 52px;
     overflow-x: hidden;
