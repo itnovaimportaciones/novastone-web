@@ -1548,7 +1548,8 @@ body.home-route .site-footer {
   text-decoration: none;
 }
 
-.footer-actions button {
+.footer-actions button,
+.footer-actions .quote-cta {
   background: transparent;
   border: 1px solid #f6f1ea;
   color: inherit;
@@ -1557,6 +1558,10 @@ body.home-route .site-footer {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .contact-link {

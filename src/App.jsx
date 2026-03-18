@@ -693,7 +693,14 @@ const Footer = () => (
           {CONTACT_PHONE}
         </a>
         <span>{CONTACT_ADDRESS}</span>
-        <button type="button">Solicitar cotización</button>
+        <a
+          href={`https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent('Hola! me interesa recibir una cotización de superficies Novastone')}`}
+          target="_blank"
+          rel="noreferrer"
+          className="quote-cta"
+        >
+          Solicitar cotización
+        </a>
       </div>
     </div>
   </footer>
