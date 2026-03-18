@@ -1311,6 +1311,7 @@ main {
 .sintered {
   background: var(--color-stone);
   padding: 80px 24px;
+  margin-bottom: -120px;
 }
 
 .sintered-grid {
@@ -1358,13 +1359,17 @@ main {
   max-width: 1100px;
   margin: 48px auto 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
   gap: 24px;
   text-align: center;
 }
 
 .sintered-highlights article {
   padding: 16px 12px;
+}
+
+.sintered-highlights .is-centered-highlight {
+  transform: translateY(-10px);
 }
 
 .sintered-highlights h3 {
@@ -1382,6 +1387,16 @@ main {
   line-height: 1.7;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+@media (max-width: 900px) {
+  .sintered-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .sintered-highlights .is-centered-highlight {
+    transform: none;
+  }
 }
 
 .stones {
@@ -1507,6 +1522,10 @@ main {
   color: #f6f1ea;
   margin-top: 120px;
   padding: 80px 24px;
+}
+
+body.home-route .site-footer {
+  margin-top: 0;
 }
 
 .footer-inner {
@@ -2322,6 +2341,10 @@ main {
   main {
     padding-top: 40px;
     gap: 80px;
+  }
+
+  .sintered {
+    margin-bottom: -80px;
   }
 
   body.home-route main {

@@ -7,7 +7,7 @@ import HowToBuyPage from './components/pages/HowToBuyPage';
 import AsociadosPage from './components/pages/AsociadosPage';
 import ExploreTexturesPage from './components/pages/ExploreTexturesPage';
 import ExploreTexturesMoodboardPage from './components/pages/ExploreTexturesMoodboardPage';
-import { COLLECTIONS_COPY, COLLECTIONS_ORDER } from './content/collectionsCopy';
+import { COLLECTIONS_COPY } from './content/collectionsCopy';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -474,7 +474,11 @@ const IntroSection = () => (
   </section>
 );
 
-const SINTERED_COLLECTIONS = COLLECTIONS_ORDER.map((id) => ({ id, ...COLLECTIONS_COPY[id] }));
+const HOME_SINTERED_COLLECTION_IDS = ['full-body', 'espejada', 'luxury'];
+const SINTERED_COLLECTIONS = HOME_SINTERED_COLLECTION_IDS.map((id) => ({
+  id,
+  ...COLLECTIONS_COPY[id],
+}));
 
 const SinteredSection = () => (
   <section className="sintered" id="novastone">
@@ -497,7 +501,10 @@ const SinteredSection = () => (
     </div>
     <div className="sintered-highlights" data-reveal>
       {SINTERED_COLLECTIONS.map((collection) => (
-        <article key={collection.id}>
+        <article
+          key={collection.id}
+          className={collection.id === 'espejada' ? 'is-centered-highlight' : ''}
+        >
           <h3>{collection.title}</h3>
           <p>{collection.description}</p>
         </article>
