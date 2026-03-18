@@ -80,7 +80,10 @@ const HowToBuyPage = () => {
         throw new Error(responseData?.error || 'No pudimos enviar tu consulta. Probá de nuevo.');
       }
 
-      trackLead({ form_name: 'como-comprar' });
+      trackLead({
+        form_name: 'como-comprar',
+        trigger_source: 'HowToBuyPage.handleSubmit.success',
+      });
       setIsSubmitted(true);
     } catch (error) {
       console.error('HowToBuy submit failed', error);
@@ -120,6 +123,7 @@ const HowToBuyPage = () => {
                 channel: 'whatsapp',
                 origin: 'como-comprar',
                 page_section: 'particulares',
+                trigger_source: 'HowToBuyPage.particulares.whatsapp',
               })
             }
           >

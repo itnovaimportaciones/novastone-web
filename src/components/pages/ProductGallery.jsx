@@ -81,6 +81,7 @@ const ProductGallery = () => {
       content_name: product?.name || 'Producto',
       content_type: 'product',
       content_ids: [product?.productCode || product?.code || product?.id || product?.name || 'unknown'],
+      trigger_source: 'ProductGallery.handleProductClick',
     });
     setSelectedProduct(product);
     setIsSidecartOpen(true);

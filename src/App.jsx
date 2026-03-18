@@ -150,6 +150,7 @@ const Header = () => {
       channel: 'whatsapp',
       origin: 'header',
       page_section: 'mobile-drawer',
+      trigger_source: 'App.Header.mobileDrawer.whatsapp',
     });
   };
 
@@ -418,6 +419,7 @@ const WhatsAppFab = () => {
       channel: 'whatsapp',
       origin,
       page_section: 'floating-button',
+      trigger_source: 'App.WhatsAppFab.click',
     });
   };
 
@@ -711,6 +713,7 @@ const Footer = () => (
               channel: 'whatsapp',
               origin: 'footer',
               page_section: 'footer-contact',
+              trigger_source: 'App.Footer.footerContact.whatsapp',
             })
           }
         >
@@ -732,6 +735,7 @@ const Footer = () => (
               channel: 'whatsapp',
               origin: 'footer',
               page_section: 'footer-quote',
+              trigger_source: 'App.Footer.footerQuote.whatsapp',
             })
           }
         >
@@ -972,7 +976,10 @@ function App() {
     };
     const pageName = keyPageMap[pathname];
     if (pageName) {
-      trackCustom('KeyPageView', { page_name: pageName });
+      trackCustom('KeyPageView', {
+        page_name: pageName,
+        trigger_source: 'App.routeChange',
+      });
     }
   }, [currentRoute]);
 

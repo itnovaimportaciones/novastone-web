@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { loadProductData } from '../../utils/productParser';
 import TextureMoodboardPanel from '../explore/TextureMoodboardPanel';
 import TextureRail from '../explore/TextureRail';
@@ -22,7 +22,14 @@ const ExploreTexturesMoodboardPage = () => {
   const [products, setProducts] = useState([]);
   const [selectedId, setSelectedId] = useState('');
   const [loading, setLoading] = useState(true);
-  const lastTrackedTextureRef = useRef('');
+
+  const trackInspirationChange = (product, triggerSource) => {
+    if (!product?.name) return;
+    trackCustom('ViewInspiration', {
+      texture_name: product.name,
+      trigger_source: triggerSource,
+    });
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -36,7 +43,9 @@ const ExploreTexturesMoodboardPage = () => {
           const matched = requestedTexture
             ? data.find((item) => slugifyTexture(item.name) === requestedTexture)
             : null;
-          setSelectedId((matched || data[0]).id);
+          const initialProduct = matched || data[0];
+          setSelectedId(initialProduct.id);
+          trackInspirationChange(initialProduct, 'ExploreTexturesMoodboardPage.initialSelection');
         }
       })
       .finally(() => {
@@ -56,7 +65,10 @@ const ExploreTexturesMoodboardPage = () => {
       const matched = products.find(
         (item) => slugifyTexture(item.name) === requestedTexture
       );
-      if (matched) setSelectedId(matched.id);
+      if (matched) {
+        setSelectedId(matched.id);
+        trackInspirationChange(matched, 'ExploreTexturesMoodboardPage.queryParamChange');
+      }
     };
 
     syncFromQuery();
@@ -69,15 +81,12 @@ const ExploreTexturesMoodboardPage = () => {
     [products, selectedId]
   );
 
-  useEffect(() => {
-    if (!selectedProduct?.name) return;
-    const textureName = selectedProduct.name;
-    if (lastTrackedTextureRef.current === textureName) return;
-    lastTrackedTextureRef.current = textureName;
-    trackCustom('ViewInspiration', {
-      texture_name: textureName,
-    });
-  }, [selectedProduct]);
+  const handleSelectTexture = (productId) => {
+    if (!productId || productId === selectedId) return;
+    const nextProduct = products.find((item) => item.id === productId);
+    setSelectedId(productId);
+    trackInspirationChange(nextProduct, 'ExploreTexturesMoodboardPage.selectorClick');
+  };
 
   return (
     <section className="explore-moodboard-page">
@@ -106,7 +115,7 @@ const ExploreTexturesMoodboardPage = () => {
             <TextureRail
               products={products}
               selectedId={selectedId}
-              onSelect={setSelectedId}
+              onSelect={handleSelectTexture}
             />
           </div>
         </>

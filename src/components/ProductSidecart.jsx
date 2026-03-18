@@ -304,6 +304,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
       origin: 'producto',
       texture_name: safeProduct.name || null,
       product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+      trigger_source: 'ProductSidecart.handleExploreTextureNavigation',
     });
     window.history.pushState({}, '', exploreTextureUrl);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -316,6 +317,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
     trackCustom('ViewSlab', {
       texture_name: safeProduct.name || null,
       product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+      trigger_source: 'ProductSidecart.openSlabLightbox',
     });
     setIsSlabLightboxOpen(true);
   };
@@ -573,6 +575,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                       origin: 'producto',
                       page_section: 'sidecart-ficha-tecnica',
                       texture_name: safeProduct.name || null,
+                      trigger_source: 'ProductSidecart.consultarDisponibilidad',
                     })
                   }
                 >

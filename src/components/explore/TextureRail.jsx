@@ -18,6 +18,7 @@ const TextureRail = ({ products, selectedId, onSelect }) => {
                 trackCustom('TextureInteraction', {
                   interaction_type: 'selector_click',
                   texture_name: product.name || null,
+                  trigger_source: 'TextureRail.selectorClick',
                 });
                 onSelect(product.id);
               }}
