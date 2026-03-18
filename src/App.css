@@ -236,12 +236,37 @@ body.collections-route .App {
   place-items: center;
 }
 
+.slab-lightbox-image-wrap {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
 .slab-lightbox-image {
   max-width: 90vw;
   max-height: 90vh;
   width: auto;
   height: auto;
   object-fit: contain;
+}
+
+.slab-lightbox-image.can-zoom {
+  cursor: zoom-in;
+}
+
+.slab-lightbox-lens {
+  position: absolute;
+  width: 266px;
+  height: 266px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-color: rgba(8, 8, 8, 0.22);
 }
 
 .slab-lightbox-close {

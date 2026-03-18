@@ -64,13 +64,19 @@ const firstExisting = async (candidates = []) => {
 const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [slabPreviewSrc, setSlabPreviewSrc] = useState('');
+  const [slabHdSrc, setSlabHdSrc] = useState('');
   const [moodboardPreviewImages, setMoodboardPreviewImages] = useState([]);
   const [isSlabLightboxOpen, setIsSlabLightboxOpen] = useState(false);
   const [canHoverSlabPreview, setCanHoverSlabPreview] = useState(false);
   const [isSlabPreviewHovering, setIsSlabPreviewHovering] = useState(false);
   const [slabPreviewOffset, setSlabPreviewOffset] = useState({ x: 0, y: 0 });
+  const [isLightboxLensVisible, setIsLightboxLensVisible] = useState(false);
+  const [lightboxLensPosition, setLightboxLensPosition] = useState({ x: 0, y: 0 });
+  const [lightboxLensBackgroundPosition, setLightboxLensBackgroundPosition] = useState({ x: 0, y: 0 });
+  const [lightboxLensBackgroundSize, setLightboxLensBackgroundSize] = useState({ width: 0, height: 0 });
   const sidecartRef = useRef(null);
   const backdropRef = useRef(null);
+  const lightboxImageRef = useRef(null);
   const touchStartXRef = useRef(null);
   const touchDeltaXRef = useRef(0);
 
@@ -110,6 +116,10 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
       setIsSlabLightboxOpen(false);
       setIsSlabPreviewHovering(false);
       setSlabPreviewOffset({ x: 0, y: 0 });
+      setIsLightboxLensVisible(false);
+      setLightboxLensPosition({ x: 0, y: 0 });
+      setLightboxLensBackgroundPosition({ x: 0, y: 0 });
+      setLightboxLensBackgroundSize({ width: 0, height: 0 });
     }
   }, [product]);
 
@@ -296,20 +306,60 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
 
   useEffect(() => {
     let active = true;
-    if (!textureImage) {
-      setSlabPreviewSrc('');
+    const normalizedSlug = slugifyMoodboardKey(safeProduct.name || '');
+    if (!normalizedSlug) {
+      console.info('[Sidecart HD] No slug generated for product:', safeProduct.name || '(empty)');
+      setSlabHdSrc('');
       return undefined;
     }
 
-    rotateImageIfPortrait(textureImage).then((resolvedSrc) => {
+    const hdCandidate = `/products/hd/${normalizedSlug}.jpg`;
+    console.info('[Sidecart HD] Checking candidate', {
+      product: safeProduct.name,
+      slug: normalizedSlug,
+      hdCandidate,
+    });
+
+    imageExists(hdCandidate).then((exists) => {
       if (!active) return;
-      setSlabPreviewSrc(resolvedSrc || textureImage);
+      console.info('[Sidecart HD] Resolution result', {
+        product: safeProduct.name,
+        slug: normalizedSlug,
+        hdCandidate,
+        exists,
+        source: exists ? 'hd' : 'fallback',
+      });
+      setSlabHdSrc(exists ? hdCandidate : '');
     });
 
     return () => {
       active = false;
     };
-  }, [textureImage]);
+  }, [safeProduct.name]);
+
+  useEffect(() => {
+    let active = true;
+    const source = slabHdSrc || textureImage;
+    console.info('[Sidecart HD] Final source selection', {
+      product: safeProduct.name,
+      source: slabHdSrc ? 'hd' : 'textureImage',
+      slabHdSrc,
+      textureImage,
+    });
+    if (!source) {
+      setSlabPreviewSrc('');
+      return undefined;
+    }
+
+    rotateImageIfPortrait(source).then((resolvedSrc) => {
+      if (!active) return;
+      setSlabPreviewSrc(resolvedSrc || source);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [textureImage, slabHdSrc]);
 
   useEffect(() => {
     if (!isSlabLightboxOpen) return undefined;
@@ -322,12 +372,40 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isSlabLightboxOpen]);
 
+  useEffect(() => {
+    if (isSlabLightboxOpen) return;
+    setIsLightboxLensVisible(false);
+    setLightboxLensPosition({ x: 0, y: 0 });
+    setLightboxLensBackgroundPosition({ x: 0, y: 0 });
+    setLightboxLensBackgroundSize({ width: 0, height: 0 });
+  }, [isSlabLightboxOpen]);
+
   const slabHoverScale = canHoverSlabPreview && isSlabPreviewHovering ? 1.1 : 1;
   const slabTranslateX =
     canHoverSlabPreview && isSlabPreviewHovering ? slabPreviewOffset.x : 0;
   const slabTranslateY =
     canHoverSlabPreview && isSlabPreviewHovering ? slabPreviewOffset.y : 0;
   const slabTransform = `translate(${slabTranslateX}%, ${slabTranslateY}%) scale(${slabHoverScale})`;
+
+  const handleLightboxLensMove = (event) => {
+    if (!canHoverSlabPreview || !lightboxImageRef.current) return;
+    const imgEl = lightboxImageRef.current;
+    const rect = imgEl.getBoundingClientRect();
+    const lensDiameter = 266;
+    const lensRadius = lensDiameter / 2;
+    const zoomFactor = 2.2;
+    const x = Math.min(Math.max(event.clientX - rect.left, 0), rect.width);
+    const y = Math.min(Math.max(event.clientY - rect.top, 0), rect.height);
+    const bgWidth = rect.width * zoomFactor;
+    const bgHeight = rect.height * zoomFactor;
+    const bgX = -(x * zoomFactor - lensRadius);
+    const bgY = -(y * zoomFactor - lensRadius);
+
+    setIsLightboxLensVisible(true);
+    setLightboxLensPosition({ x, y });
+    setLightboxLensBackgroundSize({ width: bgWidth, height: bgHeight });
+    setLightboxLensBackgroundPosition({ x: bgX, y: bgY });
+  };
 
   if (!isOpen || !product) return null;
 
@@ -596,14 +674,38 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
             className="slab-lightbox-content"
             onClick={(event) => event.stopPropagation()}
           >
-            <img
-              src={slabPreviewSrc || textureImage}
-              alt={`${product.name} - Textura completa ampliada`}
-              className="slab-lightbox-image"
-              onError={(e) => {
-                e.target.src = '/placeholder.jpg';
+            <div
+              className="slab-lightbox-image-wrap"
+              onMouseMove={handleLightboxLensMove}
+              onMouseEnter={handleLightboxLensMove}
+              onMouseLeave={() => {
+                if (!canHoverSlabPreview) return;
+                setIsLightboxLensVisible(false);
               }}
-            />
+            >
+              <img
+                ref={lightboxImageRef}
+                src={slabPreviewSrc || textureImage}
+                alt={`${product.name} - Textura completa ampliada`}
+                className={`slab-lightbox-image ${canHoverSlabPreview ? 'can-zoom' : ''}`}
+                onError={(e) => {
+                  e.target.src = '/placeholder.jpg';
+                }}
+              />
+              {canHoverSlabPreview && isLightboxLensVisible && (
+                <span
+                  className="slab-lightbox-lens"
+                  aria-hidden="true"
+                  style={{
+                    left: `${lightboxLensPosition.x}px`,
+                    top: `${lightboxLensPosition.y}px`,
+                    backgroundImage: `url(${slabPreviewSrc || textureImage})`,
+                    backgroundSize: `${lightboxLensBackgroundSize.width}px ${lightboxLensBackgroundSize.height}px`,
+                    backgroundPosition: `${lightboxLensBackgroundPosition.x}px ${lightboxLensBackgroundPosition.y}px`,
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
       )}
