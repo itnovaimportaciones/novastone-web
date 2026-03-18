@@ -572,14 +572,17 @@ const AsociadosPage = () => {
     const {
       data: { session }
     } = await supabase.auth.getSession();
-    const accessToken = session?.access_token;
-    if (!accessToken) {
+    console.log('SESSION:', session);
+    if (!session) {
+      throw new Error('NO_SESSION');
+    }
+    if (!session.access_token) {
       throw new Error('NO_SESSION_ACCESS_TOKEN');
     }
 
     const url = `${supabaseUrl}/functions/v1/send-reservation-email`;
     console.log('send-reservation-email request', {
-      hasAccessToken: Boolean(accessToken),
+      hasAccessToken: Boolean(session.access_token),
       hasInternalSecret: Boolean(internalSecret),
       url,
     });
@@ -588,8 +591,7 @@ const AsociadosPage = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${session.access_token}`,
         'x-internal-secret': internalSecret
       },
       body: JSON.stringify(payload)
