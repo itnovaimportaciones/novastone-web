@@ -607,6 +607,17 @@ body.inspiration-route .site-header.is-scrolled .brand-logo {
   filter: none;
 }
 
+@media (min-width: 901px) {
+  body.inspiracion-route main {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body.inspiracion-route .site-footer {
+    margin-top: 0;
+  }
+}
+
 main {
   display: flex;
   flex-direction: column;
