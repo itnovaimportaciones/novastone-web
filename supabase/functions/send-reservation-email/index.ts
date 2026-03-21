@@ -28,6 +28,14 @@ serve(async (req) => {
     }
 
     console.log("hasAuthHeader", !!req.headers.get("Authorization"));
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    console.log("AUTH_HEADER_RAW", authHeader);
+    console.log("TOKEN_PREFIX", token.slice(0, 20));
+    console.log("TOKEN_DOTS", (token.match(/\./g) || []).length);
+    if (!token) {
+      return json(401, { ok: false, error: "Unauthorized: missing bearer token" });
+    }
     const INTERNAL_EMAIL_SECRET = Deno.env.get("INTERNAL_EMAIL_SECRET");
     if (!INTERNAL_EMAIL_SECRET) {
       return json(500, { ok: false, error: "Missing INTERNAL_EMAIL_SECRET" });
@@ -49,19 +57,17 @@ serve(async (req) => {
       return json(500, { ok: false, error: "Missing SUPABASE_SERVICE_ROLE_KEY" });
     }
 
-    const authClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: {
-          Authorization: req.headers.get("Authorization") ?? "",
-        },
-      },
-    });
-    const { data: authData, error: authError } = await authClient.auth.getUser();
-    if (authError || !authData?.user) {
-      console.error("Unauthorized: auth.getUser failed", authError?.message ?? "missing user");
-      return json(401, { ok: false, error: "Unauthorized" });
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    if (userError || !userData?.user) {
+      console.error("Unauthorized: auth.getUser(token) failed", userError?.message ?? "missing user");
+      return json(401, {
+        ok: false,
+        error: "Unauthorized: invalid bearer token",
+        detail: userError?.message ?? "missing user",
+      });
     }
-    const user = authData.user;
+    const user = userData.user;
     console.log("userEmail", user?.email ?? null);
     const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
 
