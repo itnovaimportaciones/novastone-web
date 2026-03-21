@@ -214,6 +214,8 @@ const TextureMoodboardPanel = ({ product }) => {
   const [hoveredSlot, setHoveredSlot] = useState(null);
   const [activeSlot, setActiveSlot] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [canUseDesktopLightbox, setCanUseDesktopLightbox] = useState(false);
+  const [lightboxImageSrc, setLightboxImageSrc] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -238,6 +240,14 @@ const TextureMoodboardPanel = ({ product }) => {
     syncMobile();
     media.addEventListener('change', syncMobile);
     return () => media.removeEventListener('change', syncMobile);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
+    const syncDesktopLightbox = () => setCanUseDesktopLightbox(media.matches);
+    syncDesktopLightbox();
+    media.addEventListener('change', syncDesktopLightbox);
+    return () => media.removeEventListener('change', syncDesktopLightbox);
   }, []);
 
   const resolvedMoodboardImages = resolvedAssets?.moodboardImages || [];
@@ -337,6 +347,17 @@ const TextureMoodboardPanel = ({ product }) => {
         : slotImages[0].slot
     );
   }, [slotImages]);
+
+  useEffect(() => {
+    if (!lightboxImageSrc) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setLightboxImageSrc('');
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightboxImageSrc]);
 
   const mosaicTrackStyle = useMemo(() => {
     if (isMobile) {
@@ -504,6 +525,10 @@ const TextureMoodboardPanel = ({ product }) => {
               onMouseEnter={() => setHoveredSlot(item.slot)}
               onMouseLeave={() => setHoveredSlot(null)}
               onClick={() => {
+                if (canUseDesktopLightbox) {
+                  setLightboxImageSrc(item.src);
+                  return;
+                }
                 if (isMobile) setActiveSlot(item.slot);
               }}
             >
@@ -519,6 +544,38 @@ const TextureMoodboardPanel = ({ product }) => {
           ))}
         </div>
       </div>
+
+      {canUseDesktopLightbox && lightboxImageSrc ? (
+        <div
+          className="texture-moodboard-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Imagen ampliada del moodboard"
+          onClick={() => setLightboxImageSrc('')}
+        >
+          <button
+            type="button"
+            className="texture-moodboard-lightbox-close"
+            aria-label="Cerrar imagen"
+            onClick={() => setLightboxImageSrc('')}
+          >
+            &#10005;
+          </button>
+          <div
+            className="texture-moodboard-lightbox-content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img
+              src={lightboxImageSrc}
+              alt={`${product.name} inspiración ampliada`}
+              className="texture-moodboard-lightbox-image"
+              onError={(event) => {
+                event.currentTarget.src = '/placeholder.jpg';
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 };
