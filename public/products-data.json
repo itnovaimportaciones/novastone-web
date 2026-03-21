@@ -121,10 +121,12 @@
     "thumbnailImage": "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg",
     "detailImages": [
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg",
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER 2.jpeg",
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
     ],
     "renderImages": [
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg"
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg",
+      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER 2.jpeg"
     ],
     "nonRenderImages": [
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
@@ -221,10 +223,12 @@
     "thumbnailImage": "/products/12FENDI WHITE/FENDI WHITE.jpg",
     "detailImages": [
       "/products/12FENDI WHITE/FENDI WHITE RENDER.jpg",
+      "/products/12FENDI WHITE/FENDI WHITE RENDER 2.jpeg",
       "/products/12FENDI WHITE/FENDI WHITE.jpg"
     ],
     "renderImages": [
-      "/products/12FENDI WHITE/FENDI WHITE RENDER.jpg"
+      "/products/12FENDI WHITE/FENDI WHITE RENDER.jpg",
+      "/products/12FENDI WHITE/FENDI WHITE RENDER 2.jpeg"
     ],
     "nonRenderImages": [
       "/products/12FENDI WHITE/FENDI WHITE.jpg"
@@ -258,11 +262,11 @@
     "folderName": "14CHANEL",
     "thumbnailImage": "/products/14CHANEL/CHANEL.jpg",
     "detailImages": [
-      "/products/14CHANEL/CHANEL RENDER 2.png",
+      "/products/14CHANEL/CHANEL RENDER.jpg",
       "/products/14CHANEL/CHANEL.jpg"
     ],
     "renderImages": [
-      "/products/14CHANEL/CHANEL RENDER 2.png"
+      "/products/14CHANEL/CHANEL RENDER.jpg"
     ],
     "nonRenderImages": [
       "/products/14CHANEL/CHANEL.jpg"
@@ -278,10 +282,12 @@
     "thumbnailImage": "/products/15Portland/Portland.jpg",
     "detailImages": [
       "/products/15Portland/PORTLAND RENDER.png",
+      "/products/15Portland/PORTLAND RENDER 2.jpg",
       "/products/15Portland/Portland.jpg"
     ],
     "renderImages": [
-      "/products/15Portland/PORTLAND RENDER.png"
+      "/products/15Portland/PORTLAND RENDER.png",
+      "/products/15Portland/PORTLAND RENDER 2.jpg"
     ],
     "nonRenderImages": [
       "/products/15Portland/Portland.jpg"
@@ -320,10 +326,12 @@
     "thumbnailImage": "/products/17Yellow Travertine/Yellow Travertine.jpg",
     "detailImages": [
       "/products/17Yellow Travertine/Yellow Travertine RENDER.jpg",
+      "/products/17Yellow Travertine/Yellow Travertine RENDER 2.png",
       "/products/17Yellow Travertine/Yellow Travertine.jpg"
     ],
     "renderImages": [
-      "/products/17Yellow Travertine/Yellow Travertine RENDER.jpg"
+      "/products/17Yellow Travertine/Yellow Travertine RENDER.jpg",
+      "/products/17Yellow Travertine/Yellow Travertine RENDER 2.png"
     ],
     "nonRenderImages": [
       "/products/17Yellow Travertine/Yellow Travertine.jpg"
@@ -339,10 +347,12 @@
     "thumbnailImage": "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg",
     "detailImages": [
       "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png",
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER 2.jpg",
       "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg"
     ],
     "renderImages": [
-      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png"
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER.png",
+      "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE RENDER 2.jpg"
     ],
     "nonRenderImages": [
       "/products/18WHITE TRAVERTINE/WHITE TRAVERTINE.jpg"
@@ -456,11 +466,15 @@
     "folderName": "24NATA",
     "thumbnailImage": "/products/24NATA/NATA.jpg",
     "detailImages": [
-      "/products/24NATA/NATA RENDER.jpg",
+      "/products/24NATA/NATA RENDER.jpeg",
+      "/products/24NATA/NATA RENDER 2.jpeg",
+      "/products/24NATA/NATA RENDER 3.jpg",
       "/products/24NATA/NATA.jpg"
     ],
     "renderImages": [
-      "/products/24NATA/NATA RENDER.jpg"
+      "/products/24NATA/NATA RENDER.jpeg",
+      "/products/24NATA/NATA RENDER 2.jpeg",
+      "/products/24NATA/NATA RENDER 3.jpg"
     ],
     "nonRenderImages": [
       "/products/24NATA/NATA.jpg"
