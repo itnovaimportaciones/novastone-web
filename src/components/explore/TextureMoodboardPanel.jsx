@@ -313,6 +313,7 @@ const TextureMoodboardPanel = ({ product }) => {
       }).filter(Boolean);
 
       setLayoutImages({
+        productId: product?.id || '',
         layoutKey,
         slots: assigned,
       });
@@ -331,9 +332,19 @@ const TextureMoodboardPanel = ({ product }) => {
     fallbackImages[0] ||
     '/placeholder.jpg';
   const finishLabel = useMemo(() => resolveFinishLabel(product), [product]);
+  const currentProductId = product?.id || '';
+  const hasReadyLayout =
+    layoutImages?.productId === currentProductId &&
+    Array.isArray(layoutImages?.slots) &&
+    layoutImages.slots.length > 0;
   const slotImages = layoutImages?.slots || [];
   const layoutKey = layoutImages?.layoutKey || 'balanced_mix';
+  const renderedLayoutKey = hasReadyLayout ? layoutKey : 'balanced_mix';
   const effectiveSlot = isMobile ? activeSlot : hoveredSlot;
+  const placeholderSlots = useMemo(
+    () => ['a', 'b', 'c', 'd', 'e'].map((slot) => ({ slot })),
+    []
+  );
 
   useEffect(() => {
     if (slotImages.length === 0) {
@@ -493,7 +504,7 @@ const TextureMoodboardPanel = ({ product }) => {
 
   return (
     <section className="texture-moodboard-panel" aria-live="polite">
-      <div className={`texture-moodboard-stage layout-${layoutKey}`}>
+      <div className={`texture-moodboard-stage layout-${renderedLayoutKey}`}>
         <article className="texture-moodboard-feature">
           <img
             src={heroImage}
@@ -515,16 +526,17 @@ const TextureMoodboardPanel = ({ product }) => {
         </div>
 
         <div
-          className={`texture-moodboard-mosaic layout-${layoutKey} ${effectiveSlot ? 'is-hovering' : ''}`}
+          className={`texture-moodboard-mosaic layout-${renderedLayoutKey} ${effectiveSlot ? 'is-hovering' : ''} ${hasReadyLayout ? 'is-ready' : 'is-loading'}`}
           style={mosaicTrackStyle}
         >
-          {slotImages.map((item, index) => (
+          {(hasReadyLayout ? slotImages : placeholderSlots).map((item, index) => (
             <article
-              key={`${product.id}-${item.src}-${index + 1}`}
-              className={`texture-moodboard-card slot-${item.slot} ratio-${item.ratioClass}`}
+              key={`${product.id}-${item.src || `placeholder-${item.slot}`}-${index + 1}`}
+              className={`texture-moodboard-card slot-${item.slot} ${item.ratioClass ? `ratio-${item.ratioClass}` : ''} ${hasReadyLayout ? 'is-real' : 'is-placeholder'}`}
               onMouseEnter={() => setHoveredSlot(item.slot)}
               onMouseLeave={() => setHoveredSlot(null)}
               onClick={() => {
+                if (!hasReadyLayout) return;
                 if (canUseDesktopLightbox) {
                   setLightboxImageSrc(item.src);
                   return;
@@ -532,14 +544,18 @@ const TextureMoodboardPanel = ({ product }) => {
                 if (isMobile) setActiveSlot(item.slot);
               }}
             >
-              <img
-                src={item.src}
-                alt={`${product.name} inspiración ${index + 1}`}
-                loading="lazy"
-                onError={(event) => {
-                  event.currentTarget.src = '/placeholder.jpg';
-                }}
-              />
+              {hasReadyLayout ? (
+                <img
+                  src={item.src}
+                  alt={`${product.name} inspiración ${index + 1}`}
+                  loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.src = '/placeholder.jpg';
+                  }}
+                />
+              ) : (
+                <div className="texture-moodboard-card-skeleton" aria-hidden="true" />
+              )}
             </article>
           ))}
         </div>

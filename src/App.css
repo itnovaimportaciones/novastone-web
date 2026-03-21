@@ -3118,6 +3118,34 @@ body.home-route .site-footer {
   cursor: pointer;
 }
 
+.texture-moodboard-mosaic.is-loading .texture-moodboard-card {
+  cursor: default;
+  opacity: 0.92;
+}
+
+.texture-moodboard-card.is-real {
+  opacity: 0;
+  animation: textureMoodboardCardFadeIn 280ms ease forwards;
+}
+
+.texture-moodboard-card.is-placeholder {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.texture-moodboard-card-skeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.06) 8%,
+    rgba(255, 255, 255, 0.12) 18%,
+    rgba(255, 255, 255, 0.06) 33%
+  );
+  background-size: 180% 100%;
+  animation: textureMoodboardSkeleton 1.2s ease-in-out infinite;
+}
+
 .texture-moodboard-card.slot-a { grid-area: a; }
 .texture-moodboard-card.slot-b { grid-area: b; }
 .texture-moodboard-card.slot-c { grid-area: c; }
@@ -3242,6 +3270,16 @@ body.home-route .site-footer {
 }
 
 @keyframes textureMoodboardLightboxFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes textureMoodboardSkeleton {
+  from { background-position: 100% 0; }
+  to { background-position: -80% 0; }
+}
+
+@keyframes textureMoodboardCardFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
