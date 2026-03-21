@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const fallbackPool = [
   '/hero/home_1.png',
@@ -209,30 +209,31 @@ const resolveMoodboardAssets = async (product) => {
 
 const TextureMoodboardPanel = ({ product }) => {
   const fallbackImages = useMemo(() => buildMoodboardImages(product), [product]);
-  const [resolvedAssets, setResolvedAssets] = useState(null);
+  const [displayProduct, setDisplayProduct] = useState(product || null);
   const [layoutImages, setLayoutImages] = useState(null);
   const [hoveredSlot, setHoveredSlot] = useState(null);
   const [activeSlot, setActiveSlot] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [isCrossfading, setIsCrossfading] = useState(false);
   const [canUseDesktopLightbox, setCanUseDesktopLightbox] = useState(false);
   const [lightboxImageSrc, setLightboxImageSrc] = useState('');
+  const fadeTimerRef = useRef(null);
+  const layoutImagesRef = useRef(layoutImages);
 
   useEffect(() => {
-    let active = true;
-    setResolvedAssets(null);
-    setHoveredSlot(null);
+    layoutImagesRef.current = layoutImages;
+  }, [layoutImages]);
 
-    if (!product?.name) return undefined;
-
-    resolveMoodboardAssets(product).then((assets) => {
-      if (!active) return;
-      setResolvedAssets(assets);
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [product?.id, product?.name]);
+  useEffect(
+    () => () => {
+      if (fadeTimerRef.current) {
+        window.clearTimeout(fadeTimerRef.current);
+        fadeTimerRef.current = null;
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 900px)');
@@ -250,17 +251,31 @@ const TextureMoodboardPanel = ({ product }) => {
     return () => media.removeEventListener('change', syncDesktopLightbox);
   }, []);
 
-  const resolvedMoodboardImages = resolvedAssets?.moodboardImages || [];
-  const hasResolvedMoodboard = resolvedMoodboardImages.length > 0;
-
   useEffect(() => {
     let active = true;
-    setLayoutImages(null);
+    setHoveredSlot(null);
 
     const buildLayout = async () => {
-      const realSources = hasResolvedMoodboard
-        ? resolvedMoodboardImages.filter(Boolean)
-        : [];
+      if (!product?.name) {
+        if (!active) return;
+        setDisplayProduct(null);
+        setLayoutImages(null);
+        setIsBuffering(false);
+        return;
+      }
+
+      const existingLayout = layoutImagesRef.current;
+      const hasExistingMoodboard =
+        Array.isArray(existingLayout?.slots) && existingLayout.slots.length > 0;
+      const switchingProduct =
+        hasExistingMoodboard && existingLayout?.productId !== (product?.id || '');
+
+      setIsBuffering(switchingProduct);
+
+      const assets = await resolveMoodboardAssets(product);
+      if (!active) return;
+
+      const realSources = (assets?.moodboardImages || []).filter(Boolean);
       const fallbackSources = (fallbackImages.length > 0 ? fallbackImages : fallbackPool).filter(
         Boolean
       );
@@ -312,11 +327,22 @@ const TextureMoodboardPanel = ({ product }) => {
         };
       }).filter(Boolean);
 
+      if (!active) return;
       setLayoutImages({
         productId: product?.id || '',
         layoutKey,
         slots: assigned,
       });
+      setDisplayProduct(product);
+      setIsBuffering(false);
+      setIsCrossfading(true);
+      if (fadeTimerRef.current) {
+        window.clearTimeout(fadeTimerRef.current);
+      }
+      fadeTimerRef.current = window.setTimeout(() => {
+        setIsCrossfading(false);
+        fadeTimerRef.current = null;
+      }, 220);
     };
 
     buildLayout();
@@ -324,15 +350,16 @@ const TextureMoodboardPanel = ({ product }) => {
     return () => {
       active = false;
     };
-  }, [hasResolvedMoodboard, resolvedMoodboardImages, fallbackImages]);
+  }, [product, fallbackImages]);
 
+  const renderedProduct = displayProduct || product;
   const heroImage =
-    product?.thumbnailImage ||
-    product?.detailImages?.[0] ||
+    renderedProduct?.thumbnailImage ||
+    renderedProduct?.detailImages?.[0] ||
     fallbackImages[0] ||
     '/placeholder.jpg';
-  const finishLabel = useMemo(() => resolveFinishLabel(product), [product]);
-  const currentProductId = product?.id || '';
+  const finishLabel = useMemo(() => resolveFinishLabel(renderedProduct), [renderedProduct]);
+  const currentProductId = renderedProduct?.id || '';
   const hasReadyLayout =
     layoutImages?.productId === currentProductId &&
     Array.isArray(layoutImages?.slots) &&
@@ -508,7 +535,7 @@ const TextureMoodboardPanel = ({ product }) => {
         <article className="texture-moodboard-feature">
           <img
             src={heroImage}
-            alt={`${product.name} textura principal`}
+            alt={`${renderedProduct?.name || product.name} textura principal`}
             loading="lazy"
             onError={(event) => {
               event.currentTarget.src = '/placeholder.jpg';
@@ -516,7 +543,7 @@ const TextureMoodboardPanel = ({ product }) => {
           />
           <div className="texture-moodboard-overlay">
             <p className="texture-moodboard-label">Textura activa</p>
-            <h2>{product.name}</h2>
+            <h2>{renderedProduct?.name || product.name}</h2>
             {finishLabel ? <span>{finishLabel}</span> : null}
           </div>
         </article>
@@ -526,12 +553,12 @@ const TextureMoodboardPanel = ({ product }) => {
         </div>
 
         <div
-          className={`texture-moodboard-mosaic layout-${renderedLayoutKey} ${effectiveSlot ? 'is-hovering' : ''} ${hasReadyLayout ? 'is-ready' : 'is-loading'}`}
+          className={`texture-moodboard-mosaic layout-${renderedLayoutKey} ${effectiveSlot ? 'is-hovering' : ''} ${hasReadyLayout ? 'is-ready' : 'is-loading'} ${isBuffering ? 'is-buffering' : ''} ${isCrossfading ? 'is-crossfading' : ''}`}
           style={mosaicTrackStyle}
         >
           {(hasReadyLayout ? slotImages : placeholderSlots).map((item, index) => (
             <article
-              key={`${product.id}-${item.src || `placeholder-${item.slot}`}-${index + 1}`}
+              key={`${currentProductId || product.id}-${item.src || `placeholder-${item.slot}`}-${index + 1}`}
               className={`texture-moodboard-card slot-${item.slot} ${item.ratioClass ? `ratio-${item.ratioClass}` : ''} ${hasReadyLayout ? 'is-real' : 'is-placeholder'}`}
               onMouseEnter={() => setHoveredSlot(item.slot)}
               onMouseLeave={() => setHoveredSlot(null)}
@@ -547,7 +574,7 @@ const TextureMoodboardPanel = ({ product }) => {
               {hasReadyLayout ? (
                 <img
                   src={item.src}
-                  alt={`${product.name} inspiración ${index + 1}`}
+                  alt={`${renderedProduct?.name || product.name} inspiración ${index + 1}`}
                   loading="lazy"
                   onError={(event) => {
                     event.currentTarget.src = '/placeholder.jpg';
@@ -583,7 +610,7 @@ const TextureMoodboardPanel = ({ product }) => {
           >
             <img
               src={lightboxImageSrc}
-              alt={`${product.name} inspiración ampliada`}
+              alt={`${renderedProduct?.name || product.name} inspiración ampliada`}
               className="texture-moodboard-lightbox-image"
               onError={(event) => {
                 event.currentTarget.src = '/placeholder.jpg';

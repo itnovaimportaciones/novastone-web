@@ -3123,6 +3123,10 @@ body.home-route .site-footer {
   opacity: 0.92;
 }
 
+.texture-moodboard-mosaic.is-buffering .texture-moodboard-card {
+  pointer-events: none;
+}
+
 .texture-moodboard-card.is-real {
   opacity: 0;
   animation: textureMoodboardCardFadeIn 280ms ease forwards;
@@ -3206,6 +3210,10 @@ body.home-route .site-footer {
 
 .texture-moodboard-card:hover {
   border-color: rgba(255, 255, 255, 0.24);
+}
+
+.texture-moodboard-mosaic.is-crossfading .texture-moodboard-card.is-real {
+  animation: textureMoodboardCardFadeIn 220ms ease forwards;
 }
 
 .texture-moodboard-mosaic.is-hovering .texture-moodboard-card {
