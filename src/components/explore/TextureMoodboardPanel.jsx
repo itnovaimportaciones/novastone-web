@@ -6,6 +6,10 @@ const fallbackPool = [
   '/hero/Home_3.png',
   '/hero/Home_4.png',
 ];
+const moodboardAssetsCache = new Map();
+const imageExistsCache = new Map();
+const imageMetaCache = new Map();
+const moodboardLayoutCache = new Map();
 
 const slugifyMoodboardKey = (value = '') =>
   String(value)
@@ -17,12 +21,31 @@ const slugifyMoodboardKey = (value = '') =>
     .replace(/_+/g, '_');
 
 const imageExists = async (src) => {
+  if (imageExistsCache.has(src)) return imageExistsCache.get(src);
+
+  const request = (async () => {
+    try {
+      const response = await fetch(src, { method: 'HEAD' });
+      if (!response.ok) return false;
+      const contentType = response.headers.get('content-type') || '';
+      return contentType.toLowerCase().startsWith('image/');
+    } catch {
+      try {
+        const response = await fetch(src, { method: 'GET' });
+        if (!response.ok) return false;
+        const contentType = response.headers.get('content-type') || '';
+        return contentType.toLowerCase().startsWith('image/');
+      } catch {
+        return false;
+      }
+    }
+  })();
+
+  imageExistsCache.set(src, request);
   try {
-    const response = await fetch(src, { method: 'GET', cache: 'no-store' });
-    if (!response.ok) return false;
-    const contentType = response.headers.get('content-type') || '';
-    return contentType.toLowerCase().startsWith('image/');
+    return await request;
   } catch {
+    imageExistsCache.delete(src);
     return false;
   }
 };
@@ -37,25 +60,33 @@ const firstExisting = async (candidates = []) => {
 };
 
 const loadImageMeta = (src) =>
-  new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const width = img.naturalWidth || 0;
-      const height = img.naturalHeight || 0;
-      if (width <= 0 || height <= 0) {
+  imageMetaCache.get(src) ||
+  (() => {
+    const request = new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const width = img.naturalWidth || 0;
+        const height = img.naturalHeight || 0;
+        if (width <= 0 || height <= 0) {
+          resolve(null);
+          return;
+        }
+        resolve({
+          src,
+          width,
+          height,
+          ratio: width / height,
+        });
+      };
+      img.onerror = () => {
+        imageMetaCache.delete(src);
         resolve(null);
-        return;
-      }
-      resolve({
-        src,
-        width,
-        height,
-        ratio: width / height,
-      });
-    };
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
+      };
+      img.src = src;
+    });
+    imageMetaCache.set(src, request);
+    return request;
+  })();
 
 const classifyRatio = (ratio) => {
   if (ratio < 0.9) return 'portrait';
@@ -188,23 +219,39 @@ const buildMoodboardImages = (product) => {
   return output;
 };
 
+const uniqueSources = (sources = []) => [...new Set(sources.filter(Boolean))];
+
+const loadImageMetaUntil = async (sources = [], maxCount = 0) => {
+  if (maxCount <= 0) return [];
+  const loaded = [];
+  for (const src of sources) {
+    if (loaded.length >= maxCount) break;
+    // eslint-disable-next-line no-await-in-loop
+    const item = await loadImageMeta(src);
+    if (item) loaded.push(item);
+  }
+  return loaded;
+};
+
 const resolveMoodboardAssets = async (product) => {
   const key = slugifyMoodboardKey(product?.name || '');
   if (!key) return null;
+  if (moodboardAssetsCache.has(key)) return moodboardAssetsCache.get(key);
 
   const base = `/moodboard/${key}`;
   const exts = ['jpg', 'jpeg', 'png', 'webp'];
 
   const moodboardImages = [];
-  for (let i = 1; i <= 6; i += 1) {
+  for (let i = 1; i <= 6 && moodboardImages.length < SLOT_COUNT; i += 1) {
     const candidates = exts.map((ext) => `${base}/${key}_moodboard_${i}.${ext}`);
     // eslint-disable-next-line no-await-in-loop
     const found = await firstExisting(candidates);
     if (found) moodboardImages.push(found);
   }
 
-  if (moodboardImages.length === 0) return null;
-  return { moodboardImages };
+  const resolved = moodboardImages.length > 0 ? { moodboardImages } : null;
+  moodboardAssetsCache.set(key, resolved);
+  return resolved;
 };
 
 const TextureMoodboardPanel = ({ product }) => {
@@ -269,25 +316,34 @@ const TextureMoodboardPanel = ({ product }) => {
         Array.isArray(existingLayout?.slots) && existingLayout.slots.length > 0;
       const switchingProduct =
         hasExistingMoodboard && existingLayout?.productId !== (product?.id || '');
+      const productCacheKey = product?.id || slugifyMoodboardKey(product?.name || '');
+      const cachedLayout = productCacheKey ? moodboardLayoutCache.get(productCacheKey) : null;
+      if (cachedLayout) {
+        if (!active) return;
+        setLayoutImages(cachedLayout);
+        setDisplayProduct(product);
+        setIsBuffering(false);
+        return;
+      }
 
       setIsBuffering(switchingProduct);
 
       const assets = await resolveMoodboardAssets(product);
       if (!active) return;
 
-      const realSources = (assets?.moodboardImages || []).filter(Boolean);
-      const fallbackSources = (fallbackImages.length > 0 ? fallbackImages : fallbackPool).filter(
-        Boolean
+      const realSources = uniqueSources((assets?.moodboardImages || []).slice(0, SLOT_COUNT));
+      const fallbackSources = uniqueSources(
+        (fallbackImages.length > 0 ? fallbackImages : fallbackPool).slice(0, SLOT_COUNT * 2)
       );
 
-      const uniqueReal = [...new Set(realSources)];
-      const uniqueFallback = [...new Set(fallbackSources)];
-      const realLoaded = (
-        await Promise.all(uniqueReal.map((src) => loadImageMeta(src)))
-      ).filter(Boolean);
-      const fallbackLoaded = (
-        await Promise.all(uniqueFallback.map((src) => loadImageMeta(src)))
-      ).filter(Boolean);
+      const realLoaded = (await Promise.all(realSources.map((src) => loadImageMeta(src)))).filter(
+        Boolean
+      );
+      const fallbackNeeded = Math.max(0, SLOT_COUNT - realLoaded.length);
+      const fallbackLoaded = await loadImageMetaUntil(
+        fallbackSources.filter((src) => !realSources.includes(src)),
+        fallbackNeeded
+      );
 
       const primaryPool = realLoaded.length > 0 ? realLoaded : fallbackLoaded;
       if (!active || primaryPool.length === 0) return;
@@ -328,13 +384,17 @@ const TextureMoodboardPanel = ({ product }) => {
       }).filter(Boolean);
 
       if (!active) return;
-      setLayoutImages({
+      const computedLayout = {
         productId: product?.id || '',
         layoutKey,
         slots: assigned,
-      });
+      };
+      setLayoutImages(computedLayout);
       setDisplayProduct(product);
       setIsBuffering(false);
+      if (productCacheKey) {
+        moodboardLayoutCache.set(productCacheKey, computedLayout);
+      }
       setIsCrossfading(true);
       if (fadeTimerRef.current) {
         window.clearTimeout(fadeTimerRef.current);
