@@ -4,6 +4,9 @@ import { matchesCollection, normalizeCollectionKey } from '../../content/collect
 import ProductSidecart from '../ProductSidecart';
 import { trackViewContent } from '../../lib/metaPixel';
 
+const toSlug = (name) =>
+  name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
 const ProductGallery = () => {
   const [products, setProducts] = useState([]);
   const [collectionFilter, setCollectionFilter] = useState('all');
@@ -57,6 +60,18 @@ const ProductGallery = () => {
   }, []);
 
   useEffect(() => {
+    if (products.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const productoSlug = params.get('producto');
+    if (!productoSlug) return;
+    const product = products.find(p => toSlug(p.name) === productoSlug);
+    if (product) {
+      setSelectedProduct(product);
+      setIsSidecartOpen(true);
+    }
+  }, [products]);
+
+  useEffect(() => {
     // Update hash query when collection filter changes
     const newHash =
       collectionFilter === 'all'
@@ -85,11 +100,14 @@ const ProductGallery = () => {
     });
     setSelectedProduct(product);
     setIsSidecartOpen(true);
+    const slug = toSlug(product.name);
+    window.history.replaceState(null, '', `/productos?producto=${slug}`);
   };
 
   const handleCloseSidecart = () => {
     setIsSidecartOpen(false);
     setSelectedProduct(null);
+    window.history.replaceState(null, '', `/productos${window.location.hash}`);
   };
 
   if (loading) {
