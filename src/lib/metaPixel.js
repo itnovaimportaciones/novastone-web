@@ -11,7 +11,7 @@ const logPixel = (label, payload = {}) => {
 const withPagePath = (params = {}) => {
   if (typeof window === 'undefined') return params;
   return {
-    page_path: window.location.pathname,
+    page_path: window.location.pathname + window.location.search,
     ...params,
   };
 };

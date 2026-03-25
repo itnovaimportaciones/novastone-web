@@ -92,6 +92,8 @@ const ProductGallery = () => {
   });
 
   const handleProductClick = (product) => {
+    const slug = toSlug(product.name);
+    window.history.replaceState(null, '', `/productos?producto=${slug}`);
     trackViewContent({
       content_name: product?.name || 'Producto',
       content_type: 'product',
@@ -100,8 +102,6 @@ const ProductGallery = () => {
     });
     setSelectedProduct(product);
     setIsSidecartOpen(true);
-    const slug = toSlug(product.name);
-    window.history.replaceState(null, '', `/productos?producto=${slug}`);
   };
 
   const handleCloseSidecart = () => {
