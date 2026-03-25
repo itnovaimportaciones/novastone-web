@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadProductData, filterProductsByFilters } from '../../utils/productParser';
 import { matchesCollection, normalizeCollectionKey } from '../../content/collectionProductMap';
 import ProductSidecart from '../ProductSidecart';
-import { trackViewContent } from '../../lib/metaPixel';
+import { trackViewContent, trackCustom } from '../../lib/metaPixel';
 
 const toSlug = (name) =>
   name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
@@ -98,6 +98,14 @@ const ProductGallery = () => {
       content_name: product?.name || 'Producto',
       content_type: 'product',
       content_ids: [product?.productCode || product?.code || product?.id || product?.name || 'unknown'],
+      trigger_source: 'ProductGallery.handleProductClick',
+    });
+    trackCustom('ViewSlab', {
+      texture_name: product?.name || null,
+      product_id: product?.id || null,
+      product_code: product?.productCode || product?.code || product?.id || null,
+      thickness: product?.thickness || null,
+      finish: product?.finish || null,
       trigger_source: 'ProductGallery.handleProductClick',
     });
     setSelectedProduct(product);

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { supabase } from '../lib/supabase'
+import { trackLead } from '../lib/metaPixel'
 
 const ContactSidecart = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -353,6 +354,10 @@ const ContactSidecart = ({ isOpen, onClose }) => {
     const success = await createLead(formData)
     
     if (success) {
+      trackLead({
+        form_name: 'contacto',
+        trigger_source: 'ContactSidecart.handleSubmit.success',
+      })
       setSubmitSuccess(true)
       
       // Clear form and localStorage

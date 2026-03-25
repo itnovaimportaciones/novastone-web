@@ -6,7 +6,7 @@ import {
   buildProductWhatsAppMessage,
   buildWhatsAppUrl,
 } from '../utils/whatsapp';
-import { trackContact, trackCustom } from '../lib/metaPixel';
+import { trackContact, trackCustom, trackLead } from '../lib/metaPixel';
 
 const WHATSAPP_PHONE = '5491124800421';
 
@@ -581,15 +581,20 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center mt-6 px-5 py-3 uppercase tracking-[0.2em] text-xs nav-cta product-sidecart-cta"
-                  onClick={() =>
+                  onClick={() => {
                     trackContact({
                       channel: 'whatsapp',
                       origin: 'producto',
                       page_section: 'sidecart-ficha-tecnica',
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',
-                    })
-                  }
+                    });
+                    trackLead({
+                      channel: 'whatsapp',
+                      texture_name: safeProduct.name || null,
+                      trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                    });
+                  }}
                 >
                   Consultar disponibilidad
                 </a>

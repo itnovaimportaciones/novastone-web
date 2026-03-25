@@ -7,8 +7,10 @@ import HowToBuyPage from './components/pages/HowToBuyPage';
 import AsociadosPage from './components/pages/AsociadosPage';
 import ExploreTexturesPage from './components/pages/ExploreTexturesPage';
 import ExploreTexturesMoodboardPage from './components/pages/ExploreTexturesMoodboardPage';
+import TestChat from './components/pages/TestChat';
+import HomeVideoSection from './components/HomeVideoSection';
 import { COLLECTIONS_COPY } from './content/collectionsCopy';
-import { trackContact, trackCustom, trackPageView } from './lib/metaPixel';
+import { trackContact, trackCustom, trackLead, trackPageView } from './lib/metaPixel';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -730,14 +732,19 @@ const Footer = () => (
           target="_blank"
           rel="noreferrer"
           className="quote-cta"
-          onClick={() =>
+          onClick={() => {
             trackContact({
               channel: 'whatsapp',
               origin: 'footer',
               page_section: 'footer-quote',
               trigger_source: 'App.Footer.footerQuote.whatsapp',
-            })
-          }
+            });
+            trackLead({
+              channel: 'whatsapp',
+              origin: 'footer',
+              trigger_source: 'App.Footer.footerQuote.whatsapp',
+            });
+          }}
         >
           Solicitar cotización
         </a>
@@ -873,6 +880,11 @@ function App() {
       window.location.pathname.startsWith('/admin') ||
       window.location.hash === '#admin'
     );
+  }, []);
+
+  const isTestChatRoute = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.location.pathname === '/test-chat';
   }, []);
 
   // Handle hash/path routing
@@ -1024,6 +1036,10 @@ function App() {
     );
   }
 
+  if (isTestChatRoute) {
+    return <TestChat />;
+  }
+
   // Render product gallery page
   if (currentRoute === 'productos') {
     return (
@@ -1139,6 +1155,7 @@ function App() {
         ) : (
           <StonesSection />
         )}
+        <HomeVideoSection />
       </main>
       <Footer />
       <WhatsAppFab />
