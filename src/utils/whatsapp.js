@@ -18,7 +18,9 @@ export const buildWhatsAppUrl = (
 };
 
 export const buildProductWhatsAppMessage = (productName, productUrl) =>
-  `Me interesa ${productName}${productUrl ? `\nLink del producto: ${productUrl}` : ''}`;
+  productUrl
+    ? `Link del producto: ${productUrl}\n\nMe interesa ${productName}!`
+    : `Me interesa ${productName}!`;
 
 export const buildCanonicalProductUrl = (productSlug) => {
   if (typeof window === 'undefined') return '';
