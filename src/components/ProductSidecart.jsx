@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { gsap } from 'gsap';
 import { parseProductDescription } from '../utils/productParser';
+import {
+  buildCanonicalProductUrl,
+  buildProductWhatsAppMessage,
+  buildWhatsAppUrl,
+} from '../utils/whatsapp';
 import { trackContact, trackCustom } from '../lib/metaPixel';
 
 const WHATSAPP_PHONE = '5491124800421';
@@ -291,8 +296,15 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
     touchDeltaXRef.current = 0;
   };
 
-  const whatsAppMessage = `Hola, quiero consultar disponibilidad de ${safeProduct.name || ''}.`;
-  const whatsAppUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(whatsAppMessage)}`;
+  const productSlug =
+    new URLSearchParams(window.location.search).get('producto') ||
+    slugifyMoodboardKey(safeProduct.name || '').replace(/_/g, '-');
+  const canonicalProductUrl = buildCanonicalProductUrl(productSlug);
+  const whatsAppMessage = buildProductWhatsAppMessage(
+    safeProduct.name || '',
+    canonicalProductUrl
+  );
+  const whatsAppUrl = buildWhatsAppUrl(WHATSAPP_PHONE, whatsAppMessage);
   const textureSlug = slugifyMoodboardKey(safeProduct.name || '');
   const exploreTextureUrl = textureSlug
     ? `/inspiracion?texture=${encodeURIComponent(textureSlug)}`
