@@ -16,6 +16,17 @@ const withPagePath = (params = {}) => {
   };
 };
 
+// Module-level debounce map: tracks last fire time per trigger_source
+const _contactLastFired = {};
+
+const _hasContactFiredInSession = (triggerSource) => {
+  if (typeof window === 'undefined') return false;
+  const key = `pixel_contact_${triggerSource}`;
+  if (sessionStorage.getItem(key)) return true;
+  sessionStorage.setItem(key, '1');
+  return false;
+};
+
 export const trackPageView = () => {
   const fbqReady = hasFbq();
   logPixel('track:PageView:attempt', { fbqReady });
@@ -24,7 +35,23 @@ export const trackPageView = () => {
   logPixel('track:PageView:sent');
 };
 
-export const trackContact = (params = {}) => {
+export const trackContact = (params = {}, { deduplicateBySession = false } = {}) => {
+  const src = params.trigger_source || 'unknown';
+
+  // Debounce: skip if same trigger_source fired within the last 1000ms
+  const now = Date.now();
+  if (_contactLastFired[src] && now - _contactLastFired[src] < 1000) {
+    logPixel('track:Contact:skipped:debounce', { trigger_source: src });
+    return;
+  }
+  _contactLastFired[src] = now;
+
+  // Session deduplication: skip if already fired from this trigger_source this session
+  if (deduplicateBySession && _hasContactFiredInSession(src)) {
+    logPixel('track:Contact:skipped:session-duplicate', { trigger_source: src });
+    return;
+  }
+
   const payload = withPagePath(params);
   const fbqReady = hasFbq();
   logPixel('track:Contact:attempt', { fbqReady, params: payload });

@@ -417,12 +417,15 @@ const WhatsAppFab = () => {
   const handleClick = () => {
     const path = window.location.pathname.toLowerCase();
     const origin = path === '/inspiracion' ? 'inspiracion' : 'footer';
-    trackContact({
-      channel: 'whatsapp',
-      origin,
-      page_section: 'floating-button',
-      trigger_source: 'App.WhatsAppFab.click',
-    });
+    trackContact(
+      {
+        channel: 'whatsapp',
+        origin,
+        page_section: 'floating-button',
+        trigger_source: 'App.WhatsAppFab.click',
+      },
+      { deduplicateBySession: true }
+    );
   };
 
   return (
