@@ -25,10 +25,14 @@ const ExploreTexturesMoodboardPage = () => {
 
   const trackInspirationChange = (product, triggerSource) => {
     if (!product?.name) return;
-    trackCustom('ViewInspiration', {
-      texture_name: product.name,
-      trigger_source: triggerSource,
-    });
+    trackCustom(
+      'ViewInspiration',
+      {
+        texture_name: product.name,
+        trigger_source: triggerSource,
+      },
+      { sessionDedupKey: `pixel_ViewInspiration_${product.name}` }
+    );
   };
 
   useEffect(() => {

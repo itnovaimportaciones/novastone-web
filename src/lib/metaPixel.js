@@ -19,9 +19,8 @@ const withPagePath = (params = {}) => {
 // Module-level debounce map: tracks last fire time per trigger_source
 const _contactLastFired = {};
 
-const _hasContactFiredInSession = (triggerSource) => {
+const _hasEventFiredInSession = (key) => {
   if (typeof window === 'undefined') return false;
-  const key = `pixel_contact_${triggerSource}`;
   if (sessionStorage.getItem(key)) return true;
   sessionStorage.setItem(key, '1');
   return false;
@@ -47,7 +46,7 @@ export const trackContact = (params = {}, { deduplicateBySession = false } = {})
   _contactLastFired[src] = now;
 
   // Session deduplication: skip if already fired from this trigger_source this session
-  if (deduplicateBySession && _hasContactFiredInSession(src)) {
+  if (deduplicateBySession && _hasEventFiredInSession(`pixel_contact_${src}`)) {
     logPixel('track:Contact:skipped:session-duplicate', { trigger_source: src });
     return;
   }
@@ -60,7 +59,11 @@ export const trackContact = (params = {}, { deduplicateBySession = false } = {})
   logPixel('track:Contact:sent', { params: payload });
 };
 
-export const trackViewContent = (params = {}) => {
+export const trackViewContent = (params = {}, { sessionDedupKey } = {}) => {
+  if (sessionDedupKey && _hasEventFiredInSession(sessionDedupKey)) {
+    logPixel('track:ViewContent:skipped:session-duplicate', { sessionDedupKey });
+    return;
+  }
   const payload = withPagePath(params);
   const fbqReady = hasFbq();
   logPixel('track:ViewContent:attempt', { fbqReady, params: payload });
@@ -78,7 +81,11 @@ export const trackLead = (params = {}) => {
   logPixel('track:Lead:sent', { params: payload });
 };
 
-export const trackCustom = (eventName, params = {}) => {
+export const trackCustom = (eventName, params = {}, { sessionDedupKey } = {}) => {
+  if (sessionDedupKey && _hasEventFiredInSession(sessionDedupKey)) {
+    logPixel(`trackCustom:${eventName}:skipped:session-duplicate`, { sessionDedupKey });
+    return;
+  }
   const payload = withPagePath(params);
   const fbqReady = hasFbq();
   logPixel('trackCustom:attempt', {

@@ -326,11 +326,16 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
 
   const openSlabLightbox = () => {
     if (isSlabLightboxOpen) return;
-    trackCustom('ViewSlab', {
-      texture_name: safeProduct.name || null,
-      product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
-      trigger_source: 'ProductSidecart.openSlabLightbox',
-    });
+    const _slabId = safeProduct.id || safeProduct.productCode || safeProduct.code || safeProduct.name || 'unknown';
+    trackCustom(
+      'ViewSlab',
+      {
+        texture_name: safeProduct.name || null,
+        product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+        trigger_source: 'ProductSidecart.openSlabLightbox',
+      },
+      { sessionDedupKey: `pixel_ViewSlab_${_slabId}` }
+    );
     setIsSlabLightboxOpen(true);
   };
 

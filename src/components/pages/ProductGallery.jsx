@@ -94,20 +94,29 @@ const ProductGallery = () => {
   const handleProductClick = (product) => {
     const slug = toSlug(product.name);
     window.history.replaceState(null, '', `/productos?producto=${slug}`);
-    trackViewContent({
-      content_name: product?.name || 'Producto',
-      content_type: 'product',
-      content_ids: [product?.productCode || product?.code || product?.id || product?.name || 'unknown'],
-      trigger_source: 'ProductGallery.handleProductClick',
-    });
-    trackCustom('ViewSlab', {
-      texture_name: product?.name || null,
-      product_id: product?.id || null,
-      product_code: product?.productCode || product?.code || product?.id || null,
-      thickness: product?.thickness || null,
-      finish: product?.finish || null,
-      trigger_source: 'ProductGallery.handleProductClick',
-    });
+    const _contentId = product?.productCode || product?.code || product?.id || product?.name || 'unknown';
+    const _slabId = product?.id || product?.productCode || product?.code || product?.name || 'unknown';
+    trackViewContent(
+      {
+        content_name: product?.name || 'Producto',
+        content_type: 'product',
+        content_ids: [_contentId],
+        trigger_source: 'ProductGallery.handleProductClick',
+      },
+      { sessionDedupKey: `pixel_ViewContent_${_contentId}` }
+    );
+    trackCustom(
+      'ViewSlab',
+      {
+        texture_name: product?.name || null,
+        product_id: product?.id || null,
+        product_code: product?.productCode || product?.code || product?.id || null,
+        thickness: product?.thickness || null,
+        finish: product?.finish || null,
+        trigger_source: 'ProductGallery.handleProductClick',
+      },
+      { sessionDedupKey: `pixel_ViewSlab_${_slabId}` }
+    );
     setSelectedProduct(product);
     setIsSidecartOpen(true);
   };
