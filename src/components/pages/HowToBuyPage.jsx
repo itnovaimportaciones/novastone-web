@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { trackContact, trackLead } from '../../lib/metaPixel';
+import * as ga4 from '../../lib/googleAnalytics';
 
 const WHATSAPP_PHONE = '+54 9 11 2480-0421';
 const WHATSAPP_MESSAGE = 'Hola, quiero conocer más sobre Novastone.';
@@ -84,6 +85,10 @@ const HowToBuyPage = () => {
         form_name: 'como-comprar',
         trigger_source: 'HowToBuyPage.handleSubmit.success',
       });
+      ga4.trackLead({
+        form_name: 'como-comprar',
+        trigger_source: 'HowToBuyPage.handleSubmit.success',
+      });
       setIsSubmitted(true);
     } catch (error) {
       console.error('HowToBuy submit failed', error);
@@ -118,14 +123,20 @@ const HowToBuyPage = () => {
             href={whatsAppUrl}
             target="_blank"
             rel="noreferrer"
-            onClick={() =>
+            onClick={() => {
               trackContact({
                 channel: 'whatsapp',
                 origin: 'como-comprar',
                 page_section: 'particulares',
                 trigger_source: 'HowToBuyPage.particulares.whatsapp',
-              })
-            }
+              });
+              ga4.trackContact({
+                channel: 'whatsapp',
+                origin: 'como-comprar',
+                page_section: 'particulares',
+                trigger_source: 'HowToBuyPage.particulares.whatsapp',
+              });
+            }}
           >
             Hablar por WhatsApp
           </a>

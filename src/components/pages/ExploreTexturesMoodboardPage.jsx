@@ -3,6 +3,7 @@ import { loadProductData } from '../../utils/productParser';
 import TextureMoodboardPanel from '../explore/TextureMoodboardPanel';
 import TextureRail from '../explore/TextureRail';
 import { trackCustom } from '../../lib/metaPixel';
+import * as ga4 from '../../lib/googleAnalytics';
 
 const slugifyTexture = (value = '') =>
   String(value)
@@ -32,6 +33,14 @@ const ExploreTexturesMoodboardPage = () => {
         trigger_source: triggerSource,
       },
       { sessionDedupKey: `pixel_ViewInspiration_${product.name}` }
+    );
+    ga4.trackCustom(
+      'ViewInspiration',
+      {
+        texture_name: product.name,
+        trigger_source: triggerSource,
+      },
+      { sessionDedupKey: `ViewInspiration_${product.name}` }
     );
   };
 

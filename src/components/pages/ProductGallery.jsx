@@ -3,6 +3,7 @@ import { loadProductData, filterProductsByFilters } from '../../utils/productPar
 import { matchesCollection, normalizeCollectionKey } from '../../content/collectionProductMap';
 import ProductSidecart from '../ProductSidecart';
 import { trackViewContent, trackCustom } from '../../lib/metaPixel';
+import * as ga4 from '../../lib/googleAnalytics';
 
 const toSlug = (name) =>
   name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
@@ -105,6 +106,15 @@ const ProductGallery = () => {
       },
       { sessionDedupKey: `pixel_ViewContent_${_contentId}` }
     );
+    ga4.trackViewContent(
+      {
+        content_name: product?.name || 'Producto',
+        content_type: 'product',
+        content_ids: [_contentId],
+        trigger_source: 'ProductGallery.handleProductClick',
+      },
+      { sessionDedupKey: `ViewContent_${_contentId}` }
+    );
     trackCustom(
       'ViewSlab',
       {
@@ -116,6 +126,18 @@ const ProductGallery = () => {
         trigger_source: 'ProductGallery.handleProductClick',
       },
       { sessionDedupKey: `pixel_ViewSlab_${_slabId}` }
+    );
+    ga4.trackCustom(
+      'ViewSlab',
+      {
+        texture_name: product?.name || null,
+        product_id: product?.id || null,
+        product_code: product?.productCode || product?.code || product?.id || null,
+        thickness: product?.thickness || null,
+        finish: product?.finish || null,
+        trigger_source: 'ProductGallery.handleProductClick',
+      },
+      { sessionDedupKey: `ViewSlab_${_slabId}` }
     );
     setSelectedProduct(product);
     setIsSidecartOpen(true);

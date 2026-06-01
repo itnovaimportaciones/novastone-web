@@ -1,5 +1,6 @@
 import React from 'react';
 import { trackCustom } from '../../lib/metaPixel';
+import * as ga4 from '../../lib/googleAnalytics';
 
 const TextureRail = ({ products, selectedId, onSelect }) => {
   return (
@@ -16,6 +17,11 @@ const TextureRail = ({ products, selectedId, onSelect }) => {
               className={`texture-rail-item ${isActive ? 'is-active' : ''}`}
               onClick={() => {
                 trackCustom('TextureInteraction', {
+                  interaction_type: 'selector_click',
+                  texture_name: product.name || null,
+                  trigger_source: 'TextureRail.selectorClick',
+                });
+                ga4.trackCustom('TextureInteraction', {
                   interaction_type: 'selector_click',
                   texture_name: product.name || null,
                   trigger_source: 'TextureRail.selectorClick',

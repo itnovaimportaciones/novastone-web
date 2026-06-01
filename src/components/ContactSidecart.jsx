@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { supabase } from '../lib/supabase'
 import { trackLead } from '../lib/metaPixel'
+import * as ga4 from '../lib/googleAnalytics'
 
 const ContactSidecart = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -355,6 +356,10 @@ const ContactSidecart = ({ isOpen, onClose }) => {
     
     if (success) {
       trackLead({
+        form_name: 'contacto',
+        trigger_source: 'ContactSidecart.handleSubmit.success',
+      })
+      ga4.trackLead({
         form_name: 'contacto',
         trigger_source: 'ContactSidecart.handleSubmit.success',
       })

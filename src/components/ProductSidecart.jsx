@@ -7,6 +7,7 @@ import {
   buildWhatsAppUrl,
 } from '../utils/whatsapp';
 import { trackContact, trackCustom, trackLead } from '../lib/metaPixel';
+import * as ga4 from '../lib/googleAnalytics';
 
 const WHATSAPP_PHONE = '5491124800421';
 
@@ -318,6 +319,13 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
       product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
       trigger_source: 'ProductSidecart.handleExploreTextureNavigation',
     });
+    ga4.trackCustom('CTAInteraction', {
+      cta_name: 'explorar-textura',
+      origin: 'producto',
+      texture_name: safeProduct.name || null,
+      product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+      trigger_source: 'ProductSidecart.handleExploreTextureNavigation',
+    });
     window.history.pushState({}, '', exploreTextureUrl);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo(0, 0);
@@ -335,6 +343,15 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
         trigger_source: 'ProductSidecart.openSlabLightbox',
       },
       { sessionDedupKey: `pixel_ViewSlab_${_slabId}` }
+    );
+    ga4.trackCustom(
+      'ViewSlab',
+      {
+        texture_name: safeProduct.name || null,
+        product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
+        trigger_source: 'ProductSidecart.openSlabLightbox',
+      },
+      { sessionDedupKey: `ViewSlab_${_slabId}` }
     );
     setIsSlabLightboxOpen(true);
   };
@@ -594,7 +611,19 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',
                     });
+                    ga4.trackContact({
+                      channel: 'whatsapp',
+                      origin: 'producto',
+                      page_section: 'sidecart-ficha-tecnica',
+                      texture_name: safeProduct.name || null,
+                      trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                    });
                     trackLead({
+                      channel: 'whatsapp',
+                      texture_name: safeProduct.name || null,
+                      trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                    });
+                    ga4.trackLead({
                       channel: 'whatsapp',
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',

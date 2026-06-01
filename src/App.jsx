@@ -11,6 +11,7 @@ import TestChat from './components/pages/TestChat';
 import HomeVideoSection from './components/HomeVideoSection';
 import { COLLECTIONS_COPY } from './content/collectionsCopy';
 import { trackContact, trackCustom, trackLead, trackPageView } from './lib/metaPixel';
+import * as ga4 from './lib/googleAnalytics';
 import './App.css';
 
 const HERO_SLIDES = [
@@ -149,6 +150,12 @@ const Header = () => {
   const mobileWhatsAppUrl = `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
   const handleMobileWhatsAppClick = () => {
     trackContact({
+      channel: 'whatsapp',
+      origin: 'header',
+      page_section: 'mobile-drawer',
+      trigger_source: 'App.Header.mobileDrawer.whatsapp',
+    });
+    ga4.trackContact({
       channel: 'whatsapp',
       origin: 'header',
       page_section: 'mobile-drawer',
@@ -418,6 +425,15 @@ const WhatsAppFab = () => {
     const path = window.location.pathname.toLowerCase();
     const origin = path === '/inspiracion' ? 'inspiracion' : 'footer';
     trackContact(
+      {
+        channel: 'whatsapp',
+        origin,
+        page_section: 'floating-button',
+        trigger_source: 'App.WhatsAppFab.click',
+      },
+      { deduplicateBySession: true }
+    );
+    ga4.trackContact(
       {
         channel: 'whatsapp',
         origin,
@@ -713,14 +729,20 @@ const Footer = () => (
           target="_blank"
           rel="noreferrer"
           className="contact-link"
-          onClick={() =>
+          onClick={() => {
             trackContact({
               channel: 'whatsapp',
               origin: 'footer',
               page_section: 'footer-contact',
               trigger_source: 'App.Footer.footerContact.whatsapp',
-            })
-          }
+            });
+            ga4.trackContact({
+              channel: 'whatsapp',
+              origin: 'footer',
+              page_section: 'footer-contact',
+              trigger_source: 'App.Footer.footerContact.whatsapp',
+            });
+          }}
         >
           <span className="contact-icon" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="currentColor">
@@ -742,7 +764,18 @@ const Footer = () => (
               page_section: 'footer-quote',
               trigger_source: 'App.Footer.footerQuote.whatsapp',
             });
+            ga4.trackContact({
+              channel: 'whatsapp',
+              origin: 'footer',
+              page_section: 'footer-quote',
+              trigger_source: 'App.Footer.footerQuote.whatsapp',
+            });
             trackLead({
+              channel: 'whatsapp',
+              origin: 'footer',
+              trigger_source: 'App.Footer.footerQuote.whatsapp',
+            });
+            ga4.trackLead({
               channel: 'whatsapp',
               origin: 'footer',
               trigger_source: 'App.Footer.footerQuote.whatsapp',
@@ -983,6 +1016,7 @@ function App() {
 
   useEffect(() => {
     trackPageView();
+    ga4.trackPageView();
     const pathname = window.location.pathname.toLowerCase();
     const keyPageMap = {
       '/productos': 'productos',
@@ -992,6 +1026,10 @@ function App() {
     const pageName = keyPageMap[pathname];
     if (pageName) {
       trackCustom('KeyPageView', {
+        page_name: pageName,
+        trigger_source: 'App.routeChange',
+      });
+      ga4.trackCustom('KeyPageView', {
         page_name: pageName,
         trigger_source: 'App.routeChange',
       });
