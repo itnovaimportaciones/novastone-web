@@ -22,7 +22,7 @@ export function resolveProductImageKey(modelValue) {
     "louiskin-a": "louiskin",
     "louiskin-b": "louiskin",
     "nata-b": "nata",
-    "new-tajmhal-ab": "new-taj-majal",
+    "new-tajmhal-ab": "new-taj-mahal",
     "pandora-ab": "pandora",
 
     // Caso especial que vos marcaste

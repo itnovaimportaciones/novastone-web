@@ -18,7 +18,7 @@ export const COLLECTION_PRODUCT_MAP = {
     'FENDI WHITE',
     'LIMESTONE',
     'NATA',
-    'NEW TAJ MAJAL',
+    'NEW TAJ MAHAL',
     'PANDORA',
     'PORTLAND',
     'ROYAL GREY',
@@ -39,7 +39,7 @@ export const COLLECTION_PRODUCT_MAP = {
     'AUTUMN MAPLE',
     'CALACATTA ROMA',
     'CARMEN',
-    'NEW TAJ MAJAL',
+    'NEW TAJ MAHAL',
     'WHITE TRAVERTINE'
   ],
   luxury: [

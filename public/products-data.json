@@ -237,20 +237,20 @@
     "category": "12mm"
   },
   {
-    "id": "13new-taj-majal",
-    "name": "NEW TAJ MAJAL",
+    "id": "13new-taj-mahal",
+    "name": "NEW TAJ MAHAL",
     "order": 13,
-    "folderName": "13NEW TAJ MAJAL",
-    "thumbnailImage": "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL.jpg",
+    "folderName": "13NEW TAJ MAHAL",
+    "thumbnailImage": "/products/13NEW TAJ MAHAL/NEW TAJ MAHAL.jpg",
     "detailImages": [
-      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL render.png",
-      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL.jpg"
+      "/products/13NEW TAJ MAHAL/NEW TAJ MAHAL render.png",
+      "/products/13NEW TAJ MAHAL/NEW TAJ MAHAL.jpg"
     ],
     "renderImages": [
-      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL render.png"
+      "/products/13NEW TAJ MAHAL/NEW TAJ MAHAL render.png"
     ],
     "nonRenderImages": [
-      "/products/13NEW TAJ MAJAL/NEW TAJ MAJAL.jpg"
+      "/products/13NEW TAJ MAHAL/NEW TAJ MAHAL.jpg"
     ],
     "description": "",
     "category": null

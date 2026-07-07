@@ -14,7 +14,7 @@ const normalizeText = (value = '') => value.replace(/\s+/g, ' ').trim();
 
 const THICKNESS_OVERRIDES = {
   brazilianite: '12MM',
-  'new taj majal': '12MM'
+  'new taj mahal': '12MM'
 };
 
 const PRODUCT_OVERRIDES = {
@@ -23,7 +23,7 @@ const PRODUCT_OVERRIDES = {
     description:
       'Inspirado en cuarcitas claras de brillo mineral, presenta un fondo beige grisáceo con un entramado suave y cristalino que genera profundidad y un movimiento delicado. Su textura transmite naturalidad, luz y un aspecto elegante y sereno. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Beige grisáceo con textura cristalina suave Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Satin'
   },
-  'new taj majal': {
+  'new taj mahal': {
     category: '12mm',
     description:
       'De apariencia similar a cuarcitas claras y refinadas, presenta un fondo blanco cálido con un entramado suave de nubes minerales y vetas finas en tonos beige y gris muy sutiles. Su textura aporta profundidad y un movimiento delicado, manteniendo una estética luminosa y serena. Ficha Técnica: Aplicaciones: Mesadas de Baño, Mesadas de Cocina, Pisos y Revestimientos Colores: Blanco cálido con vetas suaves beige y grises Interior / Exterior: Exterior, Interior Tipo de Material: Ultracompacto Terminación Superficial: Acabado Natural'
