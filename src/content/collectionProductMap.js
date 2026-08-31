@@ -11,6 +11,8 @@ export const COLLECTION_PRODUCT_MAP = {
     'ATYs GREY',
     'AUTUMN MAPLE',
     'BEIGE STONE',
+    'CALACATTA AMBRA',
+    'MARFILO',
     'CRISTALLO BLANC',
     'BRAZILIANITE',
     'CALACATTA ROMA',
@@ -38,6 +40,7 @@ export const COLLECTION_PRODUCT_MAP = {
   ],
   espejada: [
     'AUTUMN MAPLE',
+    'MARFILO',
     'CRISTALLO BLANC',
     'CALACATTA ROMA',
     'CARMEN',
