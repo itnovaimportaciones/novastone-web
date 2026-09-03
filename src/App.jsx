@@ -14,12 +14,24 @@ import { trackContact, trackCustom, trackLead, trackPageView } from './lib/metaP
 import * as ga4 from './lib/googleAnalytics';
 import './App.css';
 
-const HERO_SLIDES = [
+const HERO_SLIDES_DESKTOP = [
   '/hero/home_1.png',
   '/hero/Home_2.png',
   '/hero/Home_3.png',
   '/hero/Home_4.png'
 ];
+
+// Verticales, sólo para mobile. Son 5 y las de desktop 4, así que no alcanza
+// con un <picture>: cambia la cantidad de slides y de indicadores.
+const HERO_SLIDES_MOBILE = [
+  '/hero/mobile/home-mobile-1.jpg',
+  '/hero/mobile/home-mobile-2.jpg',
+  '/hero/mobile/home-mobile-3.jpg',
+  '/hero/mobile/home-mobile-4.jpg',
+  '/hero/mobile/home-mobile-5.jpg'
+];
+
+const HERO_MOBILE_QUERY = '(max-width: 900px)';
 
 const DRAWER_PANEL_DURATION_MS = 520;
 
@@ -465,23 +477,48 @@ const WhatsAppFab = () => {
 
 const HeroSection = () => {
   const [active, setActive] = useState(0);
+  const [esMobile, setEsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(HERO_MOBILE_QUERY).matches
+  );
+
+  // Elegimos el set por viewport en vez de con <picture>: así el navegador
+  // descarga sólo las que va a mostrar y los indicadores acompañan la cantidad.
+  useEffect(() => {
+    const mq = window.matchMedia(HERO_MOBILE_QUERY);
+    const sync = () => setEsMobile(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  const slides = esMobile ? HERO_SLIDES_MOBILE : HERO_SLIDES_DESKTOP;
+
+  // Al cambiar de set, el índice puede quedar fuera de rango (5 → 4 slides)
+  useEffect(() => {
+    setActive((prev) => (prev < slides.length ? prev : 0));
+  }, [slides.length]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActive((prev) => (prev + 1) % HERO_SLIDES.length);
+      setActive((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <section className="hero">
       <div className="hero-slider" aria-hidden="true">
-        {HERO_SLIDES.map((src, index) => (
+        {slides.map((src, index) => (
           <div
             key={src}
             className={`hero-slide ${index === active ? 'is-active' : ''}`}
           >
-            <img src={src} alt="" />
+            <img
+              src={src}
+              alt=""
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
           </div>
         ))}
       </div>
@@ -494,7 +531,7 @@ const HeroSection = () => {
         </p>
       </div>
       <div className="hero-slider-indicator" role="tablist">
-        {HERO_SLIDES.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={index}
             type="button"
