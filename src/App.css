@@ -1875,6 +1875,7 @@ body.home-route .site-footer {
   position: relative;
   height: 100vh;
   min-height: 480px;
+  background-image: var(--tile-bg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -2388,6 +2389,12 @@ body.home-route .site-footer {
   .category-tiles {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  /* Verticales, sólo mobile. El fallback deja la de desktop si algún
+     tile no define versión mobile. */
+  .category-tile-image {
+    background-image: var(--tile-bg-mobile, var(--tile-bg));
   }
 
   .product-gallery-grid {

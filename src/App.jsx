@@ -8,7 +8,6 @@ import AsociadosPage from './components/pages/AsociadosPage';
 import ExploreTexturesPage from './components/pages/ExploreTexturesPage';
 import ExploreTexturesMoodboardPage from './components/pages/ExploreTexturesMoodboardPage';
 import TestChat from './components/pages/TestChat';
-import HomeVideoSection from './components/HomeVideoSection';
 import { COLLECTIONS_COPY } from './content/collectionsCopy';
 import { trackContact, trackCustom, trackLead, trackPageView } from './lib/metaPixel';
 import * as ga4 from './lib/googleAnalytics';
@@ -691,9 +690,12 @@ const StonesSection = () => {
           type="button"
           onClick={() => handleCategoryClick('20mm')}
         >
-          <div 
+          <div
           className="category-tile-image"
-          style={{ backgroundImage: 'url(/4Home/20mm%20explorar%20productos.png)' }}
+          style={{
+            '--tile-bg': 'url(/4Home/20mm%20explorar%20productos.png)',
+            '--tile-bg-mobile': 'url(/4Home/20mm%20explorar%20productos%20mobile.jpg)'
+          }}
           >
             <div className="category-tile-overlay">
               <h3>20mm</h3>
@@ -706,9 +708,12 @@ const StonesSection = () => {
           type="button"
           onClick={() => handleCategoryClick('12mm')}
         >
-          <div 
+          <div
           className="category-tile-image"
-          style={{ backgroundImage: 'url(/4Home/12mm%20explorar%20productos.png)' }}
+          style={{
+            '--tile-bg': 'url(/4Home/12mm%20explorar%20productos.png)',
+            '--tile-bg-mobile': 'url(/4Home/12mm%20explorar%20productos%20mobile.jpg)'
+          }}
           >
             <div className="category-tile-overlay">
               <h3>12mm</h3>
@@ -1233,7 +1238,6 @@ function App() {
         ) : (
           <StonesSection />
         )}
-        <HomeVideoSection />
       </main>
       <Footer />
       <WhatsAppFab />
