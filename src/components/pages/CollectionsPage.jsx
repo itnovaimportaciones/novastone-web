@@ -5,11 +5,13 @@ const COLLECTIONS = [
   {
     id: '20mm',
     image: '/collections/Collection%2020mm.png',
+    imageMobile: '/collections/Collection%2020mm%20mobile.jpg',
     filter: '20mm'
   },
   {
     id: '12mm',
     image: '/collections/Collection%2012mm.png',
+    imageMobile: '/collections/Collection%2012mm%20mobile.jpg',
     filter: '12mm'
   },
   {
@@ -49,7 +51,14 @@ const CollectionsPage = () => (
           }}
         >
           <div className="collections-image">
-            <img src={collection.image} alt={collection.title} />
+            <picture>
+              {/* Verticales, sólo mobile. 768px es el breakpoint donde
+                  .collections-image pasa a 50vh / 320px. */}
+              {collection.imageMobile && (
+                <source media="(max-width: 768px)" srcSet={collection.imageMobile} />
+              )}
+              <img src={collection.image} alt={collection.title} />
+            </picture>
             <div className="collections-meta">
               <h3>{collection.title}</h3>
               <span>Ver productos</span>

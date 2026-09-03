@@ -1990,6 +1990,12 @@ body.home-route .site-footer {
   position: relative;
 }
 
+.collections-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .collections-image img {
   width: 100%;
   height: 100%;
