@@ -555,7 +555,7 @@ const IntroSection = () => (
   </section>
 );
 
-const HOME_SINTERED_COLLECTION_IDS = ['full-body', 'espejada', 'luxury'];
+const HOME_SINTERED_COLLECTION_IDS = ['full-body', 'nature', 'lux'];
 const SINTERED_COLLECTIONS = HOME_SINTERED_COLLECTION_IDS.map((id) => ({
   id,
   ...COLLECTIONS_COPY[id],
@@ -575,8 +575,8 @@ const SinteredSection = () => (
           alto tránsito.
         </p>
         <p>
-          Disponible en espesores 12mm y 20mm, con opciones Full Body, Espejada
-          y Luxury.
+          Disponible en espesores 12mm y 20mm, con opciones Full Body, Nature
+          y Lux.
         </p>
       </div>
     </div>
@@ -584,7 +584,7 @@ const SinteredSection = () => (
       {SINTERED_COLLECTIONS.map((collection) => (
         <article
           key={collection.id}
-          className={collection.id === 'espejada' ? 'is-centered-highlight' : ''}
+          className={collection.id === 'nature' ? 'is-centered-highlight' : ''}
         >
           <h3>{collection.title}</h3>
           <p>{collection.description}</p>

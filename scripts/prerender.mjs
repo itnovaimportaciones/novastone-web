@@ -21,7 +21,7 @@ const ROUTES = [
     path: '/productos',
     title: 'Productos | Novastone — Catálogo de Piedra Sinterizada',
     description:
-      'Explorá el catálogo completo de superficies sinterizadas NOVASTONE. Más de 26 texturas en espesores 12mm y 20mm con acabados Full Body, Espejada y Luxury.',
+      'Explorá el catálogo completo de superficies sinterizadas NOVASTONE. Más de 26 texturas en espesores 12mm y 20mm con acabados Full Body, Nature y Lux.',
     canonical: 'https://novastone.app/productos',
     ogTitle: 'Novastone | Catálogo de Productos',
     ogDescription: 'Más de 26 superficies sinterizadas premium en 12mm y 20mm.',
@@ -29,12 +29,12 @@ const ROUTES = [
   },
   {
     path: '/colecciones',
-    title: 'Colecciones | Novastone — Full Body, Espejada y Luxury',
+    title: 'Colecciones | Novastone — Full Body, Nature y Lux',
     description:
-      'Colecciones NOVASTONE: Full Body, Espejada y Luxury. Superficies sinterizadas premium en 12mm y 20mm para proyectos residenciales y comerciales en Argentina.',
+      'Colecciones NOVASTONE: Full Body, Nature y Lux. Superficies sinterizadas premium en 12mm y 20mm para proyectos residenciales y comerciales en Argentina.',
     canonical: 'https://novastone.app/colecciones',
     ogTitle: 'Novastone | Colecciones',
-    ogDescription: 'Full Body, Espejada y Luxury — superficies sinterizadas premium.',
+    ogDescription: 'Full Body, Nature y Lux — superficies sinterizadas premium.',
     ogUrl: 'https://novastone.app/colecciones',
   },
   {

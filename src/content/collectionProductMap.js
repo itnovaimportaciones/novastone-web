@@ -38,7 +38,7 @@ export const COLLECTION_PRODUCT_MAP = {
     'LOUISKIN',
     'NERO PORTORO'
   ],
-  espejada: [
+  nature: [
     'AUTUMN MAPLE',
     'MARFILO',
     'CRISTALLO BLANC',
@@ -47,7 +47,7 @@ export const COLLECTION_PRODUCT_MAP = {
     'NEW TAJ MAHAL',
     'WHITE TRAVERTINE'
   ],
-  luxury: [
+  lux: [
     'CHANEL',
     'FENDI WHITE',
     'NATA',
@@ -57,7 +57,10 @@ export const COLLECTION_PRODUCT_MAP = {
 
 const COLLECTION_ALIASES = {
   fullbody: 'full-body',
-  'full-body': 'full-body'
+  'full-body': 'full-body',
+  // Nombres viejos de colección: siguen entrando por links ya indexados.
+  espejada: 'nature',
+  luxury: 'lux'
 };
 
 export const normalizeCollectionKey = (value = 'all') => {

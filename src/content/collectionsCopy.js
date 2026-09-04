@@ -14,16 +14,16 @@ export const COLLECTIONS_COPY = {
     description:
       'Vetas pasantes en todo el espesor de la placa, como en la piedra natural.'
   },
-  espejada: {
-    title: 'Espejada',
+  nature: {
+    title: 'Nature',
     description:
       'Superficie con acabado Natural u Orgánica que reproduce el relieve de las vetas naturales, logrando un efecto visual y táctil único.'
   },
-  luxury: {
-    title: 'Luxury',
+  lux: {
+    title: 'Lux',
     description:
       'Superficies de estética exclusiva con diseños refinados y acabados sofisticados de alto impacto visual.'
   }
 };
 
-export const COLLECTIONS_ORDER = ['20mm', '12mm', 'full-body', 'espejada', 'luxury'];
+export const COLLECTIONS_ORDER = ['20mm', '12mm', 'full-body', 'nature', 'lux'];

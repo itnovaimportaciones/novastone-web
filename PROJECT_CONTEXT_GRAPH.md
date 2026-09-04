@@ -24,8 +24,8 @@ graph TB
         Serie20["Serie 20MM"]
         Serie12["Serie 12MM"]
         SerieFB["Serie Full Body"]
-        SerieESP["Serie Espejada"]
-        SerieLUX["Serie Luxury"]
+        SerieESP["Serie Nature"]
+        SerieLUX["Serie Lux"]
         Col25["Colección 25'"]
         Samples["Sample Products:<br/>PURE WHITE, SNOWY RIVER<br/>BVLGARI BLACK, PRAGUE GREY<br/>CALACATTA ROMA, etc."]
     end

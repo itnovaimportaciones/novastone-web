@@ -54,7 +54,7 @@ File analyzed: `/Users/mataldao/Downloads/Novastone - Galeria 2025.pdf`
 
 The document is a product gallery for **piedra sinterizada** with multiple series and finishes. Extracted structure:
 - Series by thickness: **SERIE 20MM**, **SERIE 12MM**
-- Premium/visual series: **SERIE ESPEJADA**, **SERIE LUXURY**
+- Premium/visual series: **SERIE NATURE**, **SERIE LUX**
 - **SERIE FULL BODY** (full-body veining)
 - **COLECCION 25'** (newer collection)
 
@@ -97,8 +97,8 @@ Note: text extraction from the PDF is imperfect due to font encoding; names abov
   - Serie 20mm
   - Serie 12mm
   - Serie Full Body
-  - Serie Espejada
-  - Serie Luxury
+  - Serie Nature
+  - Serie Lux
   - Coleccion 25'
 
 #### 4) Producto detalle
@@ -143,8 +143,8 @@ Note: text extraction from the PDF is imperfect due to font encoding; names abov
 /colecciones/serie-20mm
 /colecciones/serie-12mm
 /colecciones/serie-full-body
-/colecciones/serie-espejada
-/colecciones/serie-luxury
+/colecciones/serie-nature
+/colecciones/serie-lux
 /colecciones/coleccion-25
 /aplicaciones
 /aplicaciones/cocinas
@@ -194,8 +194,8 @@ graph TB
         Serie20["Serie 20MM"]
         Serie12["Serie 12MM"]
         SerieFB["Serie Full Body"]
-        SerieESP["Serie Espejada"]
-        SerieLUX["Serie Luxury"]
+        SerieESP["Serie Nature"]
+        SerieLUX["Serie Lux"]
         Col25["Colección 25'"]
         Samples["Sample Products:<br/>PURE WHITE, SNOWY RIVER<br/>BVLGARI BLACK, PRAGUE GREY<br/>CALACATTA ROMA, etc."]
     end

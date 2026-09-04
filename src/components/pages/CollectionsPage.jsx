@@ -20,14 +20,14 @@ const COLLECTIONS = [
     filter: 'fullbody'
   },
   {
-    id: 'espejada',
-    image: '/collections/Collection%20Espejada.png',
-    filter: 'espejada'
+    id: 'nature',
+    image: '/collections/Collection%20Nature.png',
+    filter: 'nature'
   },
   {
-    id: 'luxury',
-    image: '/collections/Collection%20Luxury.png',
-    filter: 'luxury'
+    id: 'lux',
+    image: '/collections/Collection%20Lux.png',
+    filter: 'lux'
   }
 ].map((collection) => ({
   ...collection,
