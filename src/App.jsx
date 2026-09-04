@@ -14,10 +14,11 @@ import * as ga4 from './lib/googleAnalytics';
 import './App.css';
 
 const HERO_SLIDES_DESKTOP = [
-  '/hero/home_1.png',
-  '/hero/Home_2.png',
-  '/hero/Home_3.png',
-  '/hero/Home_4.png'
+  '/hero/home-1.jpg',
+  '/hero/home-2.jpg',
+  '/hero/home-3.jpg',
+  '/hero/home-4.jpg',
+  '/hero/home-5.jpg'
 ];
 
 // Verticales, sólo para mobile. Son 5 y las de desktop 4, así que no alcanza
