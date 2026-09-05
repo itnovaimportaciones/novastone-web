@@ -694,7 +694,7 @@ const StonesSection = () => {
           <div
           className="category-tile-image"
           style={{
-            '--tile-bg': 'url(/4Home/20mm%20explorar%20productos.png)',
+            '--tile-bg': 'url(/4Home/20mm%20explorar%20productos.jpg)',
             '--tile-bg-mobile': 'url(/4Home/20mm%20explorar%20productos%20mobile.jpg)'
           }}
           >
@@ -712,7 +712,7 @@ const StonesSection = () => {
           <div
           className="category-tile-image"
           style={{
-            '--tile-bg': 'url(/4Home/12mm%20explorar%20productos.png)',
+            '--tile-bg': 'url(/4Home/12mm%20explorar%20productos.jpg)',
             '--tile-bg-mobile': 'url(/4Home/12mm%20explorar%20productos%20mobile.jpg)'
           }}
           >
