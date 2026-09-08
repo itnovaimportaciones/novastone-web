@@ -189,14 +189,16 @@
     "folderName": "7AUTUMN MAPLE",
     "thumbnailImage": "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg",
     "detailImages": [
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg",
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER 2.jpeg",
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
-    ],
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER catalogo.jpg",
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER catalogo 2.jpg",
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER catalogo 3.jpg",
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
+      ],
     "renderImages": [
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER.jpg",
-      "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER 2.jpeg"
-    ],
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER catalogo.jpg",
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER catalogo 2.jpg",
+        "/products/7AUTUMN MAPLE/AUTUMN MAPLE RENDER catalogo 3.jpg"
+      ],
     "nonRenderImages": [
       "/products/7AUTUMN MAPLE/AUTUMN MAPLE.jpg"
     ],

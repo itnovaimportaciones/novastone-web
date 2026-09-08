@@ -19,6 +19,23 @@ body.collections-route .App {
   background: #0b0b0b;
 }
 
+/* ── HEADER ───────────────────────────────────────────────────────────
+   Rediseño 09/26: hamburguesa + "Menú" a la izquierda, logo al centro,
+   "Contactar" + Instagram a la derecha. La nav pasó al desplegable.
+   Medidas del SVG de referencia, escaladas a 1440px de ancho.          */
+
+:root {
+  --alto-header: 88px;
+  --alto-nav: 56px;
+  --alto-panel: 144px;          /* --alto-header + --alto-nav */
+  --menu-duracion: 520ms;
+  --menu-curva: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --header-panel: #E5E2DF;      /* fondo del desplegable (SVG .st7)   */
+  --header-claro: #F6F1ED;      /* texto sobre la foto (SVG .st10)    */
+  --header-oscuro: #101111;     /* texto con el menú abierto (.st13)  */
+  --header-link: #64615C;       /* links del desplegable (SVG .st16)  */
+}
+
 .site-header {
   position: fixed;
   top: 0;
@@ -28,24 +45,353 @@ body.collections-route .App {
   background: transparent;
   backdrop-filter: none;
   border-bottom: 1px solid transparent;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: background-color var(--menu-duracion) var(--menu-curva);
+}
+
+.site-header.is-open {
+  background: var(--header-panel);
+}
+
+/* Al scrollear el header se vuelve claro: el texto tiene que oscurecerse
+   o queda blanco sobre crema. */
+.site-header.is-scrolled .header-menu-toggle,
+.site-header.is-scrolled .header-acciones {
+  color: var(--header-oscuro);
+}
+
+.site-header.is-scrolled .header-marca-logo {
+  filter: brightness(0);
+}
+
+.header-inner {
+  max-width: none;
+  margin: 0;
+  padding: 0 65px;
+  height: var(--alto-header);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Izquierda — hamburguesa + "Menú" */
+.header-menu-toggle {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--header-claro);
+  transition: color var(--menu-duracion) var(--menu-curva);
+}
+
+.site-header.is-open .header-menu-toggle {
+  color: var(--header-oscuro);
+}
+
+.header-menu-icono {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 33px;
+  height: 9px;
+}
+
+.header-menu-icono span {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+}
+
+.header-menu-texto {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+/* Centro — logo */
+.header-marca {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-marca-logo {
+  height: 26px;
+  width: auto;
+  display: block;
+  /* El SVG del logo es monocromo: lo forzamos a blanco o a negro. */
+  filter: brightness(0) invert(1);
+  transition: filter var(--menu-duracion) var(--menu-curva);
+}
+
+.site-header.is-open .header-marca-logo {
+  filter: brightness(0);
+}
+
+/* Derecha — "Contactar" + Instagram */
+.header-acciones {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--header-claro);
+  transition: color var(--menu-duracion) var(--menu-curva);
+}
+
+.site-header.is-open .header-acciones {
+  color: var(--header-oscuro);
+}
+
+.header-contactar {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: inherit;
+  text-decoration: none;
+  border: none;
+  padding: 0;
+  background: none;
+}
+
+.header-instagram {
+  display: inline-flex;
+  color: inherit;
+}
+
+.header-instagram svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+/* Desplegable */
+.header-desplegable {
+  height: 0;
+  overflow: hidden;
+  transition: height var(--menu-duracion) var(--menu-curva);
+}
+
+.site-header.is-open .header-desplegable {
+  height: var(--alto-nav);
+}
+
+.header-desplegable-nav {
+  height: var(--alto-nav);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(28px, 4.4vw, 64px);
+  padding: 0 65px;
+}
+
+.header-desplegable-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--header-link);
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--menu-duracion) var(--menu-curva), color 0.25s ease;
+}
+
+.site-header.is-open .header-desplegable-link {
+  opacity: 1;
+}
+
+.header-desplegable-link:hover,
+.header-desplegable-link.is-active {
+  color: var(--header-oscuro);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .header-desplegable,
+  .header-desplegable-link,
+  .header-marca-logo,
+  .header-menu-toggle,
+  .header-acciones {
+    transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  :root { --alto-header: 64px; --alto-panel: 0px; }
+
+  .header-inner { padding: 0 20px; }
+  .header-marca-logo { height: 20px; }
+  .header-menu-icono { width: 26px; height: 8px; }
+  .header-menu-texto,
+  .header-contactar { font-size: 13px; }
+  .header-instagram svg { width: 16px; height: 16px; }
+
+  /* En mobile la fila horizontal no se usa: manda el cajón. */
+  .header-desplegable,
+  .site-header.is-open .header-desplegable { height: 0; }
+  .site-header.is-open { background: transparent; }
+  .site-header.is-open .header-menu-toggle,
+  .site-header.is-open .header-acciones { color: var(--header-claro); }
+  .site-header.is-open .header-marca-logo { filter: brightness(0) invert(1); }
+  body.menu-abierto .hero { padding-top: 0; }
+}
+
+/* ── CAJÓN MOBILE ─────────────────────────────────────────────────────
+   Mismo formato y funcionamiento que la versión pública —bajada, viñetas,
+   líneas separadoras y pie con Instagram y WhatsApp— pero entrando desde
+   la izquierda y con la paleta y las tipografías nuevas.               */
+
+.cajon {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: none;
+}
+
+@media (max-width: 900px) { .cajon { display: block; } }
+
+.cajon-velo {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: rgba(24, 24, 23, 0.42);
+  opacity: 0;
+  transition: opacity var(--menu-duracion) var(--menu-curva);
+  cursor: pointer;
+}
+
+.cajon.is-open .cajon-velo { opacity: 1; }
+
+.cajon-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(84vw, 360px);
+  background: var(--header-panel);
+  display: flex;
+  flex-direction: column;
+  padding: 22px 26px calc(26px + env(safe-area-inset-bottom, 0px));
+  /* Entra de izquierda a derecha. */
+  transform: translateX(-100%);
+  transition: transform var(--menu-duracion) var(--menu-curva);
+  box-shadow: 0 0 46px rgba(24, 24, 23, 0.22);
+  overflow-y: auto;
+}
+
+.cajon.is-open .cajon-panel { transform: translateX(0); }
+
+.cajon-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cajon-marca img { height: 20px; width: auto; display: block; filter: brightness(0); }
+
+.cajon-cerrar {
+  width: 44px;
+  height: 44px;
+  margin-right: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cajon-cerrar svg { width: 18px; height: 18px; overflow: visible; }
+.cajon-cerrar line { stroke: var(--header-oscuro); stroke-width: 1.1; stroke-linecap: square; }
+
+.cajon-bajada {
+  margin: 26px 0 0;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--header-link);
+}
+
+.cajon-linea {
+  height: 1px;
+  background: rgba(24, 24, 23, 0.14);
+  margin: 22px 0;
+}
+
+.cajon-nav { display: flex; flex-direction: column; flex: 1; }
+
+.cajon-links { display: flex; flex-direction: column; gap: 16px; }
+
+.cajon-link {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  text-decoration: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--header-link);
+  transition: color 0.25s ease;
+}
+
+.cajon-bullet {
+  font-size: 9px;
+  line-height: 1;
+  color: var(--tan-novastone, #92785F);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cajon-link.is-active { color: var(--header-oscuro); }
+.cajon-link.is-active .cajon-bullet { opacity: 1; }
+.cajon-link.is-tocado { color: var(--header-oscuro); }
+.cajon-link.is-tocado .cajon-bullet { opacity: 1; }
+
+.cajon-pie { margin-top: auto; }
+
+.cajon-pie p {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(24, 24, 23, 0.45);
+}
+
+.cajon-iconos { display: flex; gap: 18px; margin-top: 16px; }
+
+.cajon-iconos a { display: inline-flex; color: var(--header-oscuro); }
+.cajon-iconos svg { width: 19px; height: 19px; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cajon-panel,
+  .cajon-velo,
+  .cajon-link,
+  .cajon-bullet { transition: none; }
 }
 
 .site-header.is-scrolled {
   background: rgba(245, 241, 236, 0.92);
   border-bottom: 1px solid rgba(21, 20, 16, 0.08);
   backdrop-filter: blur(6px);
-}
-
-.header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: 24px;
 }
 
 .brand {
@@ -1153,64 +1499,46 @@ main {
   }
 }
 
+/* ── HERO ─────────────────────────────────────────────────────────────
+   Rediseño 09/26: la foto arriba y el texto DEBAJO, en banda crema.
+   Medidas tomadas de "Referencia HOME nueva 2.svg" (viewBox 2154.7×1314.7,
+   escalado a un ancho de diseño de 1440px → factor 0.6683).            */
+
 .hero {
   position: relative;
-  height: 85vh;
-  min-height: 85vh;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  overflow: hidden;
-  padding: 0 24px;
-  color: #ffffff;
+  display: block;
+  padding-top: 0;
+  transition: padding-top var(--menu-duracion) var(--menu-curva);
 }
 
-.hero-content {
-  max-width: 720px;
+/* El panel desplegado empuja la foto hacia abajo en vez de taparla. */
+body.menu-abierto .hero {
+  padding-top: var(--alto-panel);
+}
+
+/* Bloque A — foto */
+.hero-media {
   position: relative;
-  z-index: 2;
-}
-
-.hero h1 {
-  font-size: clamp(2.2rem, 4.8vw, 3.6rem);
-  margin: 10px 0 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-weight: 400;
-  line-height: 1.08;
-}
-
-.hero-eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
-}
-
-.hero-subtitle {
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-.hero-slider {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+  width: 100%;
+  height: 68vh;
+  min-height: 420px;
+  overflow: hidden;
+  background: #e8e5e0;
 }
 
 .hero-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 1s ease;
+  /* Cross-fade largo: la imagen respira, no pasa. */
+  transition: opacity 2000ms ease-in-out;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
 }
 
 .hero-slide img {
@@ -1218,45 +1546,65 @@ main {
   height: 100%;
   object-fit: cover;
   filter: saturate(0.9);
+  display: block;
 }
 
-.hero-slide::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.55) 0%,
-    rgba(0, 0, 0, 0.4) 55%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
+/* Bloque B — banda de texto */
+.hero-banda {
+  width: 100%;
+  background: #F6F2EC;
+  text-align: center;
+  /* Offsets medidos sobre la referencia y escalados a 1440px de ancho. */
+  padding: 54px 24px 28px;
+  color: #101111;
 }
 
-.hero-slide.is-active {
-  opacity: 1;
+.hero-overline {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: clamp(11px, 0.903vw, 16px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
 }
 
-.hero-slider-indicator {
-  position: absolute;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  z-index: 2;
+.hero-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  /* 52.4px @1440: con ese cuerpo la primera línea mide 927px, igual que
+     en la referencia. La línea 1 ocupa 16.81em y con la "y" 17.44em,
+     así que un max-width intermedio fuerza el corte tras "arquitectura". */
+  font-size: clamp(2.2rem, 3.639vw, 4.4rem);
+  line-height: 1.25;
+  text-transform: none;
+  margin: 26px auto 0;
+  max-width: 17.1em;
 }
 
-.hero-slider-indicator button {
-  width: 24px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.35);
-  border: none;
-  padding: 0;
-  cursor: pointer;
+.hero-bajada {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  font-size: clamp(13px, 1.236vw, 22px);
+  letter-spacing: 0.074em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  margin: 34px auto 0;
+  max-width: 50em;
 }
 
-.hero-slider-indicator button.active {
-  background: #ffffff;
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide { transition: none; }
+  .hero { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .hero-media { height: 56vh; min-height: 340px; }
+  /* El vacío de abajo baja un 30%: 40px -> 28px. El de arriba no se toca. */
+  .hero-banda { padding: 38px 20px 28px; }
+  .hero-overline { font-size: 12px; }
+  .hero-titulo { font-size: clamp(1.9rem, 7.4vw, 2.6rem); margin-top: 18px; }
+  .hero-bajada { font-size: 13px; margin-top: 18px; }
 }
 
 .whatsapp-fab {
@@ -1305,24 +1653,12 @@ main {
   transform: scale(0.96);
 }
 
-.intro {
-  max-width: 820px;
-  margin: 0 auto;
-}
-
-.intro-inner {
-  font-size: 16px;
-  line-height: 1.9;
-  color: var(--color-muted);
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-}
-
+/* Sin margen negativo: compensaba el gap de main cuando la sección iba
+   en el medio del home. Ahora es la última y el footer se le montaba. */
 .sintered {
   background: var(--color-stone);
   padding: 80px 24px;
-  margin-bottom: -120px;
+  margin-bottom: 0;
 }
 
 .sintered-grid {
@@ -2317,17 +2653,6 @@ body.home-route .site-footer {
     padding-top: env(safe-area-inset-top, 0px);
   }
 
-  .header-inner {
-    padding: 12px 16px;
-    min-height: 64px;
-    align-items: center;
-  }
-
-  body.home-route .site-header:not(.is-scrolled) .header-inner {
-    padding: 20px 22px 14px;
-    min-height: 74px;
-  }
-
   .brand {
     display: flex;
     align-items: center;
@@ -2366,8 +2691,10 @@ body.home-route .site-footer {
     gap: 80px;
   }
 
+  /* Compensaba el gap de main cuando la sección iba en el medio. Ahora
+     es la última antes del footer y el negativo lo montaba encima. */
   .sintered {
-    margin-bottom: -80px;
+    margin-bottom: 0;
   }
 
   body.home-route main {
@@ -3604,3 +3931,701 @@ body.home-route .site-footer {
     transform: translateY(-10px);
   }
 }
+
+/* ── NUEVAS TEXTURAS — sección del home ───────────────────────────────
+   Medidas de home_5_texturas_nuevas.png. El SVG trae el título
+   contorneado, sin <text>, así que salen de medir la tinta.
+
+   OJO: la columna del mock mide 645px (x 579-1224), no los 1358 del
+   archivo — el contenido está inserto en un marco. Las proporciones van
+   contra 645. En esta sección manda la relación de altos, así que banda
+   y filas llevan alto forzado en vw.
+
+     banda de encabezado   477 / 645 = 74.1 %
+     fila cerrada          319 / 645 = 49.5 %
+     título (caja 63px)     -> 15.3 %   (Cormorant, cap ≈ 0.64em)
+     bajada (caja 15px)     ->  3.3 %
+     nombre de fila (25px)  ->  6.1 %                                   */
+
+.nuevas-texturas {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.nuevas-texturas.is-visible { opacity: 1; transform: none; }
+
+/* Alto forzado, no min-height: en esta sección manda la proporción
+   vertical, así que la banda mide siempre 35.1vw pase lo que pase con
+   el contenido. */
+/* Todo posicionado en % de la banda, que es como está en la referencia.
+   Medido sobre home_5_texturas_nuevas.png dentro de la columna real
+   (x 579-1224 = 645px), banda y 2826-3303 = 477px.                    */
+.nt-encabezado {
+  position: relative;
+  height: 74.1vw;
+  overflow: hidden;
+  /* Portland al natural: el promedio de la textura y el de la banda de la
+     referencia coinciden (#C9C1B5 vs #C9C2B6), no lleva velo.
+     El archivo del producto mide 446x891 y con cover se estiraba hasta
+     3.2x. Este recorte sale del master de 6299x12598 y está cortado a la
+     proporción exacta de la banda (1 / 0.741), así que cover no descarta
+     nada y no hay upscale hasta 1600px de ancho. */
+  background-image: url('/4Home/portland-banda.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Tostado, en la franja superior-media, separado del borde. Sin punto. */
+.nt-vertical {
+  position: absolute;
+  left: 18%;
+  top: 12%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  transform-origin: center;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: clamp(8px, 2.1vw, 13px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #92785F;
+  margin: 0;
+}
+
+/* Tercio inferior: la primera línea arranca al 55.1% del alto de la banda.
+   Interlineado 0.67, menor que el cuerpo: las líneas casi se tocan. */
+.nt-titulo {
+  position: absolute;
+  top: 55.1%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  /* Semibold, sólo en mobile y sólo este título (desktop vuelve a 500). */
+  font-weight: 600;
+  /* Por altura de caja daría 15.3vw, pero Cormorant es menos condensada
+     que la serif de la referencia y la línea 2 se pasaba del borde. Se
+     ajusta por ancho: 12.8vw deja "TEXTURAS" terminando en 90.4%. */
+  font-size: 12.8vw;
+  line-height: 0.67;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: #3F4040;
+}
+
+/* Escalonadas, no alineadas: la segunda arranca 14.5% más a la derecha
+   y llega casi al borde. */
+.nt-titulo span { display: block; width: fit-content; }
+.nt-titulo span:first-child { margin-left: 11.2%; }
+.nt-titulo span:last-child { margin-left: 25.7%; }
+
+.nt-bajada {
+  position: absolute;
+  top: 83.4%;
+  right: 9.6%;
+  margin: 0;
+  text-align: right;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(10px, 3.5vw, 18px);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: #3F4040;
+}
+
+.nt-bajada span { display: block; }
+.nt-bajada span:first-child { font-weight: 300; }
+.nt-bajada span:last-child { font-weight: 600; }
+
+.nt-filas { display: block; }
+
+.nt-fila {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  /* Apertura lenta, tipo deslizamiento: frena largo sobre el final. */
+  transition: height 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Alto forzado: 23.5vw es la proporción de la referencia y se respeta
+     en todos los anchos. */
+  height: 49.5vw;
+  overflow: hidden;
+}
+
+.nt-fila.is-abierta { height: 137vw; max-height: 76vh; }
+
+.nt-fila-boton {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  /* El nombre queda solo en el flujo y cae exacto en el centro vertical.
+     "Explorar" va absoluto: si estuviera en el flujo, aunque invisible,
+     seguiría ocupando alto y correría el nombre hacia arriba. */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nt-nombre {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(15px, 6.1vw, 30px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3d3a35;
+}
+
+/* Revelado por caracteres, igual en mobile y desktop: cada letra sube
+   desde debajo de una máscara, escalonada. Sin subrayado y sin fade. */
+.nt-explorar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Debajo del nombre: media altura del nombre más el aire. */
+  transform: translate(-50%, 5.4vw);
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(11px, 4vw, 18px);
+  letter-spacing: 0.02em;
+  color: #3d3a35;
+  text-decoration: none;
+  display: inline-flex;
+  overflow: hidden;
+  padding-bottom: 0.18em;
+  pointer-events: none;
+}
+
+.nt-explorar span {
+  display: inline-block;
+  transform: translateY(115%);
+  white-space: pre;
+}
+
+.nt-fila.is-abierta .nt-explorar { pointer-events: auto; }
+
+.nt-fila.is-abierta .nt-explorar span {
+  animation: nt-subir 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(0.3s + var(--i) * 45ms);
+}
+
+/* Cruz de cerrar: trazo fino, sin círculo ni caja. El aspa mide 20px pero
+   el área táctil son 44×44. */
+.nt-cerrar {
+  position: absolute;
+  top: 2vw;
+  right: 1.4vw;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.nt-cerrar svg { width: 20px; height: 20px; overflow: visible; }
+
+.nt-cerrar line {
+  stroke: #2b2926;
+  stroke-width: 1.1;
+  stroke-linecap: square;
+}
+
+/* ── DESKTOP ──────────────────────────────────────────────────────────
+   Medido sobre "nuevas texturas desktop home-01.png" (1443px de ancho):
+
+     banda            y 101-744  = 643 -> 44.6 % del ancho
+     franja de tex.   y 744-1545 = 801 -> 55.5 %, 5 columnas de 20 %
+     título           top 50.5 %, de 21.8 % a 76.2 %
+     bajada           top 84.3 %, termina en 96.8 %
+     vertical         x 6 %, todo el alto de la banda
+     nombre           centrado en la columna                            */
+
+@media (min-width: 901px) {
+  .nt-encabezado { height: 44.6vw; }
+
+  .nt-vertical {
+    left: 6%;
+    top: 50%;
+    font-size: clamp(9px, 0.78vw, 14px);
+  }
+
+  .nt-titulo {
+    font-weight: 500;
+    top: 50.5%;
+    font-size: 8.86vw;
+  }
+
+  .nt-titulo span:first-child { margin-left: 21.4%; }
+  .nt-titulo span:last-child { margin-left: 31.7%; }
+
+  .nt-bajada {
+    top: 84.3%;
+    right: 3.2%;
+    font-size: clamp(13px, 2.28vw, 34px);
+  }
+
+  /* Las cinco en columnas. El ancho se reparte con fr para que al abrir
+     una las otras se corran en vez de superponerse. */
+  .nt-filas {
+    display: grid;
+    /* Lista explícita, no repeat(): el navegador sólo interpola
+       grid-template-columns si ambos estados tienen la misma forma. */
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    transition: grid-template-columns 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nt-filas:has(.nt-fila:nth-child(1).is-abierta) { grid-template-columns: 2.2fr 0.95fr 0.95fr 0.95fr 0.95fr; }
+  .nt-filas:has(.nt-fila:nth-child(2).is-abierta) { grid-template-columns: 0.95fr 2.2fr 0.95fr 0.95fr 0.95fr; }
+  .nt-filas:has(.nt-fila:nth-child(3).is-abierta) { grid-template-columns: 0.95fr 0.95fr 2.2fr 0.95fr 0.95fr; }
+  .nt-filas:has(.nt-fila:nth-child(4).is-abierta) { grid-template-columns: 0.95fr 0.95fr 0.95fr 2.2fr 0.95fr; }
+  .nt-filas:has(.nt-fila:nth-child(5).is-abierta) { grid-template-columns: 0.95fr 0.95fr 0.95fr 0.95fr 2.2fr; }
+
+  .nt-fila {
+    height: 55.5vw;
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    /* Anclada a la izquierda: al ensancharse la textura se descubre de
+       izquierda a derecha en vez de recentrarse. */
+    background-position: left center;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .nt-fila:last-child { border-right: none; }
+
+  /* Mismo levantón sutil que los tiles de categoría. */
+  .nt-fila:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(24, 24, 23, 0.12);
+    z-index: 2;
+  }
+
+  .nt-fila.is-abierta {
+    height: 55.5vw;
+    max-height: none;
+    transform: translateY(-6px);
+  }
+
+  .nt-nombre { font-size: clamp(15px, 1.52vw, 26px); }
+
+  /* Revelado por caracteres: cada letra sube desde debajo de una máscara,
+     escalonada. Reemplaza al tipeo por ancho, que queda sólo en mobile. */
+  .nt-explorar {
+    transform: translate(-50%, 2.4vw);
+    font-size: clamp(11px, 1vw, 16px);
+  }
+
+  .nt-cerrar { top: 1vw; right: 0.4vw; }
+}
+
+@keyframes nt-subir {
+  to { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-fila,
+  .nt-filas { transition: none; }
+  .nt-fila:hover { transform: none; box-shadow: none; }
+  .tex-otra:hover { transform: none; box-shadow: none; }
+  .nt-fila.is-abierta .nt-explorar span { animation: none; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nuevas-texturas,
+  .nt-fila,
+  .nt-explorar { transition: none; }
+}
+
+/* ── PÁGINAS DE TEXTURA — /texturas/[slug] ────────────────────────────
+   Estructura tomada de Explorar_MARFILO_completo. El tamaño del título
+   es propio de cada textura y viene inline desde nuevasTexturas.js.   */
+
+/* Acá el header va con fondo claro sólido, no transparente como el home. */
+body.textura-route .site-header {
+  background: #F6F2EC;
+  border-bottom: 1px solid rgba(24, 24, 23, 0.07);
+}
+body.textura-route .site-header .header-menu-toggle,
+body.textura-route .site-header .header-acciones { color: #101111; }
+body.textura-route .site-header .header-marca-logo { filter: brightness(0); }
+
+.textura-page {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  background: #FBF9F5;
+  padding-top: var(--alto-header);
+}
+
+.textura-vacia {
+  padding: 120px 24px;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  color: #64615C;
+}
+
+/* Escena: textura + título superpuesto */
+/* El aire de arriba es la mitad del de abajo (el que separa la ficha del
+   primer render, .tex-renders margin-top: 42px). Va en el estado inicial,
+   no sólo al final de la animación: como el padding es del contenedor y el
+   título se centra sobre .tex-foto, el pin no se desplaza. */
+.tex-escena {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 21px 0 0;
+  overflow: hidden;
+  background: #FBF9F5;
+}
+
+.tex-foto { width: 76%; }
+
+.tex-foto img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tex-titulo {
+  position: absolute;
+  /* Centrado sobre la foto, descontando el padding superior de la escena,
+     para que el margen nuevo no corra la posición final. */
+  top: calc(50% + 10.5px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #474949;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.tex-titulo span { display: block; }
+
+/* Ficha técnica, con la línea vertical fina a la izquierda */
+/* Escalado +30% respecto del original. El margen superior y el izquierdo
+   no se tocan: el vértice de arriba a la izquierda queda clavado y el
+   bloque crece hacia abajo y hacia la derecha. */
+.tex-ficha {
+  margin: 30px 0 0 12%;
+  padding-left: 21px;
+  border-left: 1px solid rgba(24, 24, 23, 0.25);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tex-ficha > div {
+  display: grid;
+  grid-template-columns: 125px 1fr;
+  gap: 13px;
+  margin-bottom: 9px;
+}
+
+.tex-ficha dt {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(24, 24, 23, 0.55);
+}
+
+.tex-ficha dd {
+  margin: 0;
+  font-size: 14.3px;
+  letter-spacing: 0.04em;
+  color: #23211E;
+}
+
+/* Renders, uno arriba del otro y a ancho completo */
+.tex-renders { margin-top: 42px; }
+
+.tex-renders img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Nombre + línea, descripción y CTA */
+.tex-cierre { padding: 46px 12% 54px; }
+
+.tex-nombre {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1.3rem, 6vw, 2rem);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #23211E;
+  margin: 0 0 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(24, 24, 23, 0.22);
+}
+
+.tex-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: rgba(24, 24, 23, 0.72);
+  margin: 0 0 30px;
+}
+
+.tex-cta {
+  display: inline-block;
+  background: #23211E;
+  color: #F6F2EC;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+/* Banda oscura */
+.tex-banda {
+  position: relative;
+  background: #2C241C;
+  color: #F1EBE2;
+  padding: 62px 26px 62px 62px;
+  text-align: center;
+}
+
+.tex-banda-vertical {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(241, 235, 226, 0.72);
+}
+
+.tex-banda h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 7vw, 2.3rem);
+  line-height: 1.12;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.tex-banda h2 span { display: block; }
+.tex-banda h2 span:last-child { padding-left: 1.2em; }
+
+/* Las otras cuatro texturas */
+/* Mismas medidas que las filas del home (.nt-fila / .nt-nombre): alto
+   forzado en 49.5vw y el nombre en 6.1vw, las proporciones de la
+   referencia. Si se tocan allá, hay que tocarlas acá. */
+.tex-otra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 49.5vw;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
+
+.tex-otra span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(15px, 6.1vw, 30px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3d3a35;
+}
+
+/* Fade escalonado de los textos */
+.tex-placa { display: none; }
+
+/* Zoom de la placa: mismo gesto que el sidecart de /productos. */
+.tex-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vw;
+}
+
+.tex-zoom-fondo {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: rgba(20, 19, 17, 0.9);
+  cursor: zoom-out;
+}
+
+.tex-zoom-marco {
+  position: relative;
+  line-height: 0;
+  max-width: 94vw;
+  max-height: 92vh;
+  cursor: zoom-in;
+}
+
+.tex-zoom-marco img {
+  max-width: 94vw;
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Lupa circular que sigue al cursor, como en el sidecart. */
+.tex-zoom-lupa {
+  position: absolute;
+  width: 266px;
+  height: 266px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  background-repeat: no-repeat;
+  background-color: rgba(8, 8, 8, 0.22);
+  pointer-events: none;
+}
+
+.tex-zoom-cerrar {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.tex-zoom-cerrar svg { width: 20px; height: 20px; overflow: visible; }
+.tex-zoom-cerrar line { stroke: #F6F2EC; stroke-width: 1.1; stroke-linecap: square; }
+
+.tex-anim {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.tex-anim.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tex-anim { opacity: 1; transform: none; transition: none; }
+  .tex-titulo { transform: translate(-50%, -50%) !important; opacity: 1 !important; }
+}
+
+/* Desktop: la escena no necesita ocupar todo el alto */
+@media (min-width: 901px) {
+  .tex-foto { width: 40%; }
+  .tex-ficha { margin-left: 30%; }
+  .tex-cierre { padding: 60px 30% 70px; }
+
+  /* Placa en horizontal, debajo del CTA. Medido sobre la referencia:
+     59.3 % de ancho, centrada, ratio 2.11. Más ancha que la columna de
+     texto, que ocupa el 40 % (de 29.9 % a 69.9 %). */
+  .tex-placa {
+    display: block;
+    width: 59.3%;
+    margin: 0 auto 4vw;
+  }
+
+  .tex-placa figcaption {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(13px, 1.1vw, 19px);
+    letter-spacing: 0.02em;
+    color: #23211E;
+    margin-bottom: 0.8vw;
+  }
+
+  .tex-placa-marco {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2.11;
+    overflow: hidden;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .tex-placa-marco img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Las otras cuatro texturas, con el mismo formato que el home: columnas
+     verticales lado a lado, divisorias verticales, mismo alto y el mismo
+     levantón al pasar el mouse. Acá son cuatro, así que 25% cada una. */
+  .tex-otras {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  .tex-otra {
+    height: 55.5vw;
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    background-position: left center;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .tex-otra:last-child { border-right: none; }
+
+  .tex-otra:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(24, 24, 23, 0.12);
+    z-index: 2;
+  }
+
+  .tex-otra span { font-size: clamp(15px, 1.52vw, 26px); letter-spacing: 0.1em; }
+
+  /* Los renders son verticales (0.56-0.81). Apilados desperdician ancho;
+     en fila ocupan la página entera y el conjunto arma un rectángulo.
+     grid-auto-flow: column reparte solos 2 o 3 sin tocar el JS. */
+  .tex-renders {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 1px;
+    background: #FBF9F5;
+  }
+
+  .tex-renders img {
+    width: 100%;
+    /* Tope por alto de ventana y por ancho, para que no se desmadre ni
+       en pantallas muy altas ni en muy anchas. */
+    height: min(78vh, 46vw);
+    max-height: none;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Deja libre el alto del header fijo al saltar acá desde el menú
+   ("¿Qué es Novastone?"). */
+#novastone { scroll-margin-top: var(--alto-header); }

@@ -67,6 +67,56 @@ const ROUTES = [
     ogDescription: 'Conectamos tu proyecto con marmolerías asociadas NOVASTONE en Argentina.',
     ogUrl: 'https://novastone.app/como-comprar',
   },
+  {
+    path: '/texturas/marfilo',
+    title: 'Marfilo | Novastone — Piedra Sinterizada 12mm',
+    description:
+      'Crema cálido recorrido por una red densa de vetas doradas finas. Placa de 3,2 x 1,6 mts en 12mm.',
+    canonical: 'https://novastone.app/texturas/marfilo',
+    ogTitle: 'Novastone | Marfilo',
+    ogDescription: 'Crema cálido recorrido por una red densa de vetas doradas finas.',
+    ogUrl: 'https://novastone.app/texturas/marfilo',
+  },
+  {
+    path: '/texturas/new-taj-mahal',
+    title: 'New Taj Mahal | Novastone — Piedra Sinterizada 12mm',
+    description:
+      'Fondo blanco cálido con nubes minerales y vetas finas en tonos beige y gris. Placa de 3,2 x 1,6 mts en 12mm.',
+    canonical: 'https://novastone.app/texturas/new-taj-mahal',
+    ogTitle: 'Novastone | New Taj Mahal',
+    ogDescription: 'Fondo blanco cálido con nubes minerales y vetas finas en tonos beige y gris.',
+    ogUrl: 'https://novastone.app/texturas/new-taj-mahal',
+  },
+  {
+    path: '/texturas/cristallo-blanc',
+    title: 'Cristallo Blanc | Novastone — Piedra Sinterizada 12mm',
+    description:
+      'Blanco cálido con nubosidad suave y vetas finas en tonos óxido. Placa de 3,2 x 1,6 mts en 12mm.',
+    canonical: 'https://novastone.app/texturas/cristallo-blanc',
+    ogTitle: 'Novastone | Cristallo Blanc',
+    ogDescription: 'Blanco cálido con nubosidad suave y vetas finas en tonos óxido.',
+    ogUrl: 'https://novastone.app/texturas/cristallo-blanc',
+  },
+  {
+    path: '/texturas/calacatta-ambra',
+    title: 'Calacatta Ambra | Novastone — Piedra Sinterizada 12mm',
+    description:
+      'Blanco luminoso atravesado por vetas doradas de gran recorrido. Placa de 3,2 x 1,6 mts en 12mm.',
+    canonical: 'https://novastone.app/texturas/calacatta-ambra',
+    ogTitle: 'Novastone | Calacatta Ambra',
+    ogDescription: 'Blanco luminoso atravesado por vetas doradas de gran recorrido.',
+    ogUrl: 'https://novastone.app/texturas/calacatta-ambra',
+  },
+  {
+    path: '/texturas/autumn-maple',
+    title: 'Autumn Maple | Novastone — Piedra Sinterizada 12mm',
+    description:
+      'Fondo beige suave con vetas amplias en tonos dorados, miel y ámbar. Placa de 3,2 x 1,6 mts en 12mm.',
+    canonical: 'https://novastone.app/texturas/autumn-maple',
+    ogTitle: 'Novastone | Autumn Maple',
+    ogDescription: 'Fondo beige suave con vetas amplias en tonos dorados, miel y ámbar.',
+    ogUrl: 'https://novastone.app/texturas/autumn-maple',
+  },
 ];
 
 function patchHtml(html, route) {

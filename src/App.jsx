@@ -8,6 +8,8 @@ import AsociadosPage from './components/pages/AsociadosPage';
 import ExploreTexturesPage from './components/pages/ExploreTexturesPage';
 import ExploreTexturesMoodboardPage from './components/pages/ExploreTexturesMoodboardPage';
 import TestChat from './components/pages/TestChat';
+import TexturaPage from './components/pages/TexturaPage';
+import NuevasTexturasSection from './components/sections/NuevasTexturasSection';
 import { COLLECTIONS_COPY } from './content/collectionsCopy';
 import { trackContact, trackCustom, trackLead, trackPageView } from './lib/metaPixel';
 import * as ga4 from './lib/googleAnalytics';
@@ -15,23 +17,29 @@ import './App.css';
 
 const HERO_SLIDES_DESKTOP = [
   '/hero/home-1.jpg',
-  '/hero/home-2.jpg',
-  '/hero/home-3.jpg',
-  '/hero/home-4.jpg',
-  '/hero/home-5.jpg'
+  '/hero/home-2.jpg'
 ];
 
-// Verticales, sólo para mobile. Son 5 y las de desktop 4, así que no alcanza
-// con un <picture>: cambia la cantidad de slides y de indicadores.
+// Verticales, sólo para mobile.
 const HERO_SLIDES_MOBILE = [
   '/hero/mobile/home-mobile-1.jpg',
-  '/hero/mobile/home-mobile-2.jpg',
-  '/hero/mobile/home-mobile-3.jpg',
-  '/hero/mobile/home-mobile-4.jpg',
-  '/hero/mobile/home-mobile-5.jpg'
+  '/hero/mobile/home-mobile-2.jpg'
 ];
 
 const HERO_MOBILE_QUERY = '(max-width: 900px)';
+
+// Respiración lenta, no carrusel: 9s en pantalla y 2s de cross-fade.
+const HERO_DURACION_MS = 9000;
+const HERO_MENOS_MOVIMIENTO = '(prefers-reduced-motion: reduce)';
+
+const MENU_LINKS = [
+  { label: '¿Qué es Novastone?', path: '/' },
+  { label: 'Productos', path: '/productos' },
+  { label: 'Colecciones', path: '/colecciones' },
+  { label: 'Proyectos', path: '/proyectos' },
+  { label: 'Inspiración', path: '/inspiracion' },
+  { label: '¿Cómo Comprar?', path: '/como-comprar' }
+];
 
 const DRAWER_PANEL_DURATION_MS = 520;
 
@@ -77,14 +85,18 @@ const useRevealOnScroll = (deps = []) => {
 };
 
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDrawerMounted, setIsDrawerMounted] = useState(false);
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMenuPath, setActiveMenuPath] = useState('/');
-  const [tappedMobilePath, setTappedMobilePath] = useState('');
-  const closeTimerRef = useRef(null);
-  const openRafRef = useRef(null);
-  const mobileTapTimerRef = useRef(null);
+  const headerRef = useRef(null);
+  // Máquina de montaje del cajón, igual que en la versión pública: se monta,
+  // se pinta, y recién ahí se marca visible para que la transición arranque.
+  const [cajonMontado, setCajonMontado] = useState(false);
+  const [cajonVisible, setCajonVisible] = useState(false);
+  const [rutaTocada, setRutaTocada] = useState('');
+  const cerrarTimerRef = useRef(null);
+  const abrirRafRef = useRef(null);
+  const tapTimerRef = useRef(null);
+
   const getActiveMenuPath = () => {
     const path = (window.location.pathname || '').toLowerCase();
     if (path === '/productos') return '/productos';
@@ -94,8 +106,10 @@ const Header = () => {
     if (path === '/como-comprar') return '/como-comprar';
     return '/';
   };
+
   const handleHomeClick = (e) => {
     e.preventDefault();
+    setIsMenuOpen(false);
     if (window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
       window.dispatchEvent(new PopStateEvent('popstate'));
@@ -104,322 +118,314 @@ const Header = () => {
       window.history.replaceState({}, '', window.location.pathname + window.location.search);
     }
     window.scrollTo(0, 0);
-    setIsMobileMenuOpen(false);
   };
+
   const handleNavClick = (path) => (e) => {
     e.preventDefault();
+    setIsMenuOpen(false);
     window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo(0, 0);
-    setIsMobileMenuOpen(false);
   };
-  const handleMobileNavClick = (path) => (e) => {
+
+  // "¿Qué es Novastone?" no va al tope del home: baja hasta el bloque
+  // "Piedra sinterizada / Precisión, textura y durabilidad sin límites."
+  const handleQueEsNovastone = (e) => {
     e.preventDefault();
-    if (mobileTapTimerRef.current) {
-      window.clearTimeout(mobileTapTimerRef.current);
-      mobileTapTimerRef.current = null;
-    }
-    setTappedMobilePath(path);
-    mobileTapTimerRef.current = window.setTimeout(() => {
-      window.history.pushState({}, '', path);
+    setIsMenuOpen(false);
+
+    const bajarAlBloque = () => {
+      const destino = document.getElementById('novastone');
+      if (!destino) return;
+      // scrollIntoView + scroll-margin-top: el navegador mide en el momento
+      // del scroll, así que no se pasa si el layout todavía se está
+      // acomodando (imágenes cargando, secciones apareciendo).
+      destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    // Dos cosas pueden mover el layout justo después de cerrar el menú:
+    //  - en mobile el cajón libera el scroll y restaura la posición previa
+    //  - en desktop el hero pierde el padding-top del panel desplegado,
+    //    y todo sube --alto-panel px
+    // Por eso se espera a que el panel termine de replegarse antes de
+    // medir; en mobile --alto-panel es 0 y el salto es inmediato.
+    const panel = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--alto-panel')
+    ) || 0;
+    const demora = panel > 0 ? DRAWER_PANEL_DURATION_MS + 40 : 0;
+
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
       window.dispatchEvent(new PopStateEvent('popstate'));
-      window.scrollTo(0, 0);
-      setIsMobileMenuOpen(false);
-      setTappedMobilePath('');
-      mobileTapTimerRef.current = null;
+    }
+    window.setTimeout(
+      () => window.requestAnimationFrame(() => window.requestAnimationFrame(bajarAlBloque)),
+      demora
+    );
+  };
+
+  // El link se ilumina 220ms antes de navegar: es el feedback del original.
+  const handleCajonNavClick = (path, handler) => (e) => {
+    e.preventDefault();
+    if (tapTimerRef.current) window.clearTimeout(tapTimerRef.current);
+    setRutaTocada(path);
+    tapTimerRef.current = window.setTimeout(() => {
+      setRutaTocada('');
+      tapTimerRef.current = null;
+      handler(e);
     }, 220);
   };
-  const handleExploreClick = (e) => {
-    e.preventDefault();
-    window.history.pushState({}, '', '/inspiracion');
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo(0, 0);
-    setIsMobileMenuOpen(false);
-  };
-  const handleProjectsClick = (e) => {
-    e.preventDefault();
-    window.history.pushState({}, '', '/proyectos');
-    window.dispatchEvent(new PopStateEvent('popstate'));
-    window.scrollTo(0, 0);
-    setIsMobileMenuOpen(false);
-  };
-  const handleMobileProjectsClick = (e) => {
-    e.preventDefault();
-    if (mobileTapTimerRef.current) {
-      window.clearTimeout(mobileTapTimerRef.current);
-      mobileTapTimerRef.current = null;
-    }
-    setTappedMobilePath('/proyectos');
-    mobileTapTimerRef.current = window.setTimeout(() => {
-      window.history.pushState({}, '', '/proyectos');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-      window.scrollTo(0, 0);
-      setIsMobileMenuOpen(false);
-      setTappedMobilePath('');
-      mobileTapTimerRef.current = null;
-    }, 220);
-  };
-  const mobileWhatsAppUrl = `https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
-  const handleMobileWhatsAppClick = () => {
-    trackContact({
+
+  const handleWhatsAppCajon = () => {
+    const datos = {
       channel: 'whatsapp',
       origin: 'header',
       page_section: 'mobile-drawer',
       trigger_source: 'App.Header.mobileDrawer.whatsapp',
-    });
-    ga4.trackContact({
-      channel: 'whatsapp',
-      origin: 'header',
-      page_section: 'mobile-drawer',
-      trigger_source: 'App.Header.mobileDrawer.whatsapp',
-    });
+    };
+    trackContact(datos);
+    ga4.trackContact(datos);
   };
 
   useEffect(() => {
-    const syncActiveHash = () => {
-      setActiveMenuPath(getActiveMenuPath());
-    };
+    const syncActiveHash = () => setActiveMenuPath(getActiveMenuPath());
     syncActiveHash();
     window.addEventListener('popstate', syncActiveHash);
-    return () => {
-      window.removeEventListener('popstate', syncActiveHash);
-    };
+    return () => window.removeEventListener('popstate', syncActiveHash);
   }, []);
 
+  // El hero lee esta clase para bajar la foto cuando el panel se abre.
   useEffect(() => {
-    const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
-    if (isMobileMenuOpen && isMobileViewport) {
-      const scrollY = window.scrollY;
-      document.body.dataset.lockScrollY = String(scrollY);
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.classList.add('mobile-menu-open');
-    } else {
-      const lockScrollY = Number(document.body.dataset.lockScrollY || 0);
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.classList.remove('mobile-menu-open');
-      delete document.body.dataset.lockScrollY;
-      if (lockScrollY > 0) {
-        window.scrollTo(0, lockScrollY);
-      }
-    }
-    return () => {
-      const lockScrollY = Number(document.body.dataset.lockScrollY || 0);
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.classList.remove('mobile-menu-open');
-      delete document.body.dataset.lockScrollY;
-      if (lockScrollY > 0) {
-        window.scrollTo(0, lockScrollY);
-      }
-    };
-  }, [isMobileMenuOpen]);
+    document.body.classList.toggle('menu-abierto', isMenuOpen);
+    return () => document.body.classList.remove('menu-abierto');
+  }, [isMenuOpen]);
 
-  useEffect(() => () => {
-    if (closeTimerRef.current) {
-      window.clearTimeout(closeTimerRef.current);
-    }
-    if (openRafRef.current) {
-      window.cancelAnimationFrame(openRafRef.current);
-    }
-    if (mobileTapTimerRef.current) {
-      window.clearTimeout(mobileTapTimerRef.current);
-    }
-  }, []);
-
+  // Montaje diferido para que la transición de entrada se vea.
   useEffect(() => {
-    if (closeTimerRef.current) {
-      window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-    if (openRafRef.current) {
-      window.cancelAnimationFrame(openRafRef.current);
-      openRafRef.current = null;
-    }
-
-    if (isMobileMenuOpen) {
-      setIsDrawerMounted(true);
-      setIsDrawerVisible(false);
-      openRafRef.current = window.requestAnimationFrame(() => {
-        openRafRef.current = window.requestAnimationFrame(() => {
-          setIsDrawerVisible(true);
-          openRafRef.current = null;
+    if (cerrarTimerRef.current) window.clearTimeout(cerrarTimerRef.current);
+    if (abrirRafRef.current) window.cancelAnimationFrame(abrirRafRef.current);
+    if (isMenuOpen) {
+      setCajonMontado(true);
+      setCajonVisible(false);
+      abrirRafRef.current = window.requestAnimationFrame(() => {
+        abrirRafRef.current = window.requestAnimationFrame(() => {
+          setCajonVisible(true);
+          abrirRafRef.current = null;
         });
       });
       return undefined;
     }
-
-    setIsDrawerVisible(false);
-    closeTimerRef.current = window.setTimeout(() => {
-      setIsDrawerMounted(false);
-      closeTimerRef.current = null;
+    setCajonVisible(false);
+    cerrarTimerRef.current = window.setTimeout(() => {
+      setCajonMontado(false);
+      cerrarTimerRef.current = null;
     }, DRAWER_PANEL_DURATION_MS);
     return undefined;
-  }, [isMobileMenuOpen]);
+  }, [isMenuOpen]);
+
+  // Bloqueo de scroll del fondo mientras el cajón está abierto.
+  useEffect(() => {
+    const esMobile = window.matchMedia('(max-width: 900px)').matches;
+    if (!isMenuOpen || !esMobile) return undefined;
+    const y = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${y}px`;
+    document.body.style.width = '100%';
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, y);
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => () => {
+    if (cerrarTimerRef.current) window.clearTimeout(cerrarTimerRef.current);
+    if (abrirRafRef.current) window.cancelAnimationFrame(abrirRafRef.current);
+    if (tapTimerRef.current) window.clearTimeout(tapTimerRef.current);
+  }, []);
+
+  // Cerrar con Escape y con click afuera del header.
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+    const alTeclear = (e) => {
+      if (e.key === 'Escape') setIsMenuOpen(false);
+    };
+    const alClickear = (e) => {
+      if (headerRef.current && !headerRef.current.contains(e.target)) setIsMenuOpen(false);
+    };
+    document.addEventListener('keydown', alTeclear);
+    document.addEventListener('pointerdown', alClickear);
+    return () => {
+      document.removeEventListener('keydown', alTeclear);
+      document.removeEventListener('pointerdown', alClickear);
+    };
+  }, [isMenuOpen]);
 
   return (
-    <>
-      <header className="site-header">
-        <div className="header-inner">
-          <div className="brand">
-            <a href="/" onClick={handleHomeClick}>
-              <img
-                className="brand-logo"
-                src="/LOGO%20SVG%20NOVASTONE.svg"
-                alt="Novastone"
-              />
-            </a>
-          </div>
-          <nav className="nav-links">
-            <a href="/" onClick={handleHomeClick}>Novastone</a>
-            <a href="/productos" onClick={handleNavClick('/productos')}>
-              Productos
-            </a>
-            <a href="/colecciones" onClick={handleNavClick('/colecciones')}>
-              Colecciones
-            </a>
-            <a href="/proyectos" onClick={handleProjectsClick}>Proyectos</a>
-            <a href="/inspiracion" onClick={handleExploreClick}>
-              Inspiración
-            </a>
-            <a href="/como-comprar" onClick={handleNavClick('/como-comprar')}>
-              ¿Cómo Comprar?
-            </a>
-            <a href="/como-comprar" onClick={handleNavClick('/como-comprar')} className="nav-cta">Contactar</a>
-          </nav>
-          <button
-            type="button"
-            className="mobile-menu-toggle"
-            aria-label="Abrir menu"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            &#9776;
-          </button>
-        </div>
-      </header>
-      {isDrawerMounted && (
-        <div className={`mobile-drawer ${isDrawerVisible ? 'is-open' : 'is-closing'}`}>
-          <button
-            type="button"
-            className="mobile-drawer-backdrop"
-            aria-label="Cerrar menu"
-            onClick={() => setIsMobileMenuOpen(false)}
+    <header
+      ref={headerRef}
+      className={`site-header ${isMenuOpen ? 'is-open' : ''}`}
+    >
+      <div className="header-inner">
+        <button
+          type="button"
+          className="header-menu-toggle"
+          aria-expanded={isMenuOpen}
+          aria-controls="menu-desplegable"
+          onClick={() => setIsMenuOpen((v) => !v)}
+        >
+          <span className="header-menu-icono" aria-hidden="true">
+            <span />
+            <span />
+          </span>
+          <span className="header-menu-texto">Menú</span>
+        </button>
+
+        <a className="header-marca" href="/" onClick={handleHomeClick}>
+          <img
+            className="header-marca-logo"
+            src="/LOGO%20SVG%20NOVASTONE.svg"
+            alt="Novastone"
           />
-          <div className="mobile-drawer-panel" role="dialog" aria-modal="true">
-            <div className="mobile-drawer-header">
-              <a className="mobile-drawer-brand" href="/" onClick={handleHomeClick}>
-                <img
-                  className="mobile-drawer-brand-logo"
-                  src="/LOGO%20SVG%20NOVASTONE.svg"
-                  alt="Novastone"
-                />
+        </a>
+
+        <div className="header-acciones">
+          <a
+            href="/como-comprar"
+            className="header-contactar"
+            onClick={handleNavClick('/como-comprar')}
+          >
+            Contactar
+          </a>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="header-instagram"
+            aria-label="Instagram"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 1.8A3.7 3.7 0 0 0 3.8 7.5v9a3.7 3.7 0 0 0 3.7 3.7h9a3.7 3.7 0 0 0 3.7-3.7v-9a3.7 3.7 0 0 0-3.7-3.7h-9Zm9.9 1.35a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div className="header-desplegable" id="menu-desplegable">
+        <nav className="header-desplegable-nav">
+          {MENU_LINKS.map((link) => (
+            <a
+              key={link.path + link.label}
+              href={link.path}
+              className={`header-desplegable-link ${activeMenuPath === link.path ? 'is-active' : ''}`}
+              tabIndex={isMenuOpen ? 0 : -1}
+              onClick={link.path === '/' ? handleQueEsNovastone : handleNavClick(link.path)}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* Cajón mobile: mismo formato que la versión pública pero entrando
+          desde la izquierda, con la paleta y las tipografías nuevas. */}
+      {cajonMontado && (
+        <div className={`cajon ${cajonVisible ? 'is-open' : 'is-closing'}`}>
+          <button
+            type="button"
+            className="cajon-velo"
+            aria-label="Cerrar menú"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          <div className="cajon-panel" role="dialog" aria-modal="true">
+            <div className="cajon-cabecera">
+              <a className="cajon-marca" href="/" onClick={handleHomeClick}>
+                <img src="/LOGO%20SVG%20NOVASTONE.svg" alt="Novastone" />
               </a>
               <button
                 type="button"
-                className="mobile-drawer-close"
-                aria-label="Cerrar menu"
-                onClick={() => setIsMobileMenuOpen(false)}
+                className="cajon-cerrar"
+                aria-label="Cerrar menú"
+                onClick={() => setIsMenuOpen(false)}
               >
-                &#10005;
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <line x1="2" y1="2" x2="18" y2="18" />
+                  <line x1="18" y1="2" x2="2" y2="18" />
+                </svg>
               </button>
             </div>
-            <p className="mobile-drawer-tagline">
+
+            <p className="cajon-bajada">
               Superficies sinterizadas
               <br />
               para arquitectura
             </p>
-            <div className="mobile-drawer-divider" aria-hidden="true" />
-            <nav className="mobile-drawer-content">
-              <div className="mobile-drawer-links mobile-drawer-links-primary">
-                <a
-                  href="/productos"
-                  className={`mobile-drawer-link ${activeMenuPath === '/productos' ? 'is-active' : ''} ${tappedMobilePath === '/productos' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('/productos')}
-                >
-                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
-                  <span>Productos</span>
-                </a>
-                <a
-                  href="/colecciones"
-                  className={`mobile-drawer-link ${activeMenuPath === '/colecciones' ? 'is-active' : ''} ${tappedMobilePath === '/colecciones' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('/colecciones')}
-                >
-                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
-                  <span>Colecciones</span>
-                </a>
-                <a
-                  href="/proyectos"
-                  className={`mobile-drawer-link ${activeMenuPath === '/proyectos' ? 'is-active' : ''} ${tappedMobilePath === '/proyectos' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileProjectsClick}
-                >
-                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
-                  <span>Proyectos</span>
-                </a>
-                <a
-                  href="/inspiracion"
-                  className={`mobile-drawer-link ${activeMenuPath === '/inspiracion' ? 'is-active' : ''}`}
-                  onClick={handleExploreClick}
-                >
-                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
-                  <span>Inspiración</span>
-                </a>
+
+            <div className="cajon-linea" aria-hidden="true" />
+
+            <nav className="cajon-nav">
+              <div className="cajon-links">
+                {MENU_LINKS.filter((l) => l.path !== '/como-comprar').map((l) => (
+                  <a
+                    key={l.path}
+                    href={l.path}
+                    className={`cajon-link ${activeMenuPath === l.path ? 'is-active' : ''} ${rutaTocada === l.path ? 'is-tocado' : ''}`}
+                    onClick={handleCajonNavClick(
+                      l.path,
+                      l.path === '/' ? handleQueEsNovastone : handleNavClick(l.path)
+                    )}
+                  >
+                    <span className="cajon-bullet" aria-hidden="true">•</span>
+                    <span>{l.label}</span>
+                  </a>
+                ))}
               </div>
-              <div className="mobile-drawer-divider" aria-hidden="true" />
-              <div className="mobile-drawer-links mobile-drawer-links-secondary">
-                <a
-                  href="/como-comprar"
-                  className={`mobile-drawer-link ${activeMenuPath === '/como-comprar' ? 'is-active' : ''} ${tappedMobilePath === '/como-comprar' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('/como-comprar')}
-                >
-                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
-                  <span>¿Cómo Comprar?</span>
-                </a>
-                <a
-                  href="/como-comprar"
-                  className={`mobile-drawer-link ${activeMenuPath === '/como-comprar' ? 'is-active' : ''} ${tappedMobilePath === '/como-comprar' ? 'is-tapped' : ''}`}
-                  onClick={handleMobileNavClick('/como-comprar')}
-                >
-                  <span className="mobile-drawer-link-bullet" aria-hidden="true">•</span>
-                  <span>Contactar</span>
-                </a>
+
+              <div className="cajon-linea" aria-hidden="true" />
+
+              <div className="cajon-links">
+                {[
+                  { label: '¿Cómo Comprar?', path: '/como-comprar' },
+                  { label: 'Contactar', path: '/como-comprar' }
+                ].map((l) => (
+                  <a
+                    key={l.label}
+                    href={l.path}
+                    className={`cajon-link ${rutaTocada === l.label ? 'is-tocado' : ''}`}
+                    onClick={handleCajonNavClick(l.label, handleNavClick(l.path))}
+                  >
+                    <span className="cajon-bullet" aria-hidden="true">•</span>
+                    <span>{l.label}</span>
+                  </a>
+                ))}
               </div>
-              <div className="mobile-drawer-divider" aria-hidden="true" />
-              <footer className="mobile-drawer-footer">
+
+              <div className="cajon-linea" aria-hidden="true" />
+
+              <footer className="cajon-pie">
                 <p>Showroom y distribución</p>
                 <p>Argentina</p>
-                <div className="mobile-drawer-footer-icons">
-                  <a
-                    href={INSTAGRAM_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Instagram"
-                  >
+                <div className="cajon-iconos">
+                  <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" aria-label="Instagram">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 1.8A3.7 3.7 0 0 0 3.8 7.5v9a3.7 3.7 0 0 0 3.7 3.7h9a3.7 3.7 0 0 0 3.7-3.7v-9a3.7 3.7 0 0 0-3.7-3.7h-9Zm9.9 1.35a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"
-                        fill="currentColor"
-                      />
+                      <path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 1.8A3.7 3.7 0 0 0 3.8 7.5v9a3.7 3.7 0 0 0 3.7 3.7h9a3.7 3.7 0 0 0 3.7-3.7v-9a3.7 3.7 0 0 0-3.7-3.7h-9Zm9.9 1.35a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z" fill="currentColor" />
                     </svg>
                   </a>
                   <a
-                    href={mobileWhatsAppUrl}
+                    href={`https://wa.me/${CONTACT_PHONE.replace(/\D/g, '')}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`}
                     target="_blank"
                     rel="noreferrer"
                     aria-label="WhatsApp"
-                    onClick={handleMobileWhatsAppClick}
+                    onClick={handleWhatsAppCajon}
                   >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 .1 5.3.1 11.8c0 2.1.6 4.2 1.6 6L0 24l6.4-1.7a11.8 11.8 0 0 0 5.6 1.4h.1c6.5 0 11.8-5.3 11.8-11.8a11.8 11.8 0 0 0-3.4-8.4ZM12 21.8a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.2A9.9 9.9 0 0 1 12 2.1c2.6 0 5.1 1 7 2.9a9.8 9.8 0 0 1 2.9 7c0 5.4-4.4 9.8-9.9 9.8Zm5.4-7.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.5-1.7-1.7-2-.2-.3 0-.5.1-.6.2-.1.3-.3.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.6-1.5-.9-2.1-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.2 5 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.2.2-1.4 0-.1-.2-.2-.5-.4Z"
-                        fill="currentColor"
-                      />
+                      <path d="M20.5 3.5A11.8 11.8 0 0 0 12 0C5.4 0 .1 5.3.1 11.8c0 2.1.6 4.2 1.6 6L0 24l6.4-1.7a11.8 11.8 0 0 0 5.6 1.4h.1c6.5 0 11.8-5.3 11.8-11.8a11.8 11.8 0 0 0-3.4-8.4ZM12 21.8a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.2A9.9 9.9 0 0 1 12 2.1c2.6 0 5.1 1 7 2.9a9.8 9.8 0 0 1 2.9 7c0 5.4-4.4 9.8-9.9 9.8Zm5.4-7.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.4.2-.7.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.5-1.7-1.7-2-.2-.3 0-.5.1-.6.2-.1.3-.3.5-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.6-1.5-.9-2.1-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.2 5 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.2.2-1.4 0-.1-.2-.2-.5-.4Z" fill="currentColor" />
                     </svg>
                   </a>
                 </div>
@@ -428,7 +434,8 @@ const Header = () => {
           </div>
         </div>
       )}
-    </>
+
+    </header>
   );
 };
 
@@ -480,9 +487,12 @@ const HeroSection = () => {
   const [esMobile, setEsMobile] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(HERO_MOBILE_QUERY).matches
   );
+  const [menosMovimiento, setMenosMovimiento] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(HERO_MENOS_MOVIMIENTO).matches
+  );
 
   // Elegimos el set por viewport en vez de con <picture>: así el navegador
-  // descarga sólo las que va a mostrar y los indicadores acompañan la cantidad.
+  // descarga sólo las que va a mostrar.
   useEffect(() => {
     const mq = window.matchMedia(HERO_MOBILE_QUERY);
     const sync = () => setEsMobile(mq.matches);
@@ -491,23 +501,35 @@ const HeroSection = () => {
     return () => mq.removeEventListener('change', sync);
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia(HERO_MENOS_MOVIMIENTO);
+    const sync = () => setMenosMovimiento(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
   const slides = esMobile ? HERO_SLIDES_MOBILE : HERO_SLIDES_DESKTOP;
 
-  // Al cambiar de set, el índice puede quedar fuera de rango (5 → 4 slides)
   useEffect(() => {
     setActive((prev) => (prev < slides.length ? prev : 0));
   }, [slides.length]);
 
+  // Con prefers-reduced-motion queda la primera imagen fija, sin autoplay.
   useEffect(() => {
+    if (menosMovimiento) {
+      setActive(0);
+      return undefined;
+    }
     const timer = setInterval(() => {
       setActive((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, HERO_DURACION_MS);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, menosMovimiento]);
 
   return (
     <section className="hero">
-      <div className="hero-slider" aria-hidden="true">
+      <div className="hero-media" aria-hidden="true">
         {slides.map((src, index) => (
           <div
             key={src}
@@ -522,39 +544,19 @@ const HeroSection = () => {
           </div>
         ))}
       </div>
-      <div className="hero-content" data-reveal>
-        <p className="hero-eyebrow">Novastone · Piedra Sinterizada</p>
-        <h1>La evolución natural del diseño</h1>
-        <p className="hero-subtitle">
-          Superficies que combinan resistencia extrema con una estética
-          contemporanea para proyectos residenciales y comerciales.
+      <div className="hero-banda">
+        <p className="hero-overline">Piedra sinterizada</p>
+        <h1 className="hero-titulo">
+          Superficies de gran formato para arquitectura y diseño.
+        </h1>
+        <p className="hero-bajada">
+          Colecciones seleccionadas para el mercado argentino, con tonos
+          neutros, vetas y acabados que se adaptan a cada proyecto
         </p>
-      </div>
-      <div className="hero-slider-indicator" role="tablist">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            className={index === active ? 'active' : ''}
-            onClick={() => setActive(index)}
-            aria-label={`Ver slide ${index + 1}`}
-          />
-        ))}
       </div>
     </section>
   );
 };
-
-const IntroSection = () => (
-  <section className="intro" id="colecciones-home">
-    <div className="intro-inner" data-reveal>
-      <p>
-        Colecciones seleccionadas para el mercado argentino, con tonos neutros,
-        vetas elegantes y acabados que se adaptan a cada proyecto.
-      </p>
-    </div>
-  </section>
-);
 
 const HOME_SINTERED_COLLECTION_IDS = ['full-body', 'nature', 'lux'];
 const SINTERED_COLLECTIONS = HOME_SINTERED_COLLECTION_IDS.map((id) => ({
@@ -952,6 +954,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');
   const [currentRoute, setCurrentRoute] = useState('home');
+  const [texturaSlug, setTexturaSlug] = useState('');
   
   const isAdminRoute = useMemo(() => {
     if (typeof window === 'undefined') return false;
@@ -1013,6 +1016,9 @@ function App() {
         effectivePath === '/explorar-texturas-moodboard'
       ) {
         setCurrentRoute('explorar-texturas');
+      } else if (effectivePath.startsWith('/texturas/')) {
+        setTexturaSlug(effectivePath.slice('/texturas/'.length).replace(/\/$/, ''));
+        setCurrentRoute('textura');
       } else if (effectivePath === '/como-comprar') {
         setCurrentRoute('como-comprar');
       } else if (hash.startsWith('#asociados')) {
@@ -1182,6 +1188,20 @@ function App() {
     );
   }
 
+  if (currentRoute === 'textura') {
+    return (
+      <div className="App">
+        <Header />
+        <main>
+          <TexturaPage slug={texturaSlug} />
+        </main>
+        <Footer />
+        <WhatsAppFab />
+        <Analytics />
+      </div>
+    );
+  }
+
   if (currentRoute === 'colecciones') {
     return (
       <div className="App">
@@ -1230,8 +1250,7 @@ function App() {
       <Header />
       <main>
         <HeroSection />
-        <IntroSection />
-        <SinteredSection />
+        <NuevasTexturasSection />
         {error ? (
           <section className="error" data-reveal>
             {error}
@@ -1239,6 +1258,9 @@ function App() {
         ) : (
           <StonesSection />
         )}
+        {/* Va último, justo antes del footer. "¿Qué es Novastone?" sigue
+            bajando acá porque el salto busca el id, no la posición. */}
+        <SinteredSection />
       </main>
       <Footer />
       <WhatsAppFab />
