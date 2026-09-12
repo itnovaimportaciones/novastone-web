@@ -124,6 +124,7 @@ const ProductGallery = () => {
         thickness: product?.thickness || null,
         finish: product?.finish || null,
         trigger_source: 'ProductGallery.handleProductClick',
+        source: 'galeria',
       },
       { sessionDedupKey: `pixel_ViewSlab_${_slabId}` }
     );
@@ -136,6 +137,7 @@ const ProductGallery = () => {
         thickness: product?.thickness || null,
         finish: product?.finish || null,
         trigger_source: 'ProductGallery.handleProductClick',
+        source: 'galeria',
       },
       { sessionDedupKey: `ViewSlab_${_slabId}` }
     );
