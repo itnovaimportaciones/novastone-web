@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NUEVAS_TEXTURAS, RUTA_TEXTURA } from '../../content/nuevasTexturas';
+import { trackCustom } from '../../lib/metaPixel';
+import * as ga4 from '../../lib/googleAnalytics';
 
 /**
  * Sección "NUEVAS TEXTURAS" del home.
@@ -49,10 +51,13 @@ const NuevasTexturasSection = () => {
     return () => obs.disconnect();
   }, []);
 
-  const irATextura = (slug) => (e) => {
+  const irATextura = (textura) => (e) => {
     e.preventDefault();
     e.stopPropagation();
-    window.history.pushState({}, '', RUTA_TEXTURA(slug));
+    // Antes del pushState: después de navegar, este componente se desmonta.
+    trackCustom('ExplorarTextura', { texture_name: textura.nombreCanonico });
+    ga4.trackCustom('ExplorarTextura', { texture_name: textura.nombreCanonico });
+    window.history.pushState({}, '', RUTA_TEXTURA(textura.slug));
     window.dispatchEvent(new PopStateEvent('popstate'));
     // index.css tiene scroll-behavior: smooth; acá hace falta el salto seco.
     try {
@@ -89,14 +94,22 @@ const NuevasTexturasSection = () => {
                 type="button"
                 className="nt-fila-boton"
                 aria-expanded={estaAbierta}
-                onClick={() => setAbierta(estaAbierta ? null : t.slug)}
+                /* El botón es un toggle: sin este guard, cerrar una fila
+                   mandaría otro ExpandTextura. Sólo interesa la apertura. */
+                onClick={() => {
+                  if (!estaAbierta) {
+                    trackCustom('ExpandTextura', { texture_name: t.nombreCanonico });
+                    ga4.trackCustom('ExpandTextura', { texture_name: t.nombreCanonico });
+                  }
+                  setAbierta(estaAbierta ? null : t.slug);
+                }}
               >
                 <span className="nt-nombre">{t.nombre}</span>
                 <a
                   className="nt-explorar"
                   href={RUTA_TEXTURA(t.slug)}
                   tabIndex={estaAbierta ? 0 : -1}
-                  onClick={irATextura(t.slug)}
+                  onClick={irATextura(t)}
                 >
                   {/* Una letra por span: en desktop cada una sube detrás de
                       una máscara, escalonada. En mobile se ignora y sigue el

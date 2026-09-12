@@ -341,6 +341,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
         texture_name: safeProduct.name || null,
         product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
         trigger_source: 'ProductSidecart.openSlabLightbox',
+        source: 'sidecart',
       },
       { sessionDedupKey: `pixel_ViewSlab_${_slabId}` }
     );
@@ -350,6 +351,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
         texture_name: safeProduct.name || null,
         product_code: safeProduct.productCode || safeProduct.code || safeProduct.id || null,
         trigger_source: 'ProductSidecart.openSlabLightbox',
+        source: 'sidecart',
       },
       { sessionDedupKey: `ViewSlab_${_slabId}` }
     );
@@ -610,6 +612,7 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                       page_section: 'sidecart-ficha-tecnica',
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                      source: 'sidecart',
                     });
                     ga4.trackContact({
                       channel: 'whatsapp',
@@ -617,16 +620,19 @@ const ProductSidecart = ({ product, products = [], isOpen, onClose, onSelect }) 
                       page_section: 'sidecart-ficha-tecnica',
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                      source: 'sidecart',
                     });
                     trackLead({
                       channel: 'whatsapp',
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                      source: 'sidecart',
                     });
                     ga4.trackLead({
                       channel: 'whatsapp',
                       texture_name: safeProduct.name || null,
                       trigger_source: 'ProductSidecart.consultarDisponibilidad',
+                      source: 'sidecart',
                     });
                   }}
                 >

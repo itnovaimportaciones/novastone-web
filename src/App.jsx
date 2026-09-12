@@ -1083,7 +1083,11 @@ function App() {
         trigger_source: 'App.routeChange',
       });
     }
-  }, [currentRoute]);
+    /* texturaSlug va en las dependencias porque las cinco texturas comparten
+       currentRoute === 'textura': sin él, ir de una textura a otra (el bloque
+       "Explorar más texturas") no volvía a disparar el PageView. Entrar desde
+       afuera no duplica, porque currentRoute y texturaSlug cambian juntos. */
+  }, [currentRoute, texturaSlug]);
 
   useEffect(() => {
     const header = document.querySelector('.site-header');

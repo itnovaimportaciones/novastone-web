@@ -1,5 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { texturaPorSlug, otrasTexturas, RUTA_TEXTURA } from '../../content/nuevasTexturas';
+import { trackContact, trackCustom, trackLead } from '../../lib/metaPixel';
+import * as ga4 from '../../lib/googleAnalytics';
 
 const CONTACTO_TEL = '5491124800421';
 
@@ -96,6 +98,31 @@ const TexturaPage = ({ slug }) => {
       window.history.scrollRestoration = 'manual';
     }
     alTope();
+  }, [slug]);
+
+  /* ViewSlab al abrir la textura.
+     Es el MISMO evento del sidecart, distinguido por `source`. La key de
+     dedup también es la misma (pixel_ViewSlab_{productId} en Meta,
+     ViewSlab_{productId} en GA4, que googleAnalytics.js prefija con ga4_):
+     así una placa vista acá y después en el sidecart cuenta una sola vez
+     por sesión, que es lo correcto porque es la misma placa.
+     Depende de `slug` y no de `textura` porque el objeto se recrea en cada
+     render y volvería a disparar. */
+  useEffect(() => {
+    if (!textura) return;
+    const datos = {
+      texture_name: textura.nombreCanonico,
+      finish: textura.terminacion,
+      thickness: textura.espesor,
+      source: 'texturas',
+    };
+    trackCustom('ViewSlab', datos, {
+      sessionDedupKey: `pixel_ViewSlab_${textura.productId}`,
+    });
+    ga4.trackCustom('ViewSlab', datos, {
+      sessionDedupKey: `ViewSlab_${textura.productId}`,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   // ── animación del título ────────────────────────────────────────────
@@ -348,6 +375,20 @@ const TexturaPage = ({ slug }) => {
           href={`https://wa.me/${CONTACTO_TEL}?text=${mensaje}`}
           target="_blank"
           rel="noreferrer"
+          /* Los mismos dos eventos que dispara el botón equivalente del
+             sidecart: Contact y Lead. El trigger_source propio le da a
+             trackContact su propio bucket de debounce de 1000ms. */
+          onClick={() => {
+            const datos = {
+              texture_name: textura.nombreCanonico,
+              source: 'texturas',
+              trigger_source: 'TexturaPage.consultarDisponibilidad',
+            };
+            trackContact(datos);
+            ga4.trackContact(datos);
+            trackLead(datos);
+            ga4.trackLead(datos);
+          }}
         >
           Consultar disponibilidad
         </a>

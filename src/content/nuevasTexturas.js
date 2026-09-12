@@ -11,6 +11,15 @@
  *
  * Las rutas de imagen son las mismas que usa el catálogo PDF.
  *
+ * `productId` y `nombreCanonico` no se muestran: son los valores que viajan
+ * a Meta y GA4. Están copiados TEXTUALMENTE del id y el name de
+ * products-data.json, mayúsculas incluidas, para que una textura vista acá
+ * y la misma vista desde el sidecart sean el mismo producto en los reportes.
+ * El dataset es inconsistente (cuatro nombres en mayúsculas y 'Cristallo
+ * Blanc' en formato título) y se respeta así a propósito: el sidecart manda
+ * `product.name` sin tocar, y mandar otra forma desde acá abriría dos filas
+ * para la misma piedra. `nombre` sigue siendo el de pantalla.
+ *
  * `ratioTextura` es ancho/alto de la foto. Se usa como aspect-ratio para
  * reservar el alto antes de que la imagen cargue: sin eso el ScrollTrigger
  * medía la escena en 0 y el pin quedaba mal hasta refrescar.
@@ -19,6 +28,8 @@
 export const NUEVAS_TEXTURAS = [
   {
     slug: 'marfilo',
+    productId: '28marfilo',
+    nombreCanonico: 'MARFILO',
     ratioTextura: 0.4984,
     nombre: 'MARFILO',
     tituloLineas: ['MARFILO'],
@@ -36,6 +47,8 @@ export const NUEVAS_TEXTURAS = [
   },
   {
     slug: 'new-taj-mahal',
+    productId: '13new-taj-mahal',
+    nombreCanonico: 'NEW TAJ MAHAL',
     ratioTextura: 0.5,
     nombre: 'NEW TAJ MAHAL',
     tituloLineas: ['NEW', 'TAJ MAHAL'],
@@ -59,6 +72,8 @@ export const NUEVAS_TEXTURAS = [
   },
   {
     slug: 'cristallo-blanc',
+    productId: '27cristallo-blanc',
+    nombreCanonico: 'Cristallo Blanc',
     ratioTextura: 0.5,
     nombre: 'CRISTALLO BLANC',
     tituloLineas: ['CRISTALLO', 'BLANC'],
@@ -76,6 +91,8 @@ export const NUEVAS_TEXTURAS = [
   },
   {
     slug: 'calacatta-ambra',
+    productId: '29calacatta-ambra',
+    nombreCanonico: 'CALACATTA AMBRA',
     ratioTextura: 0.5,
     nombre: 'CALACATTA AMBRA',
     tituloLineas: ['CALACATTA', 'AMBRA'],
@@ -93,6 +110,8 @@ export const NUEVAS_TEXTURAS = [
   },
   {
     slug: 'autumn-maple',
+    productId: '7autumn-maple',
+    nombreCanonico: 'AUTUMN MAPLE',
     ratioTextura: 0.327,
     nombre: 'AUTUMN MAPLE',
     tituloLineas: ['AUTUMN', 'MAPLE'],
