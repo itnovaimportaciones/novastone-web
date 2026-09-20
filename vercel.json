@@ -1,5 +1,12 @@
 {
   "routes": [
+    {
+      "src": "/m/?",
+      "status": 307,
+      "headers": {
+        "Location": "/?utm_source=muestras&utm_medium=qr&utm_campaign=etiquetas"
+      }
+    },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
